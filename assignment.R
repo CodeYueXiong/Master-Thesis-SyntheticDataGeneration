@@ -1,4 +1,4 @@
-# install  the required R packages
+# install the required R packages
 # install.packages("readr")
 # install.packages("vroom")
 # install.packages("tidyverse")
@@ -44,15 +44,24 @@ bindori_dataset <- data.frame(bindori_dataset)
 dim(bindori_dataset)
 
 # subset some example columns and try plotting the histograms
-symptoms <- c("B3", "B4", "B1_1", "B1_2")
+symptoms <- c("B3","B4","B1_1","B1_2","B1_3","B1_4","B1_5","B1_6","B1_7",
+              "B1_8","B1_9","B1_10","B1_12","B1_13",
+              "B1b_x1","B1b_x2","B1b_x3","B1b_x4","B1b_x5","B1b_x6","B1b_x7",
+              "B1b_x8","B1b_x9","B1b_x10","B1b_x12","B1b_x13","B2")
 
-testori_dataset <- bindori_dataset[, symptoms]
+testing <- c("B0","B7","B8a",
+             "B15_1","B15_2",
+             "B15_3","B15_4",
+             "B15_5","B15_6","B15_7")
+
+testori_dataset <- bindori_dataset[, testing]
+
 head(testori_dataset)
 # plot the distribution of the synthetic dataset
 var_testori_dataset <- melt(testori_dataset)  # break down into var variables
- 
 
-var_bindori_dataset$variable
+
+var_testori_dataset$variable
 
 ggplot(var_testori_dataset, aes(x=value, fill=variable)) +
        geom_histogram()+
