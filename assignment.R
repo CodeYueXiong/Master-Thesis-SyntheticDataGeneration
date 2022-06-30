@@ -13,10 +13,16 @@ library(arsenal)
 library(reshape2)
 library(synthpop)
 
+############################# Step1: Data Preparation ##############################
+# In step1, we aim to read in the original datasets and the synthetic dataset
+# while aligning the variables especially set in the syn dataset.
+# Attempting to compare the two datasets, we should also comcatenate the original datasets
+# vertically with variables all set as the same.
+
 # set the working directory
 setwd("Desktop/masterThesis_SODA/Master-Thesis-DifferentialPrivacy")
 # read in the synthetic dataset
-syn_data <- read_csv("./syn_2020-08-02_2020-08-08.csv", show_col_types = FALSE)
+syn_data <- read_csv("./syn_k2_2020-08-02_2020-08-08.csv", col_types = NULL)
 # rename "sample weight" to "weight" to avoid comflicts
 colnames(syn_data)[colnames(syn_data) == "sample_weight"] <- "weight"
 
@@ -45,18 +51,36 @@ bindori_dataset <- bind_rows(ori_dataset)
 bindori_dataset <- data.frame(bindori_dataset)
 dim(bindori_dataset)
 
+####################### Step2: Evaluating the utility of the syn data #######################
+# In step2, we try to evaluate the utility of the synthetic dataset with one-way marginal
+# and two-way marginal measures. (1). As for the one-way utility, the syn dataset is measured with
+# the compare plots and pMSE/S_pMSE. (2). And for the two-way utility, the synthetic dataset is
+# evaluated with the utility tables which takes up a heatmap fashion/manner.
+
 # subset some example columns and try plotting the histograms
-symptoms <- c("B3","B4","B1_1","B1_2","B1_3","B1_4","B1_5","B1_6","B1_7",
-              "B1_8","B1_9","B1_10","B1_12","B1_13",
-              "B1b_x1","B1b_x2","B1b_x3","B1b_x4","B1b_x5","B1b_x6","B1b_x7",
-              "B1b_x8","B1b_x9","B1b_x10","B1b_x12","B1b_x13","B2")
+# symptoms <- c("B3","B4","B1_1","B1_2","B1_3","B1_4","B1_5","B1_6","B1_7",
+#               "B1_8","B1_9","B1_10","B1_12","B1_13",
+#               "B1b_x1","B1b_x2","B1b_x3","B1b_x4","B1b_x5","B1b_x6","B1b_x7",
+#               "B1b_x8","B1b_x9","B1b_x10","B1b_x12","B1b_x13","B2")
+symptoms_1 <- c("B3","B4")
+
 
 testing <- c("B0","B7","B8a",
              "B15_1","B15_2",
              "B15_3","B15_4",
              "B15_5","B15_6","B15_7")
 
-testori_dataset <- bindori_dataset[, testing]
+testori_dataset <- bindori_dataset[, symptoms_1]
+
+
+### (1). one-way marginals using compare()
+synxxx <- syn.try.passive
+
+typeof(bindori_dataset$B3)
+head(bindori_dataset$B3, n=10)
+compare_symptoms <- compare(data = as.factor(bindori_dataset$B3),
+                            object = as.factor(syn_data$B3))
+
 
 head(testori_dataset)
 # plot the distribution of the synthetic dataset
