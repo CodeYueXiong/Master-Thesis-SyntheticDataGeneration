@@ -13,6 +13,8 @@ library(arsenal)
 library(reshape2)
 library(synthpop)
 
+# set the working directory
+setwd("Desktop/masterThesis_SODA/Master-Thesis-DifferentialPrivacy")
 # read in the synthetic dataset
 syn_data <- read_csv("./syn_2020-08-02_2020-08-08.csv", show_col_types = FALSE)
 # rename "sample weight" to "weight" to avoid comflicts
