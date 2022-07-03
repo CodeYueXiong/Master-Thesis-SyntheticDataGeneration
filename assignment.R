@@ -20,9 +20,9 @@ library(synthpop)
 # vertically with variables all set as the same.
 
 # set the working directory
-setwd("Desktop/masterThesis_SODA/Master-Thesis-DifferentialPrivacy")
+setwd("F:/Master-Thesis-DifferentialPrivacy")
 # read in the synthetic dataset
-syn_data <- read_csv("./syn_k2_2020-08-02_2020-08-08.csv", col_types = NULL)
+syn_data <- read_csv("./syn_2020-08-02_2020-08-08.csv", col_types = NULL)
 # rename "sample weight" to "weight" to avoid comflicts
 colnames(syn_data)[colnames(syn_data) == "sample_weight"] <- "weight"
 
