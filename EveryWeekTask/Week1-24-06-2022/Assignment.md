@@ -59,7 +59,7 @@ For var E2,
 For var E3,
 | Utility measures | pMSE     | S_pMSE  |   |   |   |   |   |   |   |
 |:----------------:|:--------:|:-------:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| E3             | 0.000617 | 4488.802 
+| E3             | 0.001159 | 4214.772 
 
 ![Compare plot for var E3](F:/Master-Thesis-DifferentialPrivacy/EveryWeekTask/Week1-24-06-2022/E3_compare_plot.png)
 
