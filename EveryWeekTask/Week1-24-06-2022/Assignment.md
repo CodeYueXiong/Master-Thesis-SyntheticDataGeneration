@@ -14,6 +14,7 @@ For var B3, the table of selected utility measures is shown as follows:
 ![Compare plot for var B3](F:/Master-Thesis-DifferentialPrivacy/EveryWeekTask/Week1-24-06-2022/B3_compare_plot.png)
 
 
+
 For var B1_1,
 | Utility measures | pMSE     | S_pMSE  |
 |:----------------:|:--------:|:-------:|
