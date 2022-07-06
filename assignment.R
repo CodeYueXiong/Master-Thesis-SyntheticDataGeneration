@@ -123,9 +123,20 @@ compare(object = data.frame(D2 = syn_data$D2),
         cols = c("#1A3C5A","#4187BF"),
         plot = TRUE, table = FALSE)
 
-compare(object = data.frame(B7 = syn_data$B7),
-        data = data.frame(B7 = bindori_dataset$B7),
-        vars = "B7", cont.na = NULL,
+## for var E2 -> demographics
+compare(object = data.frame(E2 = syn_data$E2),
+        data = data.frame(E2 = bindori_dataset$E2),
+        vars = "E2", cont.na = NULL,
+        msel = NULL, stat = "percents", breaks = 20,
+        nrow = 2, ncol = 2, rel.size.x = 1,
+        utility.stats = c("pMSE", "S_pMSE"),
+        cols = c("#1A3C5A","#4187BF"),
+        plot = TRUE, table = FALSE)
+
+## for var E3 -> demographics
+compare(object = data.frame(E3 = syn_data$E3),
+        data = data.frame(E3 = bindori_dataset$E3),
+        vars = "E3", cont.na = NULL,
         msel = NULL, stat = "percents", breaks = 20,
         nrow = 2, ncol = 2, rel.size.x = 1,
         utility.stats = c("pMSE", "S_pMSE"),
