@@ -58,11 +58,10 @@ dim(bindori_dataset)
 # evaluated with the utility tables which takes up a heatmap fashion/manner.
 
 # subset some example columns and try plotting the histograms
-# symptoms <- c("B3","B4","B1_1","B1_2","B1_3","B1_4","B1_5","B1_6","B1_7",
-#               "B1_8","B1_9","B1_10","B1_12","B1_13",
-#               "B1b_x1","B1b_x2","B1b_x3","B1b_x4","B1b_x5","B1b_x6","B1b_x7",
-#               "B1b_x8","B1b_x9","B1b_x10","B1b_x12","B1b_x13","B2")
-symptoms_1 <- c("B3","B4")
+symptoms <- c("B3","B4","B1_1","B1_2","B1_3","B1_4","B1_5","B1_6","B1_7",
+              "B1_8","B1_9","B1_10","B1_12","B1_13",
+              "B1b_x1","B1b_x2","B1b_x3","B1b_x4","B1b_x5","B1b_x6","B1b_x7",
+              "B1b_x8","B1b_x9","B1b_x10","B1b_x12","B1b_x13","B2")
 
 
 testing <- c("B0","B7","B8a",
@@ -71,7 +70,8 @@ testing <- c("B0","B7","B8a",
              "B15_5","B15_6","B15_7")
 
 testori_dataset <- bindori_dataset[, symptoms_1]
-
+testori_dataset <- data.frame(testori_dataset)
+testsyn_dataset <- data.frame(syn_data[, symptoms_1])
 
 ### (1). one-way marginals using compare()
 synxxx <- syn.try.passive
@@ -81,6 +81,30 @@ head(bindori_dataset$B3, n=10)
 compare_symptoms <- compare(data = as.factor(bindori_dataset$B3),
                             object = as.factor(syn_data$B3))
 
+## for var B3
+compare(object = data.frame(B3 = testsyn_dataset$B3), 
+        data = data.frame(B3 = testori_dataset$B3), 
+        vars = c("B3"), cont.na = NULL,
+        msel = NULL, stat = "percents", breaks = 20,
+        nrow = 2, ncol = 2, rel.size.x = 1,
+        utility.stats = c("pMSE", "S_pMSE"),
+        cols = c("#1A3C5A","#4187BF"),
+        plot = TRUE, table = TRUE)
+
+## for var B4
+length(testsyn_dataset$B3)
+length(testori_dataset$B3)
+length(testsyn_dataset$B4)
+length(testori_dataset$B4)
+
+compare(object = data.frame(B4 = testsyn_dataset$B4), 
+        data = data.frame(B4 = testori_dataset$B4), 
+        vars = "B4", cont.na = NULL,
+        msel = NULL, stat = "percents", breaks = 20,
+        nrow = 2, ncol = 2, rel.size.x = 1,
+        utility.stats = c("pMSE", "S_pMSE"),
+        cols = c("#1A3C5A","#4187BF"),
+        plot = TRUE, table = FALSE)
 
 head(testori_dataset)
 # plot the distribution of the synthetic dataset
@@ -98,4 +122,5 @@ utility.gen(object = syn_data,
             data = bindori_dataset,
             not.synthesised = NULL,
             cont.na = NULL,
-            print.stats = c("pMSE", "S_pMSE"))
+            print.stats = c("pMSE", "S_pMSE"))  # do not know why the s_pMSE is quite large
+ 
