@@ -11,7 +11,7 @@ For var B3, the table of selected utility measures is shown as follows:
 |:----------------:|:--------:|:-------:|
 | B3               | 0.000555 | 4034.21 
 
-![Compare plot for var B3](F:/Master-Thesis-DifferentialPrivacy/EveryWeekTask/Week1-24-06-2022/B3_compare_plot.png)
+![Compare plot for var B3](B3_compare_plot.png#center)
 
 
 
@@ -20,48 +20,48 @@ For var B1_1,
 |:----------------:|:--------:|:-------:|
 | B1_1               | 0.000122 | 890.2343 
 
-![Compare plot for var B1_1](F:/Master-Thesis-DifferentialPrivacy/EveryWeekTask/Week1-24-06-2022/B11_compare_plot.png)
+![Compare plot for var B1_1](B11_compare_plot.png#center)
 
 For var B7,
 | Utility measures | pMSE     | S_pMSE  |
 |:----------------:|:--------:|:-------:|
 | B7               | 4.9e-05 | 358.3944 
 
-![Compare plot for var B7](F:/Master-Thesis-DifferentialPrivacy/EveryWeekTask/Week1-24-06-2022/B7_compare_plot.png)
+![Compare plot for var B7](B7_compare_plot.png#center)
 
 For var B7,
 | Utility measures | pMSE     | S_pMSE  |
 |:----------------:|:--------:|:-------:|
 | B7               | 4.9e-05 | 358.3944 
 
-![Compare plot for var B7](F:/Master-Thesis-DifferentialPrivacy/EveryWeekTask/Week1-24-06-2022/B7_compare_plot.png)
+![Compare plot for var B7](B7_compare_plot.png#center)
 
 For var D1,
 | Utility measures | pMSE     | S_pMSE  |
 |:----------------:|:--------:|:-------:|
 | D1               | 0.000562 | 4089.81 
 
-![Compare plot for var D1](F:/Master-Thesis-DifferentialPrivacy/EveryWeekTask/Week1-24-06-2022/D1_compare_plot.png)
+![Compare plot for var D1](D1_compare_plot.png#center)
 
 For var D2,
 | Utility measures | pMSE     | S_pMSE  |
 |:----------------:|:--------:|:-------:|
 | D2             | 0.000617 | 4488.802 
 
-![Compare plot for var D2](F:/Master-Thesis-DifferentialPrivacy/EveryWeekTask/Week1-24-06-2022/D2_compare_plot.png)
+![Compare plot for var D2](D2_compare_plot.png#center)
 
 For var E2,
 | Utility measures | pMSE     | S_pMSE  |
 |:----------------:|:--------:|:-------:|
 | E2             | 0.002015 | 9770.918 
 
-![Compare plot for var E2](F:/Master-Thesis-DifferentialPrivacy/EveryWeekTask/Week1-24-06-2022/E2_compare_plot.png)
+![Compare plot for var E2](E2_compare_plot.png#center)
 
 For var E3,
 | Utility measures | pMSE     | S_pMSE  |
 |:----------------:|:--------:|:-------:|
 | E3             | 0.001159 | 4214.772 
 
-![Compare plot for var E3](F:/Master-Thesis-DifferentialPrivacy/EveryWeekTask/Week1-24-06-2022/E3_compare_plot.png)
+![Compare plot for var E3]E3_compare_plot.png#center)
 
 - Task 2: evaluate the propensity mean squared error from the synthetic data to the original data (hint: use the utility.gen function implemented)
