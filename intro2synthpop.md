@@ -26,7 +26,7 @@ compare(object = data.frame(B3 = syn_dataset_symptoms$B3),
 The generic/general functionality is displayed as follows:
 ```
 utility.twoway <- utility.tables(data = originaldata,
-                                  object = syn.object,
-                                  plot = TRUE,
-                                  table = TRUE)
+                                 object = syn.object,
+                                 plot = TRUE,
+                                 table = TRUE)
 ```
