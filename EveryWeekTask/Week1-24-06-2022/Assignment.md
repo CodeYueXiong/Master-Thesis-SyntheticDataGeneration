@@ -62,6 +62,6 @@ For var E3,
 |:----------------:|:--------:|:-------:|
 | E3             | 0.001159 | 4214.772 
 
-![Compare plot for var E3]E3_compare_plot.png#center)
+![Compare plot for var E3](E3_compare_plot.png#center)
 
 - Task 2: evaluate the propensity mean squared error from the synthetic data to the original data (hint: use the utility.gen function implemented)
