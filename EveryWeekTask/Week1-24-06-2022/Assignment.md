@@ -1,4 +1,4 @@
-# Assignment (deadline 24/06/2022)
+# Assignment 1
 
 ### The synthetic data is generated 
 
