@@ -11,18 +11,22 @@ In a common sense, the smaller the *pMSE* the higher the analytical validity of 
 
 ### (1). One-way marginals with `compare()`
 The generic/general functionality is displayed as follows:
-`compare(object = data.frame(B3 = syn_dataset_symptoms$B3),
+```
+compare(object = data.frame(B3 = syn_dataset_symptoms$B3),
         data = data.frame(B3 = ori_dataset_symptoms$B3),
         vars = c("B3"), cont.na = NULL,
         msel = NULL, stat = "percents", breaks = 20,
         nrow = 2, ncol = 2, rel.size.x = 1,
         utility.stats = c("pMSE", "S_pMSE"),
         cols = c("#1A3C5A","#4187BF"),
-        plot = TRUE, table = TRUE)`
+        plot = TRUE, table = TRUE)
+```
 
 ### (2). Two-way marginals with `utility.tables()`
 The generic/general functionality is displayed as follows:
-`utility.twoway <- utility.tables(data = originaldata,
+```
+utility.twoway <- utility.tables(data = originaldata,
                                   object = syn.object,
                                   plot = TRUE,
-                                  table = TRUE)`
+                                  table = TRUE)
+```
