@@ -29,4 +29,15 @@ utility.twoway <- utility.tables(data = originaldata,
                                  object = syn.object,
                                  plot = TRUE,
                                  table = TRUE)
+
+```
+
+### (3). Using `utility.gen()`
+The general function is displayed as follows:
+```r
+utility.gen(object = syn_data,
+            data = bindori_dataset,
+            not.synthesised = NULL,
+            cont.na = NULL,
+            print.stats = c("pMSE", "S_pMSE"))  # do not know why the s_pMSE is quite large
 ```
