@@ -22,7 +22,9 @@ library(synthpop)
 # set the working directory
 setwd("F:/Master-Thesis-DifferentialPrivacy")
 # read in the synthetic dataset
-syn_data <- read_csv("./syn_2020-08-02_2020-08-08.csv", show_col_types = FALSE)
+syn_data <- read.csv(file = "./syn_2020-08-02_2020-08-08.csv")
+head(syn_data)
+# syn_data <- read_csv("./syn_2020-08-02_2020-08-08.csv", show_col_types = FALSE)
 # rename "sample weight" to "weight" to avoid comflicts
 colnames(syn_data)[colnames(syn_data) == "sample_weight"] <- "weight"
 
@@ -46,6 +48,18 @@ bindori_dataset <- bind_rows(ori_dataset)
 bindori_dataset <- as.data.frame(bindori_dataset)
 dim(bindori_dataset)
 dim(syn_data)
+
+syn_data$
+# check gpdr countries and only do the alignment
+gpdr_countries_data <- NA
+gpdr_countries_data <- read.csv(file = "./gpdr.csv", sep = ",")
+head(gpdr_countries_data$Country_GID, n = 6L)
+
+# now filter the binded original datasets and syn dataset with Region_GID specified
+country_name <- unique(as.character(gpdr_countries_data$Country_GID))
+length(country_name)
+bindori_dataset_filtered <- bindori_dataset %>%
+                                        filter(row.names(bindori_dataset$GID_0) %in% country_name)
 
 ####################### Step2: Evaluating the utility of the syn data #######################
 # In step2, we try to evaluate the utility of the synthetic dataset with one-way marginal
