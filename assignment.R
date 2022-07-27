@@ -54,12 +54,19 @@ syn_data$
 gpdr_countries_data <- NA
 gpdr_countries_data <- read.csv(file = "./gpdr.csv", sep = ",")
 head(gpdr_countries_data$Country_GID, n = 6L)
-
+row.names(bindori_dataset$GID_0)
+rownames(bindori_dataset$GID_0)
 # now filter the binded original datasets and syn dataset with Region_GID specified
 country_name <- unique(as.character(gpdr_countries_data$Country_GID))
 length(country_name)
+length(unique(bindori_dataset$GID_0))
 bindori_dataset_filtered <- bindori_dataset %>%
-                                        filter(row.names(bindori_dataset$GID_0) %in% country_name)
+                                        filter(GID_0 %in% country_name)
+length(unique(bindori_dataset_filtered$GID_0))
+
+syn_data_filtered <- syn_data %>%
+                          filter(GID_0 %in% country_name)
+length(unique(syn_data_filtered$GID_0))
 
 ####################### Step2: Evaluating the utility of the syn data #######################
 # In step2, we try to evaluate the utility of the synthetic dataset with one-way marginal
@@ -79,11 +86,11 @@ testing <- c("B7")
 
 # Columns `B0`, `B8a`, `B15_1`, `B15_2`, `B15_3`, etc. don't exist
 
-ori_dataset_symptoms <- as.data.frame(bindori_dataset[, symptoms])
-syn_dataset_symptoms <- as.data.frame(syn_data[, symptoms])
+ori_dataset_symptoms <- as.data.frame(bindori_dataset_filtered[, symptoms])
+syn_dataset_symptoms <- as.data.frame(syn_data_filtered[, symptoms])
 
-ori_dataset_testing <- as.data.frame(bindori_dataset$B7)
-syn_dataset_testing <- as.data.frame(syn_data$B7)
+ori_dataset_testing <- as.data.frame(bindori_dataset_filtered$B7)
+syn_dataset_testing <- as.data.frame(syn_data_filtered$B7)
 
 ### (1). one-way marginals using compare()
 
@@ -108,8 +115,8 @@ compare(object = data.frame(B1_1 = syn_dataset_symptoms$B1_1),
         plot = TRUE, table = FALSE)
 
 ## for var B7 -> testing
-compare(object = data.frame(B7 = syn_data$B7),
-        data = data.frame(B7 = bindori_dataset$B7),
+compare(object = data.frame(B7 = syn_data_filtered$B7),
+        data = data.frame(B7 = bindori_dataset_filtered$B7),
         vars = "B7", cont.na = NULL,
         msel = NULL, stat = "percents", breaks = 20,
         nrow = 2, ncol = 2, rel.size.x = 1,
@@ -118,8 +125,8 @@ compare(object = data.frame(B7 = syn_data$B7),
         plot = TRUE, table = FALSE)
 
 ## for var D1 -> module B
-compare(object = data.frame(D1 = syn_data$D1),
-        data = data.frame(D1 = bindori_dataset$D1),
+compare(object = data.frame(D1 = syn_data_filtered$D1),
+        data = data.frame(D1 = bindori_dataset_filtered$D1),
         vars = "D1", cont.na = NULL,
         msel = NULL, stat = "percents", breaks = 20,
         nrow = 2, ncol = 2, rel.size.x = 1,
@@ -128,8 +135,8 @@ compare(object = data.frame(D1 = syn_data$D1),
         plot = TRUE, table = FALSE)
 
 ## for var D2 -> module B
-compare(object = data.frame(D2 = syn_data$D2),
-        data = data.frame(D2 = bindori_dataset$D2),
+compare(object = data.frame(D2 = syn_data_filtered$D2),
+        data = data.frame(D2 = bindori_dataset_filtered$D2),
         vars = "D2", cont.na = NULL,
         msel = NULL, stat = "percents", breaks = 20,
         nrow = 2, ncol = 2, rel.size.x = 1,
@@ -138,8 +145,8 @@ compare(object = data.frame(D2 = syn_data$D2),
         plot = TRUE, table = FALSE)
 
 ## for var E2 -> demographics
-compare(object = data.frame(E2 = syn_data$E2),
-        data = data.frame(E2 = bindori_dataset$E2),
+compare(object = data.frame(E2 = syn_data_filtered$E2),
+        data = data.frame(E2 = bindori_dataset_filtered$E2),
         vars = "E2", cont.na = NULL,
         msel = NULL, stat = "percents", breaks = 20,
         nrow = 2, ncol = 2, rel.size.x = 1,
@@ -148,8 +155,8 @@ compare(object = data.frame(E2 = syn_data$E2),
         plot = TRUE, table = FALSE)
 
 ## for var E3 -> demographics
-compare(object = data.frame(E3 = syn_data$E3),
-        data = data.frame(E3 = bindori_dataset$E3),
+compare(object = data.frame(E3 = syn_data_filtered$E3),
+        data = data.frame(E3 = bindori_dataset_filtered$E3),
         vars = "E3", cont.na = NULL,
         msel = NULL, stat = "percents", breaks = 20,
         nrow = 2, ncol = 2, rel.size.x = 1,
