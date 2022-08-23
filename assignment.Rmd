@@ -197,9 +197,29 @@ compare(object = data.frame(E3 = syn_data_filtered$E3),
 
 ### (2). two-way marginals with utility.tables()
 In this part, we focus on the utility in the two-way manner/fashion.
+However, with a large number of vars to be included, we need to select a few variables to have a first glance of what does the `utility.tables` look like.
 
 ```{r}
+## filter out a few variables to run the evaluation
+## pls make sure that the vars selected are in alignment 
+## with the one-way maginal ones
+selected_cols <- c("B3", "B1_1", "B7", "D1", "D2", "E2", "E3")
+syn_select_vars <- syn_data_filtered[, selected_cols]
+bindori_select_vars <- bindori_dataset_filtered[, selected_cols]
+```
 
+```{r}
+## S3 method for class 'data.frame'
+utility.twoway <- utility.tables(object = data.frame(syn_select_vars), 
+                                 data = data.frame(bindori_select_vars),
+                                 tables = "twoway",
+                                 tab.stats = c("pMSE", "S_pMSE"), 
+                                 plot.stat = "S_pMSE", plot = TRUE,  
+                                 print.tabs = TRUE)
+```
+Now, we print the results out with the heatmap-like output plot.
+```{r}
+utility.twoway$utility.plot
 ```
 
 
