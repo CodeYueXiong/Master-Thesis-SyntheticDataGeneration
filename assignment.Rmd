@@ -1,8 +1,11 @@
 ---
 title: "assignment"
 author: "Yue Xiong"
-date: '2022-07-27'
-output: pdf_document
+date: '2022-08-23'
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
 ---
 
 ```{r setup, include=FALSE}
@@ -191,4 +194,13 @@ compare(object = data.frame(E3 = syn_data_filtered$E3),
         cols = c("#1A3C5A","#4187BF"),
         plot = TRUE, table = FALSE)
 ```
+
+### (2). two-way marginals with utility.tables()
+In this part, we focus on the utility in the two-way manner/fashion.
+
+```{r}
+
+```
+
+
 
