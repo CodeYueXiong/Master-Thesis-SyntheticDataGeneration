@@ -28,14 +28,17 @@ library(arsenal)
 library(reshape2)
 library(synthpop)
 ```
+
 ```{r}
 # set the working directory
-setwd("F:/Master-Thesis-DifferentialPrivacy")
+wd <- getwd()
+setwd(wd)
 # read in the synthetic dataset
 syn_data <- read.csv(file = "./syn_2020-08-02_2020-08-08.csv")
+# and on macos 
 head(syn_data)
 # syn_data <- read_csv("./syn_2020-08-02_2020-08-08.csv", show_col_types = FALSE)
-# rename "sample weight" to "weight" to avoid comflicts
+# rename "sample weight" to "weight" to avoid conflicts
 colnames(syn_data)[colnames(syn_data) == "sample_weight"] <- "weight"
 
 # columns to be included from the original dataset
@@ -117,6 +120,7 @@ compare(object = data.frame(B3 = syn_dataset_symptoms$B3),
         cols = c("#1A3C5A","#4187BF"),
         plot = TRUE, table = TRUE)
 ```
+
 ```{r}
 ## for var B1_1 -> symptoms
 compare(object = data.frame(B1_1 = syn_dataset_symptoms$B1_1),
