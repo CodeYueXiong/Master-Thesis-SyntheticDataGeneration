@@ -46,3 +46,16 @@ class Encoder(BaseEstimator, TransformerMixin):
                                                 columns=self.encoder.get_feature_names_out(self.features))],
                                   axis=1)
         return X_transformed
+
+
+
+if __name__ == "__main__":
+    pipe = Pipeline([
+    ('num_imputer', Imputer(NUMERICAL, method='mean')),
+    ('scaler', Scaler(NUMERICAL)),
+    ('cat_imputer', Imputer(CATEGORICAL)),
+    ('encoder', Encoder(CATEGORICAL)),
+    ('model', LogisticRegression())
+])
+
+    pipe.fit(X_train, y_train)   
