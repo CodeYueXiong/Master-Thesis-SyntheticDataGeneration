@@ -1,4 +1,6 @@
-## shallow learning methods, e.g., logistic regression, Random Forest, SVM, to fit the synthetic CTIS data.
+## shallow learning methods, 
+# e.g., logistic regression, Random Forest, SVM, 
+# to fit the synthetic CTIS data.
 
 class Imputer(BaseEstimator, TransformerMixin):
     def __init__(self, features, method='constant', value='missing'):
