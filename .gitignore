@@ -1,6 +1,12 @@
 *.csv
-*.pdf
+# *.pdf
 *.RData
 *.Rhistory
 *.7z
 *.DS_Store
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.gz
+*.synctex(busy)
