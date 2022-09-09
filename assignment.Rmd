@@ -65,7 +65,7 @@ bindori_dataset <- as.data.frame(bindori_dataset)
 dim(bindori_dataset)
 dim(syn_data)
 ```
-Now we need to check all the `gpdr` countries and only do the alignment.
+Now we need to check all the `gpdr` countries and only do the alignment based on `gpdr` countries.
 ```{r}
 gpdr_countries_data <- NA
 gpdr_countries_data <- read.csv(file = "./gpdr.csv", sep = ",")

@@ -46,7 +46,7 @@
 - Chapter 5: Evaluating different synthetic datasets generated from CTIS
     - 5.1 Data Sources
     - 5.2 Synthetic Approaches used/included
-    - 5.3 ML methods included
+    - 5.3 Analysis of Practicability in the Context of Machine Learning
     - 5.3 Data Utility Evalution for our synthetic datasets
     - 5.4 Risk Assessment for our synthetic datasets
 
