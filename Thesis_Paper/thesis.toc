@@ -1,0 +1,10 @@
+\contentsline {section}{\numberline {1}Introduction}{1}{section.1}%
+\contentsline {section}{\numberline {2}Related Work}{2}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Data Privacy}{2}{subsection.2.1}%
+\contentsline {section}{\numberline {3}Synthetic Data and Differential Privacy}{3}{section.3}%
+\contentsline {section}{\numberline {4}Evaluation of Utility and Risk Assessment of Remaining Disclosure}{4}{section.4}%
+\contentsline {section}{\numberline {5}Evaluating Different Synthetic Datasets generated from CTIS}{5}{section.5}%
+\contentsline {section}{\numberline {6}General Discussion}{6}{section.6}%
+\contentsline {section}{\numberline {7}Conclusion}{6}{section.7}%
+\contentsline {section}{\numberline {A}Appendix}{V}{appendix.A}%
+\contentsline {section}{\numberline {B}Electronic appendix}{VI}{appendix.B}%
