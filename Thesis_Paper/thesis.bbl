@@ -1,0 +1,13 @@
+\begin{thebibliography}{xx}
+
+\harvarditem{Bishop}{2006}{Bishop2006}
+Bishop, C.~M.  \harvardyearleft 2006\harvardyearright .
+\newblock {\em Pattern Recognition and Machine Learning}, Springer.
+
+\harvarditem{Evans \harvardand\ King}{2021}{evans2021statistically}
+Evans, G. \harvardand\ King, G.  \harvardyearleft 2021\harvardyearright .
+\newblock Statistically valid inferences from differentially private data
+  releases, with application to the facebook urls dataset, {\em Political
+  Analysis} pp.~1--21.
+
+\end{thebibliography}
