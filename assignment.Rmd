@@ -84,38 +84,223 @@ syn_data_filtered <- syn_data %>%
                           filter(GID_0 %in% country_name)
 length(unique(bindori_dataset_filtered$GID_0)) == length(unique(syn_data_filtered$GID_0))  # check whether we have the same number of countries for both synthetic and original datasets.
 ```
-## Step2: Evaluating the utility of the syn data
-In step2, we try to evaluate the utility of the synthetic dataset with one-way marginal and two-way marginal measures. 
+## Step2: make all the vars aligned with each other
+These data that need such alignment are the first filtered ones, `syn_data_filtered` and `bindori_dataset_filtered`. They are filtered only with those gpdr countries filtered. First of all, we need to output the types of all the variables included in the two datasets and compare the difference at the first place.
+
+```{r echo=FALSE, include=FALSE}
+bindori_dataset_filtered %>%
+                    summarise_all(class) %>%
+                    gather
+```
+```{r echo=FALSE, include=FALSE}
+syn_data_filtered %>%
+              summarise_all(class) %>%
+              gather
+```
+Apparently shown above, one thing to find is that all the previously listed `double`-type variables, such as the `E4` variable. We should firstly collect all these variables and change the type of the original variables.
+
+### 2.1 numeric to integer
+```{r}
+vars_list <- NULL
+int_vars_list <- c()
+
+for (i in 1:ncol(syn_data_filtered)) {
+  if(class(syn_data_filtered[[i]])=="integer") {
+    # print(i)
+    int_vars_list <- append(int_vars_list, colnames(syn_data_filtered[i]))
+  }
+}
+
+length(int_vars_list)
+```
+So let us convert all the numeric variables to integer.
+```{r}
+bindori_dataset_filtered[int_vars_list] <- sapply(bindori_dataset_filtered[int_vars_list], as.integer)
+
+# check whether all the previous numeric types are converted to integer
+sapply(bindori_dataset_filtered[int_vars_list], class)
+```
+### 2.2 var B2
+Firstly, we change the remaining "B2", "B4", "E5", "E6" to character type in the original dataframe.
+
+For variable B2, let's take a look at the table of the occurrences of indicators.
+```{r echo=FALSE, include=FALSE}
+table(bindori_dataset_filtered$B2)
+```
+And for the synthetic dataset, we observed that it is the "character" type.
+```{r echo=FALSE, include=FALSE}
+table(syn_data_filtered$B2)
+```
+In order to align with the synthetic dataset types, we make all the cell values corresponded to the the value/threshold shown above.
+```{r echo=FALSE, include=FALSE}
+table(bindori_dataset_filtered["B2"])
+```
+
+```{r}
+bindori_dataset_filtered["B2"][bindori_dataset_filtered["B2"] == -99] <- "-99"
+```
+
+```{r}
+bindori_dataset_filtered["B2"][bindori_dataset_filtered["B2"] >= 1000] <- "1000"
+```
+```{r}
+bindori_dataset_filtered$B2[bindori_dataset_filtered$B2 >= 0 & bindori_dataset_filtered$B2 < 1] <- "[0, 1)"
+
+bindori_dataset_filtered$B2[bindori_dataset_filtered$B2 >= 1 & bindori_dataset_filtered$B2 < 3] <- "[1, 3)"
+
+bindori_dataset_filtered$B2[bindori_dataset_filtered$B2 >= 3 & bindori_dataset_filtered$B2 < 8] <- "[3, 8)"
+
+bindori_dataset_filtered$B2[bindori_dataset_filtered$B2 >= 8 & bindori_dataset_filtered$B2 < 15] <- "[8, 15)"
+
+bindori_dataset_filtered$B2[bindori_dataset_filtered$B2 >= 15 & bindori_dataset_filtered$B2 < 28] <- "[15, 28)"
+
+bindori_dataset_filtered$B2[bindori_dataset_filtered$B2 >= 28 & bindori_dataset_filtered$B2 < 90] <- "[28, 90)"
+
+bindori_dataset_filtered$B2[bindori_dataset_filtered$B2 >= 90 & bindori_dataset_filtered$B2 < 180] <- "[90, 180)"
+
+bindori_dataset_filtered$B2[bindori_dataset_filtered$B2 >= 180 & bindori_dataset_filtered$B2 < 366] <- "[180, 366)"
+
+bindori_dataset_filtered$B2[bindori_dataset_filtered$B2 >= 366 & bindori_dataset_filtered$B2 < 1000] <- "[366, 1000)"
+
+```
+```{r}
+# quickly check the class
+class(bindori_dataset_filtered$B2)
+```
+### 3.3 var B4
+```{r echo=FALSE, include=FALSE}
+table(syn_data_filtered$B4)
+```
+```{r}
+bindori_dataset_filtered$B4[bindori_dataset_filtered$B4 < 0] <- "-99"
+
+bindori_dataset_filtered$B4[bindori_dataset_filtered$B4 >= 1000] <- "1000"
+
+bindori_dataset_filtered$B4[bindori_dataset_filtered$B4 >= 0 & bindori_dataset_filtered$B4 < 1] <- "[0, 1)"
+
+bindori_dataset_filtered$B4[bindori_dataset_filtered$B4 >= 1 & bindori_dataset_filtered$B4 < 5] <- "[1, 5)"
+
+bindori_dataset_filtered$B4[bindori_dataset_filtered$B4 >= 5 & bindori_dataset_filtered$B4 < 10] <- "[5, 10)"
+
+bindori_dataset_filtered$B4[bindori_dataset_filtered$B4 >= 10 & bindori_dataset_filtered$B4 < 1000] <- "[10, 1000)"
+```
+```{r}
+# quickly check the class
+class(bindori_dataset_filtered$B4)
+```
+### 3.4 var E5
+```{r echo=FALSE, include=FALSE}
+table(syn_data_filtered$E5)
+```
+```{r}
+bindori_dataset_filtered$E5[bindori_dataset_filtered$E5 < 0] <- "-99"
+
+bindori_dataset_filtered$E5[bindori_dataset_filtered$E5 >= 1000] <- "1000"
+
+bindori_dataset_filtered$E5[bindori_dataset_filtered$E5 >= 0 & bindori_dataset_filtered$E5 < 1] <- "[0, 1)"
+
+bindori_dataset_filtered$E5[bindori_dataset_filtered$E5 >= 1 & bindori_dataset_filtered$E5 < 2] <- "[1, 2)"
+
+bindori_dataset_filtered$B4[bindori_dataset_filtered$B4 >= 2 & bindori_dataset_filtered$B4 < 4] <- "[2, 4)"
+
+bindori_dataset_filtered$B4[bindori_dataset_filtered$B4 >= 4 & bindori_dataset_filtered$B4 < 6] <- "[4, 6)"
+
+bindori_dataset_filtered$E5[bindori_dataset_filtered$E5 >= 6 & bindori_dataset_filtered$E5 < 1000] <- "[6, 1000)"
+```
+```{r}
+# quickly check the class
+class(bindori_dataset_filtered$E5)
+```
+### 3.5 var E6
+```{r echo=FALSE, include=FALSE}
+table(syn_data_filtered$E6)
+```
+```{r}
+bindori_dataset_filtered$E6[bindori_dataset_filtered$E6 < 0] <- "-99"
+
+bindori_dataset_filtered$E6[bindori_dataset_filtered$E6 >= 26] <- "26"
+
+bindori_dataset_filtered$E6[bindori_dataset_filtered$E6 >= 0 & bindori_dataset_filtered$E6 < 9] <- "[0, 9)"
+
+bindori_dataset_filtered$E6[bindori_dataset_filtered$E6 >= 9 & bindori_dataset_filtered$E6 < 26] <- "[9, 26)"
+```
+```{r}
+# quickly check the class
+class(bindori_dataset_filtered$E6)
+```
+### 3.6 check for observations for var D1 and D2(ori)
+For D1, we have
+```{r}
+table(bindori_dataset_filtered$D1)
+```
+```{r}
+table(syn_data_filtered$D1)
+```
+For D2, we have
+```{r}
+table(bindori_dataset_filtered$D2)
+table(syn_data_filtered$D2)
+```
+
+### 3.7 re-evaluate with aligned variables
+```{r}
+## for var D1 -> module B
+compare(object = data.frame(D1 = syn_data_filtered$D1),
+        data = data.frame(D1 = bindori_dataset_filtered$D1),
+        vars = "D1", cont.na = NULL,
+        msel = NULL, stat = "percents",
+        utility.stats = c("pMSE", "S_pMSE"),
+        cols = c("#1A3C5A","#4187BF"),
+        plot = TRUE, table = FALSE)
+```
+
+```{r}
+## for var D2 -> module B
+compare(object = data.frame(D2 = syn_data_filtered$D2),
+        data = data.frame(D2 = bindori_dataset_filtered$D2),
+        vars = "D2", cont.na = NULL,
+        msel = NULL, stat = "percents",
+        utility.stats = c("pMSE", "S_pMSE"),
+        cols = c("#1A3C5A","#4187BF"),
+        plot = TRUE, table = FALSE)
+```
+Let's first prepare the variables to be included in the comparison.
+```{r echo=FALSE, include=FALSE}
+vars_list <- c(colnames(syn_data_filtered))
+```
+
+## Step3: Evaluating the utility of the syn data
+In step3, we try to evaluate the utility of the synthetic dataset with one-way marginal and two-way marginal measures. 
 
 - As for the one-way utility, the syn dataset is measured with the compare plots and pMSE/S_pMSE.
 
 - And for the two-way utility, the synthetic dataset is evaluated with the utility tables which takes up a heatmap fashion/manner.
 
 ```{r}
-# subset some example columns and try plotting the compare histograms
-# these are symptoms variables
-symptoms <- c("B3","B4","B1_1","B1_2","B1_3","B1_4","B1_5","B1_6","B1_7",
-              "B1_8","B1_9","B1_10","B1_12","B1_13",
-              "B1b_x1","B1b_x2","B1b_x3","B1b_x4","B1b_x5","B1b_x6","B1b_x7",
-              "B1b_x8","B1b_x9","B1b_x10","B1b_x12","B1b_x13","B2")
-
-# these are testing variables
-testing <- c("B7")
-
-# Columns `B0`, `B8a`, `B15_1`, `B15_2`, `B15_3`, etc. don't exist
-
-ori_dataset_symptoms <- as.data.frame(bindori_dataset_filtered[, symptoms])
-syn_dataset_symptoms <- as.data.frame(syn_data_filtered[, symptoms])
-
-ori_dataset_testing <- as.data.frame(bindori_dataset_filtered$B7)
-syn_dataset_testing <- as.data.frame(syn_data_filtered$B7)
+# # subset some example columns and try plotting the compare histograms
+# # these are symptoms variables
+# symptoms <- c("B3","B4","B1_1","B1_2","B1_3","B1_4","B1_5","B1_6","B1_7",
+#               "B1_8","B1_9","B1_10","B1_12","B1_13",
+#               "B1b_x1","B1b_x2","B1b_x3","B1b_x4","B1b_x5","B1b_x6","B1b_x7",
+#               "B1b_x8","B1b_x9","B1b_x10","B1b_x12","B1b_x13","B2")
+# 
+# # these are testing variables
+# testing <- c("B7")
+# 
+# # Columns `B0`, `B8a`, `B15_1`, `B15_2`, `B15_3`, etc. don't exist
+# 
+# ori_dataset_symptoms <- as.data.frame(bindori_dataset_filtered[, symptoms])
+# syn_dataset_symptoms <- as.data.frame(syn_data_filtered[, symptoms])
+# 
+# ori_dataset_testing <- as.data.frame(bindori_dataset_filtered$B7)
+# syn_dataset_testing <- as.data.frame(syn_data_filtered$B7)
 ```
 
 ### (1). one-way marginals using compare()
 ```{r}
 ## for var B3 -> symptoms
-compare(object = data.frame(B3 = syn_dataset_symptoms$B3),
-        data = data.frame(B3 = ori_dataset_symptoms$B3),
+compare(object = data.frame(B3 = syn_data_filtered$B3),
+        data = data.frame(B3 = bindori_dataset_filtered$B3),
         vars = c("B3"), cont.na = NULL,
         msel = NULL, stat = "percents", breaks = 20,
         nrow = 2, ncol = 2, rel.size.x = 1,
@@ -126,8 +311,8 @@ compare(object = data.frame(B3 = syn_dataset_symptoms$B3),
 
 ```{r}
 ## for var B1_1 -> symptoms
-compare(object = data.frame(B1_1 = syn_dataset_symptoms$B1_1),
-        data = data.frame(B1_1 = ori_dataset_symptoms$B1_1),
+compare(object = data.frame(B1_1 = syn_data_filtered$B1_1),
+        data = data.frame(B1_1 = bindori_dataset_filtered$B1_1),
         vars = "B1_1", cont.na = NULL,
         msel = NULL, stat = "percents", breaks = 20,
         nrow = 2, ncol = 2, rel.size.x = 1,
@@ -221,219 +406,3 @@ Now, we print the results out with the heatmap-like output plot.
 ```{r}
 utility.twoway$utility.plot
 ```
-
-
-```{r}
-table(bindori_dataset_filtered$E5)
-```
-
-```{r}
-table(syn_data_filtered$E5)
-```
-## Step3: make all the vars aligned with each other
-These data that need such alignment are the first filtered ones, `syn_data_filtered` and `bindori_dataset_filtered`. They are filtered only with those gpdr countries filtered. First of all, we need to output the types of all the variables included in the two datasets and compare the difference at the first place.
-
-```{r}
-bindori_dataset_filtered %>%
-                    summarise_all(class) %>%
-                    gather
-```
-```{r}
-syn_data_filtered %>%
-              summarise_all(class) %>%
-              gather
-```
-Apparently shown above, one thing to find is that all the previously listed `double`-type variables, such as the `E4` variable. We should firstly collect all these variables and change the type of the original variables.
-### 3.1 numeric to integer
-```{r}
-vars_list <- NULL
-int_vars_list <- c()
-
-for (i in 1:ncol(syn_data_filtered)) {
-  if(class(syn_data_filtered[[i]])=="integer") {
-    # print(i)
-    int_vars_list <- append(int_vars_list, colnames(syn_data_filtered[i]))
-  }
-}
-
-length(int_vars_list)
-```
-So let us convert all the numeric variables to integer.
-```{r}
-bindori_dataset_filtered[int_vars_list] <- sapply(bindori_dataset_filtered[int_vars_list], as.integer)
-
-# check whether all the previous numeric types are converted to integer
-sapply(bindori_dataset_filtered[int_vars_list], class)
-```
-### 3.2 var B2
-Firstly, we change the remaining "B2", "B4", "E5", "E6" to character type in the original dataframe.
-
-For variable B2, let's take a look at the table of the occurrences of indicators.
-```{r}
-table(bindori_dataset_filtered$B2)
-```
-And for the synthetic dataset, we observed that it is the "character" type.
-```{r}
-table(syn_data_filtered$B2)
-```
-In order to align with the synthetic dataset types, we make all the cell values corresponded to the the value/threshold shown above.
-```{r}
-table(bindori_dataset_filtered["B2"])
-```
-
-```{r}
-bindori_dataset_filtered["B2"][bindori_dataset_filtered["B2"] == -99] <- "-99"
-```
-
-```{r}
-bindori_dataset_filtered["B2"][bindori_dataset_filtered["B2"] >= 1000] <- "1000"
-```
-```{r}
-bindori_dataset_filtered$B2[bindori_dataset_filtered$B2 >= 0 & bindori_dataset_filtered$B2 < 1] <- "[0, 1)"
-
-bindori_dataset_filtered$B2[bindori_dataset_filtered$B2 >= 1 & bindori_dataset_filtered$B2 < 3] <- "[1, 3)"
-
-bindori_dataset_filtered$B2[bindori_dataset_filtered$B2 >= 3 & bindori_dataset_filtered$B2 < 8] <- "[3, 8)"
-
-bindori_dataset_filtered$B2[bindori_dataset_filtered$B2 >= 8 & bindori_dataset_filtered$B2 < 15] <- "[8, 15)"
-
-bindori_dataset_filtered$B2[bindori_dataset_filtered$B2 >= 15 & bindori_dataset_filtered$B2 < 28] <- "[15, 28)"
-
-bindori_dataset_filtered$B2[bindori_dataset_filtered$B2 >= 28 & bindori_dataset_filtered$B2 < 90] <- "[28, 90)"
-
-bindori_dataset_filtered$B2[bindori_dataset_filtered$B2 >= 90 & bindori_dataset_filtered$B2 < 180] <- "[90, 180)"
-
-bindori_dataset_filtered$B2[bindori_dataset_filtered$B2 >= 180 & bindori_dataset_filtered$B2 < 366] <- "[180, 366)"
-
-bindori_dataset_filtered$B2[bindori_dataset_filtered$B2 >= 366 & bindori_dataset_filtered$B2 < 1000] <- "[366, 1000)"
-
-```
-```{r}
-# quickly check the class
-class(bindori_dataset_filtered$B2)
-```
-### 3.3 var B4
-```{r}
-table(syn_data_filtered$B4)
-```
-```{r}
-bindori_dataset_filtered$B4[bindori_dataset_filtered$B4 < 0] <- "-99"
-
-bindori_dataset_filtered$B4[bindori_dataset_filtered$B4 >= 1000] <- "1000"
-
-bindori_dataset_filtered$B4[bindori_dataset_filtered$B4 >= 0 & bindori_dataset_filtered$B4 < 1] <- "[0, 1)"
-
-bindori_dataset_filtered$B4[bindori_dataset_filtered$B4 >= 1 & bindori_dataset_filtered$B4 < 5] <- "[1, 5)"
-
-bindori_dataset_filtered$B4[bindori_dataset_filtered$B4 >= 5 & bindori_dataset_filtered$B4 < 10] <- "[5, 10)"
-
-bindori_dataset_filtered$B4[bindori_dataset_filtered$B4 >= 10 & bindori_dataset_filtered$B4 < 1000] <- "[10, 1000)"
-```
-```{r}
-# quickly check the class
-class(bindori_dataset_filtered$B4)
-```
-### 3.4 var E5
-```{r}
-table(syn_data_filtered$E5)
-```
-```{r}
-bindori_dataset_filtered$E5[bindori_dataset_filtered$E5 < 0] <- "-99"
-
-bindori_dataset_filtered$E5[bindori_dataset_filtered$E5 >= 1000] <- "1000"
-
-bindori_dataset_filtered$E5[bindori_dataset_filtered$E5 >= 0 & bindori_dataset_filtered$E5 < 1] <- "[0, 1)"
-
-bindori_dataset_filtered$E5[bindori_dataset_filtered$E5 >= 1 & bindori_dataset_filtered$E5 < 2] <- "[1, 2)"
-
-bindori_dataset_filtered$B4[bindori_dataset_filtered$B4 >= 2 & bindori_dataset_filtered$B4 < 4] <- "[2, 4)"
-
-bindori_dataset_filtered$B4[bindori_dataset_filtered$B4 >= 4 & bindori_dataset_filtered$B4 < 6] <- "[4, 6)"
-
-bindori_dataset_filtered$E5[bindori_dataset_filtered$E5 >= 6 & bindori_dataset_filtered$E5 < 1000] <- "[6, 1000)"
-```
-```{r}
-# quickly check the class
-class(bindori_dataset_filtered$E5)
-```
-### 3.5 var E6
-```{r}
-table(syn_data_filtered$E6)
-```
-```{r}
-bindori_dataset_filtered$E6[bindori_dataset_filtered$E6 < 0] <- "-99"
-
-bindori_dataset_filtered$E6[bindori_dataset_filtered$E6 >= 26] <- "26"
-
-bindori_dataset_filtered$E6[bindori_dataset_filtered$E6 >= 0 & bindori_dataset_filtered$E6 < 9] <- "[0, 9)"
-
-bindori_dataset_filtered$E6[bindori_dataset_filtered$E6 >= 9 & bindori_dataset_filtered$E6 < 26] <- "[9, 26)"
-```
-```{r}
-# quickly check the class
-class(bindori_dataset_filtered$E6)
-```
-### 3.6 check for observations for var D1 and D2(ori)
-For D1, we have
-```{r}
-table(bindori_dataset_filtered$D1)
-```
-```{r}
-table(syn_data_filtered$D1)
-```
-For D2, we have
-```{r}
-table(bindori_dataset_filtered$D2)
-table(syn_data_filtered$D2)
-```
-
-### 3.7 re-evaluate with aligned variables
-```{r}
-## for var D1 -> module B
-compare(object = data.frame(D1 = syn_data_filtered$D1),
-        data = data.frame(D1 = bindori_dataset_filtered$D1),
-        vars = "D1", cont.na = NULL,
-        msel = NULL, stat = "percents",
-        utility.stats = c("pMSE", "S_pMSE"),
-        cols = c("#1A3C5A","#4187BF"),
-        plot = TRUE, table = FALSE)
-```
-
-```{r}
-## for var D2 -> module B
-compare(object = data.frame(D2 = syn_data_filtered$D2),
-        data = data.frame(D2 = bindori_dataset_filtered$D2),
-        vars = "D2", cont.na = NULL,
-        msel = NULL, stat = "percents",
-        utility.stats = c("pMSE", "S_pMSE"),
-        cols = c("#1A3C5A","#4187BF"),
-        plot = TRUE, table = FALSE)
-```
-Let's first prepare the variables to be included in the comparison.
-```{r}
-vars_list <- c(colnames(syn_data_filtered))
-```
-```{r}
-compare(object = syn_data_filtered,
-        data = bindori_dataset_filtered,
-        vars = NULL, cont.na = NULL,
-        msel = NULL, stat = "percents",
-        utility.stats = c("pMSE", "S_pMSE"),
-        cols = c("#1A3C5A","#4187BF"),
-        plot = TRUE, table = FALSE)
-```
-```{r}
-## S3 method for class 'data.frame'
-utility.twoway <- utility.tables(object = data.frame(syn_data_filtered), 
-                                 data = data.frame(bindori_dataset_filtered+),
-                                 tables = "twoway",
-                                 tab.stats = c("pMSE", "S_pMSE"), 
-                                 plot.stat = "S_pMSE", plot = TRUE,  
-                                 print.tabs = TRUE)
-```
-Now, we print the results out with the heatmap-like output plot.
-```{r}
-utility.twoway$utility.plot
-```
-
-
