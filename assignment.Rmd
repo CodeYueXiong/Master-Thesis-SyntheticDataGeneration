@@ -232,41 +232,12 @@ class(bindori_dataset_filtered$E6)
 For D1, we have
 ```{r}
 table(bindori_dataset_filtered$D1)
-```
-```{r}
 table(syn_data_filtered$D1)
 ```
 For D2, we have
 ```{r}
 table(bindori_dataset_filtered$D2)
 table(syn_data_filtered$D2)
-```
-
-### 3.7 re-evaluate with aligned variables
-```{r}
-## for var D1 -> module B
-compare(object = data.frame(D1 = syn_data_filtered$D1),
-        data = data.frame(D1 = bindori_dataset_filtered$D1),
-        vars = "D1", cont.na = NULL,
-        msel = NULL, stat = "percents",
-        utility.stats = c("pMSE", "S_pMSE"),
-        cols = c("#1A3C5A","#4187BF"),
-        plot = TRUE, table = FALSE)
-```
-
-```{r}
-## for var D2 -> module B
-compare(object = data.frame(D2 = syn_data_filtered$D2),
-        data = data.frame(D2 = bindori_dataset_filtered$D2),
-        vars = "D2", cont.na = NULL,
-        msel = NULL, stat = "percents",
-        utility.stats = c("pMSE", "S_pMSE"),
-        cols = c("#1A3C5A","#4187BF"),
-        plot = TRUE, table = FALSE)
-```
-Let's first prepare the variables to be included in the comparison.
-```{r echo=FALSE, include=FALSE}
-vars_list <- c(colnames(syn_data_filtered))
 ```
 
 ## Step3: Evaluating the utility of the syn data
@@ -297,88 +268,67 @@ In step3, we try to evaluate the utility of the synthetic dataset with one-way m
 ```
 
 ### (1). one-way marginals using compare()
+First, we need to filter out variables `GID_0` and `GID_1` as they simply stand for the country/region. We do the operations both for the synthetic and ordinary datasets.
 ```{r}
-## for var B3 -> symptoms
-compare(object = data.frame(B3 = syn_data_filtered$B3),
-        data = data.frame(B3 = bindori_dataset_filtered$B3),
-        vars = c("B3"), cont.na = NULL,
-        msel = NULL, stat = "percents", breaks = 20,
+syn_data_filtered2 <- subset(syn_data_filtered, select = -c(GID_0, GID_1))
+
+bindori_dataset_filtered2 <- subset(bindori_dataset_filtered, select = -c(GID_0, GID_1))
+```
+Now we can see there are 90 variables remained in the datasets.
+```{r}
+ncol(syn_data_filtered2)
+ncol(bindori_dataset_filtered2)
+```
+We need to specify the path to save multiple plots
+```{r}
+destination <- "F:/Master-Thesis-DifferentialPrivacy/Figures/compare_plots.pdf"
+
+pdf(file = destination)
+
+# specify to save plots in 2*2 grid
+par()
+```
+```{r}
+# try with 3 vars firstly
+selected_cols <- c("B5", "B6", "B7")
+syn_select_vars <- syn_data_filtered[, selected_cols]
+bindori_select_vars <- bindori_dataset_filtered[, selected_cols]
+```
+```{r}
+syn_select_vars[paste("B", 5, sep = "")]
+```
+
+```{r}
+for (i in 1:3) {
+  compare(object = data.frame(Pdata = syn_select_vars[paste("B", i+4, sep = "")]),
+          data = data.frame(Pdata = bindori_select_vars[paste("B", i+4, sep = "")]),
+          vars =c(paste("B", i+4, sep = "")) , cont.na = NULL,
+          msel = NULL, stat = "percents", breaks = 20,
+          nrow = 2, ncol = 2, rel.size.x = 1,
+          utility.stats = c("pMSE", "S_pMSE"),
+          cols = c("#1A3C5A","#4187BF"),
+          plot = TRUE, table = TRUE)
+}
+```
+
+```{r}
+head(syn_data_filtered2$B1b_x1)
+```
+
+```{r}
+compare(object = data.frame(B1b_x13 = syn_data_filtered2["B1b_x13"]),
+        data = data.frame(B1b_x13 = bindori_dataset_filtered2["B1b_x13"]),
+        vars = c("B1b_x13"), cont.na = NULL,
+        msel = NULL, stat = "percents", breaks = 10,
         nrow = 2, ncol = 2, rel.size.x = 1,
         utility.stats = c("pMSE", "S_pMSE"),
         cols = c("#1A3C5A","#4187BF"),
         plot = TRUE, table = TRUE)
 ```
-
 ```{r}
-## for var B1_1 -> symptoms
-compare(object = data.frame(B1_1 = syn_data_filtered$B1_1),
-        data = data.frame(B1_1 = bindori_dataset_filtered$B1_1),
-        vars = "B1_1", cont.na = NULL,
-        msel = NULL, stat = "percents", breaks = 20,
-        nrow = 2, ncol = 2, rel.size.x = 1,
-        utility.stats = c("pMSE", "S_pMSE"),
-        cols = c("#1A3C5A","#4187BF"),
-        plot = TRUE, table = FALSE)
+test_zzz$plots$mapping
 ```
 
-```{r}
-## for var B7 -> testing
-compare(object = data.frame(B7 = syn_data_filtered$B7),
-        data = data.frame(B7 = bindori_dataset_filtered$B7),
-        vars = "B7", cont.na = NULL,
-        msel = NULL, stat = "percents", breaks = 20,
-        nrow = 2, ncol = 2, rel.size.x = 1,
-        utility.stats = c("pMSE", "S_pMSE"),
-        cols = c("#1A3C5A","#4187BF"),
-        plot = TRUE, table = FALSE)
-```
-
-```{r}
-## for var D1 -> module B
-compare(object = data.frame(D1 = syn_data_filtered$D1),
-        data = data.frame(D1 = bindori_dataset_filtered$D1),
-        vars = "D1", cont.na = NULL,
-        msel = NULL, stat = "percents", breaks = 20,
-        nrow = 2, ncol = 2, rel.size.x = 1,
-        utility.stats = c("pMSE", "S_pMSE"),
-        cols = c("#1A3C5A","#4187BF"),
-        plot = TRUE, table = FALSE)
-```
-
-```{r}
-## for var D2 -> module B
-compare(object = data.frame(D2 = syn_data_filtered$D2),
-        data = data.frame(D2 = bindori_dataset_filtered$D2),
-        vars = "D2", cont.na = NULL,
-        msel = NULL, stat = "percents", breaks = 20,
-        nrow = 2, ncol = 2, rel.size.x = 1,
-        utility.stats = c("pMSE", "S_pMSE"),
-        cols = c("#1A3C5A","#4187BF"),
-        plot = TRUE, table = FALSE)
-```
-```{r}
-## for var E2 -> demographics
-compare(object = data.frame(E2 = syn_data_filtered$E2),
-        data = data.frame(E2 = bindori_dataset_filtered$E2),
-        vars = "E2", cont.na = NULL,
-        msel = NULL, stat = "percents", breaks = 20,
-        nrow = 2, ncol = 2, rel.size.x = 1,
-        utility.stats = c("pMSE", "S_pMSE"),
-        cols = c("#1A3C5A","#4187BF"),
-        plot = TRUE, table = FALSE)
-```
-
-```{r}
-## for var E3 -> demographics
-compare(object = data.frame(E3 = syn_data_filtered$E3),
-        data = data.frame(E3 = bindori_dataset_filtered$E3),
-        vars = "E3", cont.na = NULL,
-        msel = NULL, stat = "percents", breaks = 20,
-        nrow = 2, ncol = 2, rel.size.x = 1,
-        utility.stats = c("pMSE", "S_pMSE"),
-        cols = c("#1A3C5A","#4187BF"),
-        plot = TRUE, table = FALSE)
-```
 
 ### (2). two-way marginals with utility.tables()
 In this part, we focus on the utility in the two-way manner/fashion.
@@ -404,5 +354,10 @@ utility.twoway <- utility.tables(object = data.frame(syn_select_vars),
 ```
 Now, we print the results out with the heatmap-like output plot.
 ```{r}
-utility.twoway$utility.plot
+table(syn_data$E6)
+table(syn_data$E5)
+table(syn_data$B2)
+table(syn_data$B4)
 ```
+
+
