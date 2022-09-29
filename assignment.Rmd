@@ -281,15 +281,6 @@ Now we can see there are 90 variables remained in the datasets.
 ncol(syn_data_filtered2)
 ncol(bindori_dataset_filtered2)
 ```
-We need to specify the path to save multiple plots
-```{r}
-destination <- "F:/Master-Thesis-DifferentialPrivacy/Figures/compare_plots.pdf"
-
-pdf(file = destination)
-
-# specify to save plots in 2*2 grid
-par()
-```
 We need to filter out B2,B4,E5,E6.
 ```{r}
 # try with 86 vars firstly
@@ -297,15 +288,12 @@ syn_select_vars <- subset(syn_data_filtered2, select = -c(B2, B4, E5, E6, D6_2))
 
 bindori_select_vars <- subset(bindori_dataset_filtered2, select = -c(B2, B4, E5, E6, D6_2))
 ```
-```{r}
-syn_data_filtered2$
-```
 
 ```{r}
 compare_plots<- c()
 
 for (i in 1:85) {
-  cat(colnames(bindori_select_vars[i]), "\n")  # print the string under analysis
+  cat(colnames(bindori_select_vars[i]), "\n")  # print the var string under analysis
   
   compare_plots[[i]] <- compare(object = data.frame(Pdata = syn_select_vars[i]),
           data = data.frame(Pdata = bindori_select_vars[i]),
@@ -331,9 +319,6 @@ for (i in 1:85) {
 }
 
 dev.off()
-```
-```{r}
-class(compare_plots[[2]]$vars)
 ```
 
 With PNGs,
@@ -370,7 +355,6 @@ length(S_pMSE_list)
 
 Then, we create a dataframe.
 ```{r}
-
 #create data frame
 df_utility <- data.frame(vars_list=colnames(syn_select_vars),
                  pMSE=pMSE_list,
@@ -389,13 +373,22 @@ vars2show <- df_utility[df_utility[, "S_pMSE"]<10, ][1]
 ```{r}
 nrow(vars2show)  # there are 37 in total
 ```
+Apart from that, we noticed that for var `D9`, the corresponding statistic of 
+interest has returned a NA value. We then need to redo the evaluation again
+just for `D9`.
+```{r}
+# we try to get the distribution of D9
+table(bindori_dataset_filtered2$D9)
+table(syn_data_filtered2$D9)
+```
+
 
 
 ```{r}
-compare(object = data.frame(weight = syn_data_filtered2["weight"]),
-        data = data.frame(weight = bindori_dataset_filtered2["weight"]),
-        vars = c("weight"), cont.na = NULL,
-        msel = NULL, stat = "percents", breaks = 10,
+compare(object = data.frame(D9 = syn_select_vars["D9"]),
+        data = data.frame(D9 = bindori_select_vars["D9"]),
+        vars = c("D9"), cont.na = NULL,
+        msel = NULL, stat = "percents", breaks = 5,
         nrow = 2, ncol = 2, rel.size.x = 1,
         utility.stats = c("pMSE", "S_pMSE"),
         cols = c("#1A3C5A","#4187BF"),
