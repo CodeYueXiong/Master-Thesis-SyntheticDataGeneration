@@ -12,3 +12,6 @@
 *.synctex(busy)
 *.png
 *.tmp.driveupload
+thesis.bbl
+thesis.blg
+thesis.dvi

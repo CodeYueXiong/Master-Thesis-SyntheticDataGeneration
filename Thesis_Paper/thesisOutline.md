@@ -14,8 +14,8 @@
     - 2.1 Data Privacy
         - def
         - why
-    - 2.2 Methods to keep data privacy and avoid discloure
-            - in __CS__ community (k-Anonymity, l-Diverisity, t-closeness)
+    - 2.2 Methods to keep data privacy and avoid discloure\
+            - in __CS__ community (k-Anonymity, l-Diverisity, t-closeness)\
             - in __Statistics__ community () simple and just general
             - Differential Privacy (*important*)
                 - Approximate DP
