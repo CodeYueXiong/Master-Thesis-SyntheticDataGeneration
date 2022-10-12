@@ -30,7 +30,56 @@ revealing these specific information to the public \citep{duncan2011statistical}
 several traditional methods have been proposed to limit data disclosure with strategies like top-coding,
 swapping or data suppression. Nevertheless, with increased computing power and more data access demanded by
 the public, the risks of data disclosure are often seen as underestimated using simply these traditional
-protection strategies, where instances of privacy breaches can be found in the public and 
+protection strategies, where instances of privacy breaches can be found simultaneously in the public and 
 private sectors \citep{de2015unique}.
+
+Alternatively, with the purpose to reach the trade-off between data disclosure protection and broad
+data access, the idea of synthetic data has been released. When using this approach, we make a model
+fitted to the microdata and the corresponding outputs from the fitted model are then used to replace
+the original values in the previous information.
+
+
+\subsection{An Overview of Data Synthesis Approaches}
+\label{subsec:datasynthesis}
+The field of employing synthetic data to avoid data statistical disclosure has been introduced by \citet{rubin1993statistical}
+and \citet{little1993statistical} in the context of learning multiple imputation (MI) for nonresponse \citep{little2019statistical}.
+In their work, they showed the possibility to get these sentitive values replaced with "imputed" values
+rather than impute data for those missing records in the original dataset. With the application of this multiple
+imputation framework, ramdom draws sampled from these imputed populations can then be circulated to the public. In more
+extreme cases, when it is necessary to avoid the release of original data completely, those instances from
+the original sample can also be displaced by samples from the imputation model.
+
+Depending on the level of protection prone to specific scenarios, data synthesis methods are categorized to two groups, i.e.,
+partial synthesis and full synthesis. For partially synthetic data, only some parts of the original records are synthesized. 
+On the contrary, the entire dataset are replaced by synthetic values with the utilizatio of full synthesis methods specifically.
+It is evident to infer that the desired protection level is high when applying fully synthetic data methods, as original instances
+are completely excluded. 
+
+
+
+\subsubsection{Computer Science Approaches}
+\label{subsubsec:csapproach}
+Despite the origin and early development of synthetic data, in computer science, the data Synthesis
+approach did not raise much interest in the study of data privacy until the advent of various privacy
+standards. In order to cater to people's requirement of privacy protection, scientists have defined
+several popular data privacy standards such as $k-$anonymity \citep{sweeney2002k}, $l-$diversity \citep{machanavajjhala2007diversity}
+and $t-$closeness \citep{li2006t}. In the following context, we try to shortly introduce the key ideas of the three popular
+standards.
+
+\paragraph{$k-$anonymity}
+
+\paragraph{$l-$diversity}
+
+\paragraph{$t-$closeness}
+
+
+
+
+\subsubsection{Statistical Approaches}
+\label{subsubsec:statsapproach}
+
+\subsubsection{Differentially Private Data Synthesis}
+\label{subsubsec:dpds}
+
 
 

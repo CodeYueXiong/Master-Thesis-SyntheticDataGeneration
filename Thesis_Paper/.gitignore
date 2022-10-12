@@ -12,7 +12,10 @@
 *.synctex(busy)
 *.png
 *.tmp.driveupload
-thesis.bbl
-thesis.blg
-thesis.dvi
-thesis.toc
+*.bbl
+*.blg
+*.dvi
+*.toc
+*.log
+*.out
+*.aux
