@@ -89,7 +89,13 @@ is $t-$close when the distribution of the sensitive attributes in each equivalen
 in the complete table by a given threshold $t$ at most. The distance function used here is the Earth Mover Distance \citep{rubner2000earth} and It
 calculates the minimal amount of endeavor required to transform one distribution to another by moving the mass distribution between those two.
 
+However, the definition of synthetic data does not really fit into the requirement of the above examplified privacy standards. For example, a fully
+synthetic dataset can still offer a high level of privacy protection but breaches the requirement of $k-$anonymity for any $k>1$.
 
+The idea of Differential Privacy (DP) is introduced by \citet{dwork2008differential} in 2008, which has facilitated the application of
+synthetic data in the computer science literature. In short, a database is said to be differential private when changing one
+record in the database has a limited effect on the outputs of the running data mechanism. With a focus swittched to data mechanism, 
+the concept of DP situates better with the key ideas of data synthesis.
 
 
 
