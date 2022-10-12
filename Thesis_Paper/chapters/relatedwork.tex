@@ -63,14 +63,32 @@ Despite the origin and early development of synthetic data, in computer science,
 approach did not raise much interest in the study of data privacy until the advent of various privacy
 standards. In order to cater to people's requirement of privacy protection, scientists have defined
 several popular data privacy standards such as $k-$anonymity \citep{sweeney2002k}, $l-$diversity \citep{machanavajjhala2007diversity}
-and $t-$closeness \citep{li2006t}. In the following context, we try to shortly introduce the key ideas of the three popular
-standards.
+and $t-$closeness \citep{li2006t}. We try to shortly introduce the key ideas of the three popular
+standards in the following context. 
 
-\paragraph{$k-$anonymity}
+In 1998, \citet{sweeney2002k} has proposed the term of $k-$anonymity. When the information for every individual included in the data
+cannot be discriminated from at least $k-1$ other individuals, the release of the database is considered to fulfill the
+$k-$anonymity requirement. The works of \citet{machanavajjhala2007diversity}, \citet{truta2006privacy} and \citet{xiao2006personalized}
+have exhibited that $k-$anonymity can successfully prevent identity disclosure and in this case it is impossible to identify
+his exact data in the database. However, it does not guarantee attribute disclosure which indicates the revealing of a person's
+sensitive attribute information even if we cannot access the exact record of instance from him/her. 
 
-\paragraph{$l-$diversity}
+In order to overcome the limitations brought by $k-$anonymity, \citet{machanavajjhala2007diversity} introduced the definition of $l-$diversity in 2006 and the
+essential idea lies in the prevention of homogeneity which often occurs in the equivalence classes with sensitive attributes.
+By noting equivalence classes, we aim to refer those data instances that are unidentifiable from one another with masked information
+in those non-sensitive attributes and thus can be categorized as an equivalence class. A database is considered to be $l-$diverse
+if there are at least $l$ different values belonging to those sensitive attributes in each equivalence class. The shortcoming of $l-$ diverisity
+is that this standard can be unnecessary to achieve from time to time. For instance, if we now have 10,000 rows of data with a sensitive attribute,
+the distribution of the sensitive attribute is imbalanced where the attribute is 1 for $1\%$ of the individuals and 0 for the remaining
+$99\%$. In an equivalence class with simply $0-$entries for the sensitive attribute, the individual would actually not mind being
+recorded as negative for the sensitive attribute. But so as to achieve $2-$diversity, the number of equivalence classes would
+then be $10,0000 \times 0.01 = 100$, which would cause a large amount of information loss.
 
-\paragraph{$t-$closeness}
+The shortcomings of $l-$diverisity are addressed when \citet{xiao2006personalized} proposed the definition of $t-$closeness. We say that a database
+is $t-$close when the distribution of the sensitive attributes in each equivalence class distinguishes from the distribution of the sensitive attributes 
+in the complete table by a given threshold $t$ at most. The distance function used here is the Earth Mover Distance \citep{rubner2000earth} and It
+calculates the minimal amount of endeavor required to transform one distribution to another by moving the mass distribution between those two.
+
 
 
 
