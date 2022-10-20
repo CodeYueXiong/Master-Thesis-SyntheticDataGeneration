@@ -51,7 +51,7 @@ the original sample can also be displaced by samples from the imputation model.
 
 Depending on the level of protection prone to specific scenarios, data synthesis methods are categorized to two groups, i.e.,
 partial synthesis and full synthesis. For partially synthetic data, only some parts of the original records are synthesized. 
-On the contrary, the entire dataset are replaced by synthetic values with the utilizatio of full synthesis methods specifically.
+On the contrary, the entire dataset are replaced by synthetic values with the utilization of full synthesis methods.
 It is evident to infer that the desired protection level is high when applying fully synthetic data methods, as original instances
 are completely excluded. 
 
@@ -66,6 +66,7 @@ several popular data privacy standards such as $k-$anonymity \citep{sweeney2002k
 and $t-$closeness \citep{li2006t}. We try to shortly introduce the key ideas of the three popular
 standards in the following context. 
 
+\paragraph{$k-$Anonymity, $l-$Diversity and $t-$Closeness}
 In 1998, \citet{sweeney2002k} has proposed the term of $k-$anonymity. When the information for every individual included in the data
 cannot be discriminated from at least $k-1$ other individuals, the release of the database is considered to fulfill the
 $k-$anonymity requirement. The works of \citet{machanavajjhala2007diversity}, \citet{truta2006privacy} and \citet{xiao2006personalized}
@@ -86,21 +87,54 @@ then be $10,0000 \times 0.01 = 100$, which would cause a large amount of informa
 
 The shortcomings of $l-$diverisity are addressed when \citet{xiao2006personalized} proposed the definition of $t-$closeness. We say that a database
 is $t-$close when the distribution of the sensitive attributes in each equivalence class distinguishes from the distribution of the sensitive attributes 
-in the complete table by a given threshold $t$ at most. The distance function used here is the Earth Mover Distance \citep{rubner2000earth} and It
+in the complete table by a given threshold $t$ at most. The distance function used here is the Earth Mover Distance \citep{rubner2000earth} and it
 calculates the minimal amount of endeavor required to transform one distribution to another by moving the mass distribution between those two.
+
 
 However, the definition of synthetic data does not really fit into the requirement of the above examplified privacy standards. For example, a fully
 synthetic dataset can still offer a high level of privacy protection but breaches the requirement of $k-$anonymity for any $k>1$.
 
+\paragraph{Differential Privacy based Approaches}
 The idea of Differential Privacy (DP) is introduced by \citet{dwork2008differential} in 2008, which has facilitated the application of
 synthetic data in the computer science literature. In short, a database is said to be differential private when changing one
-record in the database has a limited effect on the outputs of the running data mechanism. With a focus swittched to data mechanism, 
-the concept of DP situates better with the key ideas of data synthesis. itseems
+record in the database has a limited effect on the outputs of the running data mechanism. With a focus swittched to the data mechanism, 
+the concept of DP situates better with the key ideas of data synthesis. In this case, finding a suitable synthesis mechanism which suffices
+the requirements of Differential Privacy is the most essential part of the work. 
 
 
+Based on the establishment of DP concept, \citet{barak2007privacy} has developed one of the first approaches leveraging a Fourier Transformation
+and linear programming for those low-order contingency tables \citep{dwork2008differential}. There are also some other early applications, e.g., \citep{eno2008generating},
+\citep{cano2010evaluation}, \citep{blum2013learning}, \citep{xiao2010differential}, etc. Besides, others have also established approaches adapting
+ideas from the statistical community to the requirement of Differential Privacy. These works include \citep{abowd2008protective}, 
+\citep{machanavajjhala2008privacy}, \citep{charest2011can} and \citep{mcclure2012differential}. Simultaneously, with the use of Bayesian networks, 
+\citep{zhang2017privbayes} has accommodated the idea of synthetic data to synthesize multi-dimensional datasets, which is called PrivBayes. Moreover,
+taking into account the dependency structure of the original data, Copula function has been utilized by \citet{li2014differentially} to combine the ideas from both techniques (DPCopula).
+
+\paragraph{Generative Adversarial Networks based Approaches}
+In parallel, proposed by \citet{goodfellow2020generative}, the idea of Generative Adversarial Networks (GANs) has caused an huge inspiration
+in data synthesis research and practical applications in the corresponding computer science literature. Fundamentally, a GAN comprises two deep 
+neural networks that are called a generator and a discriminator, respectively. The generator network basically generates fake data in order to
+mislead the discriminator, whose task concerns the distinguishment of real data and fake data. In an iterative process, both networks
+are improved. In this case, those final data generated by the generator network can be regarded as a variant of the synthetic data.
+Early applications of GANs have focused on synthesizing image data, for example \citep{denton2015deep}, as GANs turned out to be extremely
+successfully image detection, speech recognition and natural language processing. Nevertheless, researchers gradually turned their attention to
+microdata synthesis (in the computer science literature, microdata can be understood as tabular data specifically in contrast to image data or other types of synthesis). 
+But to adopt GANs for microdata synthsis requires additional concerns. Unlike those neighboring pixel data, microdata often consists of categorical variables
+which can be sparse and correlations among them are often weaker. As a consequence, the positioning of variables with microdata is also
+sparsely informative because of the independent structure of indivial instance records. Thus, the relationships between variables need to be 
+additionally modelled without the help of spatial information. (\textcolor{red}{whether or not to include the specific types of GANs})
+
+\paragraph{Other Techniques based Approaches}
+Apart from the adoption of GANs, other data synthesis techniques relied on Variational Autoencoders \citep{vardhan2020generating,ma2020vaem},
+copulas \citep{patki2016synthetic,kamthe2021copula}, or other strategies especially preserving certain marginal distributions \citep{mckenna2019graphical} have also
+been developed recently. Here, we want to shortly cover the adaptation of Variational Autoencoders (VAEs) for synthetic data. Compared to GANs,
+a typical VAE includes three networks: an encoder, a decoder and a discriminator, which are responsible for learning complimentary tasks. To be more specific,
+the encoder maps the input data to a latent representation while the decoder tries to reconstruct and restore the data. For the discriminator, it decides
+if the given sample is real data or data produced by the decoder network. The reconstruction error needs to be minimized during the training of VAE.
 
 \subsubsection{Statistical Approaches}
 \label{subsubsec:statsapproach}
+Inspired by learning multiple imputation (MI) for nonresponse \citet{little2019statistical}, 
 
 \subsubsection{Differentially Private Data Synthesis}
 \label{subsubsec:dpds}
