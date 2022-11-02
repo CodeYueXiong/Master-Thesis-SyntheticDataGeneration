@@ -138,9 +138,18 @@ is trained using evidence lower-bound (ELBO) loss \citep{kingma2013auto}.
 
 \subsubsection{Statistical Approaches}
 \label{subsubsec:statsapproach}
-Inspired by learning multiple imputation (MI) for nonresponse \citet{little2019statistical}, 
+Inspired by \citep{rubin1993statistical}, a variety of statistical approaches for synthetic data have been developed. Considering the 
+broad range of these approaches, it is somehow difficult to provide a detailed overview which fully describes all types of synthetic data.
+Despite the apparent distinction between those Computer Science based approaches, scientists have offered three alternative classification schemes, 
+i.e.  sequential vs. joint modeling approaches, parametric vs. machine learning inspired approaches and extensions of these MI inspired approaches.
+
 
 \paragraph{Sequential and Joint Modelling based Approaches}
+Given any joint distribution can be rewritten as a product of conditional distributions, a majority of the early applications of data synthesis depended on a sequential modelling approach, where each 
+variable is synthesized sequentially utilizing models conditional on other variables that were already synthesized or variables remaining 
+unchanged. Great flexibility is offered by this sequential regression approach in that different models can be employed for each variable.
+Based on this, we can utilize simple parametric models such as linear/logistic regression but also any machine learning algorithm allowing random
+draws from a conditional distribution, e.g. Classification and Regression Trees (CART) or Random Forest.
 
 \paragraph{Parametric and Machine Learning based Approaches}
 
