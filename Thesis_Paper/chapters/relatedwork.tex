@@ -149,8 +149,11 @@ Given any joint distribution can be rewritten as a product of conditional distri
 variable is synthesized sequentially utilizing models conditional on other variables that were already synthesized or variables remaining 
 unchanged. Great flexibility is offered by this sequential regression approach in that different models can be employed for each variable.
 Based on this, we can utilize simple parametric models such as linear/logistic regression but also any machine learning algorithm allowing random
-draws from a conditional distribution, e.g. Classification and Regression Trees (CART) or Random Forest.
-
+draws from a conditional distribution, e.g. Classification and Regression Trees \citep{loh2011classification}, short for CART, or Random Forest. Many efforts have been invested to develop a more portable and simple tool for
+data synthsis, which results in the publishment of several packages. One exemplified case that worths mentioning is the development of the R package called \textit{synthpop} \citep{nowok2016synthpop}. Targeted to 
+Though primarily targeted to mimicing data from some longitudinal studies and avoiding actual data disclosure, \textit{synthpop} is applicable to provide test synthetic data
+for uses of confidentiality concerns. A variety of synthesizing methods are implemented in the package, including non-parametric models such as Conditional Inference Trees \citep{hothorn2015ctree} and CART, 
+parametric models (e.g. Normal Linear Regression, Logistic Regression) and other methods such as ramdom sampling. 
 \paragraph{Parametric and Machine Learning based Approaches}
 
 \paragraph{Extensions of the MI inspired Approaches}
