@@ -153,7 +153,13 @@ draws from a conditional distribution, e.g. Classification and Regression Trees 
 data synthsis, which results in the publishment of several packages. One exemplified case that worths mentioning is the development of the R package called \textit{synthpop} \citep{nowok2016synthpop}. Targeted to 
 Though primarily targeted to mimicing data from some longitudinal studies and avoiding actual data disclosure, \textit{synthpop} is applicable to provide test synthetic data
 for uses of confidentiality concerns. A variety of synthesizing methods are implemented in the package, including non-parametric models such as Conditional Inference Trees \citep{hothorn2015ctree} and CART, 
-parametric models (e.g. Normal Linear Regression, Logistic Regression) and other methods such as ramdom sampling. 
+parametric models (e.g. Normal Linear Regression, Logistic Regression) and other methods such as ramdom sampling. Furthermore, \textit{synthpop} has also provided users with additional functionalities to deal with
+missing data/restricted values involved context or limitation of perceived disclosure.
+
+In comparison to the sequential modelling based approach, joint modelling is considered as an approach intended to directly specify the joint distribution of the data. In recent years, more flexible models have been developed
+given several early approaches, such as the IPSO method \citep{burridge2003information}, relied on some assumption which is seldom validated with actual data. More specifically, an approach based on a Dirichlet Process 
+Mixture of Products of Multinomials is proposed by \citet{hu2014disclosure}, which offers high utility in real data applications. Moreover, for continuous business data, the approach based on Dirichlet
+Process Normal Mixture Models \citep{kim2018simultaneous} has proved to show good performance. To be more applicable for business surveys, the extension work of this approach \citep{kim2021synthetic} included the informative sampling designs.
 \paragraph{Parametric and Machine Learning based Approaches}
 
 \paragraph{Extensions of the MI inspired Approaches}
