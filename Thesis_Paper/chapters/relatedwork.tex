@@ -160,13 +160,48 @@ In comparison to the sequential modelling based approach, joint modelling is con
 given several early approaches, such as the IPSO method \citep{burridge2003information}, relied on some assumption which is seldom validated with actual data. More specifically, an approach based on a Dirichlet Process 
 Mixture of Products of Multinomials is proposed by \citet{hu2014disclosure}, which offers high utility in real data applications. Moreover, for continuous business data, the approach based on Dirichlet
 Process Normal Mixture Models \citep{kim2018simultaneous} has proved to show good performance. To be more applicable for business surveys, the extension work of this approach \citep{kim2021synthetic} included the informative sampling designs.
+
 \paragraph{Parametric and Machine Learning based Approaches}
+To obtain valid inferences of the synthetic data, researchers tend to assume that the models used for data synthesis are correctly specifified, which means they need to match the actual data 
+generating process. Additionally, the synthesis model is required to be congenial to the analysis model later run on the synthetic data. To be more specific, congeniality \citep{meng1994multiple} indicates that the synthesis model
+relies on the same modelling assumptions as the model used for analysis.
+
+In practice, achieving congeniality is a pessimistic purpose, because it is not possible to foresee all the analyses to be run on the synthetic data. Nevertheless, shown in the nonresponse context \citep{meng1994multiple},
+approximately valid inferences can be acquired when the synthesis model embraces the analysis model, meaning the former includes more variables than the latter. Given this, it is normally advised to utilize a rich set of predictors in the synthesis model,
+which are indeally conditional on all the other variables and also includes interaction terms \citep{little1997should}. Still, the strategy does not really fit in parametric models, as it is often the case that many datasets include plenties of variables.
+For categorical variables especially, there exist collinearity issues and perfect prediction usually comes with many variables used to fit the parametric model, which is not feasible any more. 
+
+To address the uncongeniality concern, researches turn to Machine Learning algorithms for inspirations finding alternative synthesis strategies. For instance, \citet{reiter2005using} proposed using CART for data synthesis and later \citet{caiola2010random} extended this context to
+Random Forests. It is important to note that these Machine Learning based approaches tend to automatically recognize higher order interactions which are often overlooked in parametric models.
+In addition, multicollinearity or perfect prediction are no longer a cause of problem, and can still be directly applied when the number of variables exceeds the number of observations.
 
 \paragraph{Extensions of the MI inspired Approaches}
+Despite classical synthesis approaches, various extensions have also been explored and the differences mainly lie in the corresponding inferential procedures. In 2004,  
+\citet{reiter2004simultaneous} proposed the first extension of the classical MI based synthesizing approach, which provides a strategy for missing data and disclosure control. Specifically,
+a two-step procesure was developed, where missing data are imputed $m$ times at the first phase and $r$ partially synthetic datasets are generated at the second phase within the nest of each
+first phase.
 
+Likewise, \citet{reiter2010releasing} developed a two-stage synthesizing approach, where variables having a higher disclosure risk are synthesized at the first stage and variables requiring dozens of synthetic datasets to reduce model uncertainty
+will be synthesized at the second stage. The authors have managed to show that this approach offers better disclosure limitation and similar data utility in comparison to classical one-stage synthesis using the same number of synthetic datasets.
+
+The final methodology was presented by \citet{drechsler2010sampling}, which requires to use a (sub)sampling step before the synthesis. This approach is specifically suitable for Census data in that
+it is common practice to release only random samples from the full dataset to the public. Furthermore, the synthesis models can be estimated using the full dataset even though just a (sub)sample is synthesized later.
+With a real dataset, the authors have illustrated that the release of synthetic samples can offer higher utility than of the original data, as the synthesis models rely on the information from the full population. This methodology was later extended to the 
+context in which the original data itself is already a sample \citep{drechsler2012combining}.
 
 \subsubsection{Differentially Private Data Synthesis}
 \label{subsubsec:dpds}
+Prevalently adopted as a definition of privacy offering formal in recent years, differential privacy \citep{dwork2006calibrating}, abbreviated as DP, has offered mathematically quantifiable privacy guarantees to privacy related scenarios.
+According to DP, it is required the impact that any single record can have on the probability of acquiring a specific result is bounded strictly. To be more specific, the definition of pure$\epsilon-$DP requires that the log$-$difference in the probability
+of acquiring a specific output between two neighboring datasets is bounded between $-\epsilon$ and $\epsilon$. The neighboring datasets can be understood as datasets that differ in just one record. In simple termns, an algorithm is said to be differentially
+private when someone obtaining the output statistic cannot distinguish whether the information of an individual was utilized in the computation or not.
 
+Simultaneously, the definition of DP has also boosted research focusing on generating differentially private synthetic data. Compared to other synthesizing approaches, differentially private synthetic data outstands the others in that any function of a differentially
+private output is guaranteed to also be differentially private with the same privacy guarantees as the original output. In other words, working with the differentially private synthetic data is more flexible, where it allows more interaction with the data and using any
+tools or workflows to process the data, without suffering the risk to unveiling sensitive information.
+
+Researchers have proposed various ideas to generate differentially private synthetic data, where using marginal distributions for data synthesis has been one of the most prevalent approaches. Particularly, noise is added to either one$-$, two$-$, or three$-$way marginal distributions
+as specified by \citet{mckenna2019graphical}. Another inspiration comes from the adoption of Bayesian Networks \citep{bao2021synthetic}, within which the use of PrivBayes \citet{zhang2017privbayes} are more prominent. However, it can be difficult to 
+represent all important correlations in PrivBayes. To overcome this, \citet{cai2021data} utilized a defined Markov random field (MRF) to model the correlations among variables and later the MRF for synthesizing data (PrivMRF).
 
 
