@@ -126,6 +126,9 @@ additionally modelled without the help of spatial information. To address this i
 \citet*{xu2019modeling} developed the conditional tabular GAN (CTGAN) to overcome challenges from imbalanced categorical and multi-modal continuous data.
 Furthermore, Causal Tabular GAN (Causal-TGAN) \citep{wen2021causal} shows the possibility to model for casual relationships between variables.
 
+It is worth mentioning that Wasserstein GANs or WGANs \citep{arjovsky2017wasserstein} have gained popularity recently. Essentially, to avoid problems caused by vanishing gradients, 
+WGANs employ the Wasserstein distance as the cost function rather than Kullback-Leibler (KL) and Jensen–Shannon (JS) Divergence. Early applications for integrating WGANs into data synthesis
+can be found in \citet{camino2018generating}.
 \paragraph{Other Techniques based Approaches}
 Apart from the adoption of GANs, other data synthesis techniques relied on Variational Autoencoders \citep{vardhan2020generating,ma2020vaem},
 copulas \citep{patki2016synthetic,kamthe2021copula}, or other strategies especially preserving certain marginal distributions \citep{mckenna2019graphical} have also
@@ -204,4 +207,7 @@ Researchers have proposed various ideas to generate differentially private synth
 as specified by \citet{mckenna2019graphical}. Another inspiration comes from the adoption of Bayesian Networks \citep{bao2021synthetic}, within which the use of PrivBayes \citet{zhang2017privbayes} are more prominent. However, it can be difficult to 
 represent all important correlations in PrivBayes. To overcome this, \citet{cai2021data} utilized a defined Markov random field (MRF) to model the correlations among variables and later the MRF for synthesizing data (PrivMRF).
 
-
+A final type of work on differentially private data synthesis lies in incorporating DP into GANs. This area of research has grown exponentially in the last few years. 
+In this learning context, the generator network is commonly made to not directly access the actual data and simply the discriminator network is required to be adjusted
+to ensure DP. Based on WGANs, \citet{xie2018differentially} and \citet{beaulieu2019privacy} built the private optimization by addin Gaussian noise to the 
+gradient of the Wasserstein distance in the WGANs algorithm. Also, \citet{frigerio2019differentially} later proposed a private extension based on WGANs.
