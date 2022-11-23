@@ -1,7 +1,7 @@
 ---
-title: "Analysis"
+title: "Data Synthesis by Yue"
 author: "Yue Xiong"
-date: '2022-09-15'
+date: '2022-11-11'
 output:
   pdf_document: default
   html_document:
@@ -36,10 +36,10 @@ library(dbplyr)
 
 ```{r}
 # set the working directory
-wd <- getwd()
+wd <- "F:/Master-Thesis-DifferentialPrivacy"
 setwd(wd)
 # read in the synthetic dataset
-syn_data <- read.csv(file = "./syn_2020-08-02_2020-08-08.csv")
+syn_data <- read.csv(file = "./SyntheticData/Terrance/version_1/syn_k2_2020-08-02_2020-08-08.csv")
 # and on macos 
 head(syn_data)
 # syn_data <- read_csv("./syn_2020-08-02_2020-08-08.csv", show_col_types = FALSE)
@@ -70,7 +70,7 @@ dim(syn_data)
 Now we need to check all the `gpdr` countries and only do the alignment based on `gpdr` countries.
 ```{r}
 gpdr_countries_data <- NA
-gpdr_countries_data <- read.csv(file = "./gpdr.csv", sep = ",")
+gpdr_countries_data <- read.csv(file = "F:/Master-Thesis-DifferentialPrivacy/gpdr.csv", sep = ",")
 head(gpdr_countries_data$Country_GID, n = 10L)
 ```
 We then filter the binded original datasets and syn dataset with `Region_GID` specified
@@ -229,17 +229,6 @@ bindori_dataset_filtered$E6[bindori_dataset_filtered$E6 >= 9 & bindori_dataset_f
 ```{r}
 # quickly check the class
 class(bindori_dataset_filtered$E6)
-```
-### 3.6 check for observations for var D1 and D2(ori)
-For D1, we have
-```{r}
-table(bindori_dataset_filtered$D1)
-table(syn_data_filtered$D1)
-```
-For D2, we have
-```{r}
-table(bindori_dataset_filtered$D2)
-table(syn_data_filtered$D2)
 ```
 
 ## Step3: Evaluating the utility of the syn data
@@ -439,11 +428,54 @@ for (i in 1:85) {
   }
 ```
 
+## 5. Data Synthesis with Sequential/Joint Modelling and DP
+The filtered data without regional indicators are noted as `bindori_dataset_filtered2`,
+like which we need to generate our synthetic data.
+
+First of all, we try out the joint modelling based methods implemented in `synthpop`
+
+weight       Numeric
+
+B1_1(In the last 24 hours, have you had any of the following? Fever)   factor, >2 levels
+
+B1b_x1 (Are any of these symptoms unusual for you?
+Fever) 
+
+B14_5 (In the last 30 days, have you been unable to get needed treatment, services, medicine, or medical products for any of the following reasons?
+The treatment, service, or product was not available)
+
+C5 (In the last 7 days, how often did you wear a mask when in public?) factor > 2 levels
+
+D1 (During the last 7 days, how often did you feel so nervous that nothing could calm you down?) factor > 2 levels
+
+E5 (How many people slept in the place where you stayed last night?) factor
+
+E6 (how many years of education have you received) factor
+
+F1 (do u have a phone) binary
+
+F3_de (Have you installed the Corona-Warn-App on your smartphone?)
 ```{r}
-df_utility_twoway <- data.frame()
-data.frame(vars_list=colnames(syn_select_vars),
-                 pMSE=pMSE_list,
-                 S_pMSE=S_pMSE_list)
+table(bindori_dataset_filtered$E3)
 ```
+```{r}
+vars_syn <- c("weight", "B1_1", "B1b_x1", "B14_5", "C5", "D1", "E5", "E6", "F1", "F3_de")
+
+ods <- bindori_dataset_filtered[, vars_syn]
+head(oda)
+```
+### default
+```{r}
+my.seed <- 17914709
+sds.default <- syn(ods, seed = my.seed)
+```
+### non-para
+```{r}
+syn_para <- syn(ods, method = c("parametric"), seed = my.seed)
+```
+```{r}
+syn_para <- syn(ods, method = c("cart"), seed = my.seed)
+```
+
 
 
