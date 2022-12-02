@@ -23,6 +23,7 @@ file_path <- "./SyntheticData/Terrance/version_1/syn_k2_2020-08-02_2020-08-08.cs
 # gpdr_file_path <- "F:/Master-Thesis-DifferentialPrivacy/gpdr.csv" # used for tp
 gpdr_file_path <- "C:/Users/ru27req/Master-Thesis-DifferentialPrivacy/gpdr.csv"
 
+# step 1: filter with only gdpr countries included
 gpdr_region_preprocess <- function(file_path, gpdr_file_path) {
     syn_data <- read.csv(file = file_path)
     colnames(syn_data)[colnames(syn_data)=="sample_weight"] <- "weight"
@@ -74,9 +75,14 @@ gpdr_region_preprocess <- function(file_path, gpdr_file_path) {
 # 
 # class(syn_dataset_gpdr[[1]])
 
+# step 2: threshold with only gdpr countries included
 threshold_preprocess <- function(bindori_dataset_gpdr) {
-    # character type for B2,B4,E5,E6
+    # remove the GID_0 and GID_1 columns
     bindori_dataset_threshold <- copy(bindori_dataset_gpdr)
+    bindori_dataset_threshold <- subset(bindori_dataset_threshold, select = -c(GID_0, GID_1))
+    
+    # character type for B2,B4,E5,E6
+    
     # for B2
     bindori_dataset_threshold["B2"][bindori_dataset_threshold["B2"] == -99] <- "-99"
     bindori_dataset_threshold["B2"][bindori_dataset_threshold["B2"] >= 1000] <- "1000"
@@ -119,7 +125,8 @@ threshold_preprocess <- function(bindori_dataset_gpdr) {
 
 bindori_dataset_threshold <- threshold_preprocess(bindori_dataset_gpdr)
 
-
+bindori_dataset_threshold$GID_0
+str(bindori_dataset_threshold)
 # preprocessed original data import and export
 #-----------------------------------------------
 export_path <- "C:/Users/ru27req/Master-Thesis-DifferentialPrivacy"

@@ -12,7 +12,8 @@ library(data.table)
 source(here::here("data_preprocess.R"))
 
 # set the working directory
-wd <- "F:/Master-Thesis-DifferentialPrivacy"
+# wd <- "F:/Master-Thesis-DifferentialPrivacy"
+wd <- "C:/Users/ru27req/Master-Thesis-DifferentialPrivacy"
 setwd(wd)
 
 file_path <- "./SyntheticData/Terrance/version_1/syn_k2_2020-08-02_2020-08-08.csv"
