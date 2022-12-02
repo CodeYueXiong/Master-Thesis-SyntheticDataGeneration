@@ -125,12 +125,12 @@ threshold_preprocess <- function(bindori_dataset_gpdr) {
 
 bindori_dataset_threshold <- threshold_preprocess(bindori_dataset_gpdr)
 
-bindori_dataset_threshold$GID_0
+
 str(bindori_dataset_threshold)
 # preprocessed original data import and export
 #-----------------------------------------------
 export_path <- "C:/Users/ru27req/Master-Thesis-DifferentialPrivacy"
-bindori_data_name <- "bindori_dataset_threshold.rda"
+bindori_data_name <- "bindori_dataset_threshold_new.rda"
 
 save(bindori_dataset_threshold, file=paste(c(export_path, bindori_data_name), 
                                 collapse="/"))
