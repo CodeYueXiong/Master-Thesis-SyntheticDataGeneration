@@ -1,4 +1,7 @@
 ########  ----- source code for data preprocessing -----
+# packages_list <- c("readr", "vroom", "tidyverse", "arsenal", "reshape2", 
+#                   "synthpop", "ggplot2", "dbplyr", "data.table")
+# install.packages(packages_list)
 
 # load the required packages
 library(readr)
@@ -12,11 +15,13 @@ library(dbplyr)
 library(data.table)
 
 # set the working directory
-wd <- "F:/Master-Thesis-DifferentialPrivacy"
+# wd <- "F:/Master-Thesis-DifferentialPrivacy" # used for thinkpad
+wd <- "C:/Users/ru27req/Master-Thesis-DifferentialPrivacy"
 setwd(wd)
 
 file_path <- "./SyntheticData/Terrance/version_1/syn_k2_2020-08-02_2020-08-08.csv"
-gpdr_file_path <- "F:/Master-Thesis-DifferentialPrivacy/gpdr.csv"
+# gpdr_file_path <- "F:/Master-Thesis-DifferentialPrivacy/gpdr.csv" # used for tp
+gpdr_file_path <- "C:/Users/ru27req/Master-Thesis-DifferentialPrivacy/gpdr.csv"
 
 gpdr_region_preprocess <- function(file_path, gpdr_file_path) {
     syn_data <- read.csv(file = file_path)
@@ -53,18 +58,22 @@ gpdr_region_preprocess <- function(file_path, gpdr_file_path) {
     }
 }
 
+# # read in the original dataset and syn data by Terrance
 # gpdr_dataset_list <- gpdr_region_preprocess(file_path, gpdr_file_path)
-bindori_dataset_gpdr <- data.frame(gpdr_dataset_list$bindori_dataset_gpdr)
-syn_dataset_gpdr <- data.frame(gpdr_dataset_list$syn_dataset_gpdr)
-ncol(syn_dataset_gpdr)
+# bindori_dataset_gpdr <- data.frame(gpdr_dataset_list$bindori_dataset_gpdr)
+# syn_dataset_gpdr <- data.frame(gpdr_dataset_list$syn_dataset_gpdr)
+# ncol(syn_dataset_gpdr)
+# 
+# class(bindori_dataset_gpdr[[2]])
+# 
+# for (i in 1:ncol(bindori_dataset_gpdr)) {
+#     if (class(bindori_dataset_gpdr[[i]])=="numeric") {
+#         print(i)
+#     }
+# }
+# 
+# class(syn_dataset_gpdr[[1]])
 
-for (i in 1:ncol(bindori_dataset_gpdr)) {
-    if (class(bindori_dataset_gpdr[[i]])=="integer") {
-        print(ncol(bindori_dataset_gpdr))
-    }
-}
-
-class(syn_dataset_gpdr[[1]])
 threshold_preprocess <- function(bindori_dataset_gpdr) {
     # character type for B2,B4,E5,E6
     bindori_dataset_threshold <- copy(bindori_dataset_gpdr)
@@ -108,3 +117,15 @@ threshold_preprocess <- function(bindori_dataset_gpdr) {
     return(data.frame(bindori_dataset_threshold))
 }
 
+bindori_dataset_threshold <- threshold_preprocess(bindori_dataset_gpdr)
+
+
+# preprocessed original data import and export
+#-----------------------------------------------
+export_path <- "C:/Users/ru27req/Master-Thesis-DifferentialPrivacy"
+bindori_data_name <- "bindori_dataset_threshold.rda"
+
+save(bindori_dataset_threshold, file=paste(c(export_path, bindori_data_name), 
+                                collapse="/"))
+
+# load("sdssdc1.rda")
