@@ -59,11 +59,13 @@ gpdr_region_preprocess <- function(file_path, gpdr_file_path) {
     }
 }
 
-# # read in the original dataset and syn data by Terrance
-# gpdr_dataset_list <- gpdr_region_preprocess(file_path, gpdr_file_path)
-# bindori_dataset_gpdr <- data.frame(gpdr_dataset_list$bindori_dataset_gpdr)
-# syn_dataset_gpdr <- data.frame(gpdr_dataset_list$syn_dataset_gpdr)
-# ncol(syn_dataset_gpdr)
+# read in the original dataset and syn data by Terrance
+gpdr_dataset_list <- gpdr_region_preprocess(file_path, gpdr_file_path)
+bindori_dataset_gpdr <- data.frame(gpdr_dataset_list$bindori_dataset_gpdr)
+syn_dataset_gpdr <- data.frame(gpdr_dataset_list$syn_dataset_gpdr)
+ncol(bindori_dataset_gpdr)
+
+class(bindori_dataset_gpdr$weight)
 # 
 # class(bindori_dataset_gpdr[[2]])
 # 
@@ -119,20 +121,22 @@ threshold_preprocess <- function(bindori_dataset_gpdr) {
     bindori_dataset_threshold$E6[bindori_dataset_threshold$E6 >= 0 & bindori_dataset_threshold$E6 < 9] <- "[0, 9)"
     bindori_dataset_threshold$E6[bindori_dataset_threshold$E6 >= 9 & bindori_dataset_threshold$E6 < 26] <- "[9, 26)"
     print("Var E6 thresholding succeed")
-
+    
     return(data.frame(bindori_dataset_threshold))
 }
 
 bindori_dataset_threshold <- threshold_preprocess(bindori_dataset_gpdr)
 
-
-str(bindori_dataset_threshold)
+# factor all the var types to factor except for the "weight" column
+bindori_dataset_threshold_chr <- bindori_dataset_threshold %>% mutate(across(c(where(is.numeric), -weight), as.character))
+print("factor done!!!")
+str(bindori_dataset_threshold_chr)
 # preprocessed original data import and export
 #-----------------------------------------------
 export_path <- "C:/Users/ru27req/Master-Thesis-DifferentialPrivacy"
-bindori_data_name <- "bindori_dataset_threshold_new.rda"
+bindori_data_name <- "bindori_dataset_preprocessed.rda"
 
-save(bindori_dataset_threshold, file=paste(c(export_path, bindori_data_name), 
+save(bindori_dataset_threshold_chr, file=paste(c(export_path, bindori_data_name), 
                                 collapse="/"))
 
 # load("sdssdc1.rda")
