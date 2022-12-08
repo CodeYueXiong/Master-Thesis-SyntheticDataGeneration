@@ -21,14 +21,33 @@ setwd(wd)
 load("bindori_dataset_preprocessed.rda")
 # we have the dataframe here named as "bindori_dataset_threshold_chr"
 str(bindori_dataset_threshold_chr)
-
+# also, we need to subset those columns with constant inputs
+cols_remove <- c("B13_1", "B13_2", "B13_3", "B13_4",
+                 "B13_5", "B13_6", "B13_7",
+                 "B14_1", "B14_2", "B14_3", "B14_4", "B14_5",
+                 "D6_1", "D6_2", "D6_3", "F3_de")
+ds_col_syn <- bindori_dataset_threshold_chr %>% select(-cols_remove)
+cols_syn <- colnames(ds_col_syn)
 ######---------------synthetic data with synthpop-------------------######
-
 # method 1: default
 my.seed <- 17914709
-sds.default <- syn(bindori_dataset_threshold, seed = my.seed)
+sds.default <- syn(bindori_dataset_threshold_chr, seed = my.seed)
 
-#sds.default
+# method 2: default parametric
+sds.default.para <- syn(bindori_dataset_threshold_chr, method = "parametric", seed = my.seed)
+sds.default.para$method
+
+# method 3: by simple random sampling
+sds.sample <- syn(bindori_dataset_threshold_chr, method = "sample")
+
+# method 4: by unordered polytomous regression
+sds.upr <- syn(bindori_dataset_threshold_chr, method = "polyreg")
+# method 5: by CART
+sds.cart <- syn(bindori_dataset_threshold_chr, method = "cart")
+# method 6: by Random Forest
+sds.ranger <- syn(bindori_dataset_threshold_chr, method = "ranger")
+# method 7: by bagging
+sds.bag <- syn(bindori_dataset_threshold_chr, method = "bag")
 
 sds.parametric <- syn(bindori_dataset_threshold, method = "parametric", seed = my.seed)
 
