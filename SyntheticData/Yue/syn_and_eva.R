@@ -8,23 +8,23 @@ library(synthpop)
 library(ggplot2)
 library(dbplyr)
 library(data.table)
+library(here)
 
-source(here::here("data_preprocess.R"))
+# source(here::here("./SyntheticData/Yue/data_preprocess.R"))
 
 # set the working directory
 # wd <- "F:/Master-Thesis-DifferentialPrivacy"
 wd <- "C:/Users/ru27req/Master-Thesis-DifferentialPrivacy"
 setwd(wd)
 
-file_path <- "./SyntheticData/Terrance/version_1/syn_k2_2020-08-02_2020-08-08.csv"
-gpdr_file_path <- "F:/Master-Thesis-DifferentialPrivacy/gpdr.csv"
+# load the preprocessed original data
+load("bindori_dataset_preprocessed.rda")
+# we have the dataframe here named as "bindori_dataset_threshold_chr"
+str(bindori_dataset_threshold_chr)
 
-gpdr_dataset_list <- gpdr_region_preprocess(file_path,gpdr_file_path)
-bindori_dataset_gpdr <- data.frame(gpdr_dataset_list$bindori_dataset_gpdr)
+######---------------synthetic data with synthpop-------------------######
 
-bindori_dataset_threshold <- threshold_preprocess(bindori_dataset_gpdr)
-
-# synthetic data
+# method 1: default
 my.seed <- 17914709
 sds.default <- syn(bindori_dataset_threshold, seed = my.seed)
 
