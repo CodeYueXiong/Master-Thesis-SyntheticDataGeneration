@@ -83,7 +83,7 @@ print("binding dataset is successful!")
 
 test <- as.data.frame(bindori_dataset[bindori_dataset$GID_0 %in% country_name,])
 
-bindori_dataset$GID_0
+ori_dataset[[1]]$GID_0 %in% country_name
 gpdr_countries_data <- NA
 gpdr_countries_data <- read.csv(file = gpdr_file_path, sep = ",")
 country_name <- unique(as.character(gpdr_countries_data$Country_GID))
@@ -92,11 +92,14 @@ country_name
 bindori_dataset$GID_0
 bindori_dataset_gpdr <- bindori_dataset[bindori_dataset$GID_1 %in% country_name ,]
 
+bindori_dataset$GID_1
+country_name
 bindori_dataset_gpdr <- bindori_dataset %>%
-  filter(.data[["GID_0"]] %in% country_name | .data[["GID_1"]] %in% country_name)  # where the problem arised
+  filter(as.character(.data[["GID_0"]]) %in% country_name)  # where the problem arised
 
 print("filterring gpdr countries is successful!")
 
+bindori_dataset_gpdr
 bindori_dataset_gpdr$D6_2  # numeric [0]
 bindori_dataset[["D6_1"]]
 # 
@@ -158,7 +161,7 @@ threshold_preprocess <- function(bindori_dataset_gpdr) {
     return(data.frame(bindori_dataset_threshold))
 }
 
-bindori_dataset_threshold <- threshold_preprocess(bindori_dataset_gpdr)
+bindori_dataset_threshold <- threshold_preprocess(bindori_dataset)
 
 # factor all the var types to factor except for the "weight" column
 bindori_dataset_threshold_chr <- bindori_dataset_threshold %>% mutate(across(c(where(is.numeric), -weight), as.character))
@@ -168,6 +171,8 @@ str(bindori_dataset_threshold_chr)
 #-----------------------------------------------
 export_path <- "C:/Users/ru27req/Master-Thesis-DifferentialPrivacy"
 bindori_data_name <- "bindori_dataset_preprocessed.rda"
+
+class(bindori_dataset_threshold_chr$D6_2)
 
 save(bindori_dataset_threshold_chr, file=paste(c(export_path, bindori_data_name), 
                                 collapse="/"))
