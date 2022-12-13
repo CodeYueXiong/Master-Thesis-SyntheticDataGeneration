@@ -9,61 +9,134 @@ library(ggplot2)
 library(dbplyr)
 library(data.table)
 library(here)
+library(beepr)
 
 # source(here::here("./SyntheticData/Yue/data_preprocess.R"))
 
 # set the working directory
 # wd <- "F:/Master-Thesis-DifferentialPrivacy"
-wd <- "C:/Users/ru27req/Master-Thesis-DifferentialPrivacy"
-setwd(here())
+wd <- "/dss/dsshome1/0C/ru27req2/Master-Thesis-DifferentialPrivacy"
+setwd(wd)
 
 # load the preprocessed original data
-load("bindori_dataset_preprocessed.rda")
+load("bindori_dataset_preprocessed_new.rda")
 # we have the dataframe here named as "bindori_dataset_threshold_chr"
 str(bindori_dataset_threshold_chr)
-# also, we need to subset those columns with constant inputs
-cols_remove <- c("B13_1", "B13_2", "B13_3", "B13_4",
-                 "B13_5", "B13_6", "B13_7",
-                 "B14_1", "B14_2", "B14_3", "B14_4", "B14_5",
-                 "D6_1", "D6_2", "D6_3", "F3_de")
-ds_col_syn <- bindori_dataset_threshold_chr %>% select(-cols_remove)
-cols_syn <- colnames(ds_col_syn)
+# # also, we can probably subset those columns with constant inputs
+# cols_remove <- c("B13_1", "B13_2", "B13_3", "B13_4",
+#                  "B13_5", "B13_6", "B13_7",
+#                  "B14_1", "B14_2", "B14_3", "B14_4", "B14_5",
+#                  "D6_1", "D6_2", "D6_3", "F3_de")
+# ds_col_syn <- bindori_dataset_threshold_chr %>% select(-cols_remove)
+# cols_syn <- colnames(ds_col_syn)
+
+
+##########################################################################
 ######---------------synthetic data with synthpop-------------------######
-# method 1: default
-my.seed <- 17914709
-sds.default <- syn(bindori_dataset_threshold_chr, seed = my.seed)
+##########################################################################
 
-# method 2: default parametric
-sds.default.para <- syn(bindori_dataset_threshold_chr, method = "parametric", seed = my.seed)
-sds.default.para$method
+# first of all, we try extract all the methods with m=0 set in cart
+settings_default <- syn(bindori_dataset_threshold_chr, method = "cart", m = 0)
+# now we take a look at the extracted settings with $method and $visit.sequence
+arg_method <- settings_default$method
+arg_col <- settings_default$visit.sequence
 
-# method 3: by simple random sampling
-# sds.sample <- syn(bindori_dataset_threshold_chr, method = "sample")
-
-# method 4: by unordered polytomous regression
-sds.upr <- syn(bindori_dataset_threshold_chr, method = "polyreg")
-# method 5: by CART
-sds.cart <- syn(bindori_dataset_threshold_chr, method = "cart")
-# method 6: by Random Forest
-sds.ranger <- syn(bindori_dataset_threshold_chr, method = "ranger")
-# method 7: by bagging
-sds.bag <- syn(bindori_dataset_threshold_chr, method = "bag")
-
-# pay attention to: weight should always be parametric
-### adjustment to the default predictor matrix 
-# example:
-synini <- syn(data = bindori_dataset_threshold_chr,
-m = 0)
+str(arg_method)
 
 
-synini$method 
-synini$visit.sequence
-sds.upr <- syn(bindori_dataset_threshold_chr, method = synini$method, visit.sequence = synini$visit.sequence)
+# for var weight, we should always try "parametric", sample, norm, normrank, pmm
+# ------------------------------------------------------------------------------
+# Error: The following functions were not found: syn.syn.norm, syn.syn.polyreg
+# weight for sample
+arg_method[['weight']] <- "sample"
+# demographics vars E2,E3,E4,E5,E7, we try finding the column index first
+E2_index <- match("E2",names(bindori_dataset_threshold_chr))
+E3_index <- match("E3",names(bindori_dataset_threshold_chr)) # always try "sample"
+E4_index <- match("E4",names(bindori_dataset_threshold_chr))
+E5_index <- match("E5",names(bindori_dataset_threshold_chr))
+E7_index <- match("E7",names(bindori_dataset_threshold_chr))
+
+# for E3, we always try sample
+# arg_method[[E3_index]] <- "sample"
+arg_method[['E3']] <- "sample"
+# then we display all the combinations of 4 method strings
+m1 = c("polyreg", "cart", "syn.rf", "syn.bag")
+m2 = c("polyreg", "cart", "syn.rf", "syn.bag")
+m3 = c("polyreg", "cart", "syn.rf", "syn.bag")
+m4 = c("polyreg", "cart", "syn.rf", "syn.bag")
+method_list = expand.grid(m1,m2,m3,m4)
+# rename the columns of the method list
+colnames(method_list) <- c('E2','E4','E5','E7')
+# as.character(method_list[['E2']][2])
+
+# i=1
+syn_experiment <- function(index_round, method_list, bindori_dataset_threshold_chr, arg_method, arg_col) {
+  arg_method[['E2']] <- as.character(method_list[['E2']][index_round])
+  arg_method[['E4']] <- as.character(method_list[['E4']][index_round])
+  arg_method[['E5']] <- as.character(method_list[['E5']][index_round])
+  arg_method[['E7']] <- as.character(method_list[['E7']][index_round])
+  
+  syn_dataset <- NULL
+  syn_dataset <- syn(bindori_dataset_threshold_chr, method = arg_method, visit.sequence = arg_col)
+  beep(sound = 3)
+  beep(sound = 3)
+  beep(sound = 3)
+  
+  return(data.frame(syn_dataset))
+}
+
+# combination 1~256
+sds_norm_round1 <- syn_experiment(1, method_list, bindori_dataset_threshold_chr = bindori_dataset_threshold_chr, arg_method = arg_method, arg_col = arg_col)
+
+# weight for norm
+arg_method[['weight']] <- "norm"
+# demographics vars E2,E3,E4,E5,E7, we try finding the column index first
+E2_index <- match("E2",names(bindori_dataset_threshold_chr))
+E3_index <- match("E3",names(bindori_dataset_threshold_chr)) # always try "sample"
+E4_index <- match("E4",names(bindori_dataset_threshold_chr))
+E5_index <- match("E5",names(bindori_dataset_threshold_chr))
+E7_index <- match("E7",names(bindori_dataset_threshold_chr))
+
+# for E3, we always try sample
+# arg_method[[E3_index]] <- "sample"
+arg_method[['E3']] <- "sample"
+# then we display all the combinations of 4 method strings
+m1 = c("polyreg", "cart", "syn.rf", "syn.bag")
+m2 = c("polyreg", "cart", "syn.rf", "syn.bag")
+m3 = c("polyreg", "cart", "syn.rf", "syn.bag")
+m4 = c("polyreg", "cart", "syn.rf", "syn.bag")
+method_list = expand.grid(m1,m2,m3,m4)
+# rename the columns of the method list
+colnames(method_list) <- c('E2','E4','E5','E7')
+# as.character(method_list[['E2']][2])
+
+# i=1
+syn_experiment <- function(index_round, method_list, bindori_dataset_threshold_chr, arg_method, arg_col) {
+  arg_method[['E2']] <- as.character(method_list[['E2']][index_round])
+  arg_method[['E4']] <- as.character(method_list[['E4']][index_round])
+  arg_method[['E5']] <- as.character(method_list[['E5']][index_round])
+  arg_method[['E7']] <- as.character(method_list[['E7']][index_round])
+  
+  syn_dataset <- NULL
+  syn_dataset <- syn(bindori_dataset_threshold_chr, method = c(arg_method[-1], "norm"), visit.sequence = c(2:90, 1))
+  beep(sound = 3)
+  beep(sound = 3)
+  beep(sound = 3)
+  
+  return(data.frame(syn_dataset))
+}
+
+# combination 1~256
+sds_norm_round1 <- syn_experiment(1, method_list, bindori_dataset_threshold_chr = bindori_dataset_threshold_chr, arg_method = arg_method, arg_col = arg_col)
 
 
-sds.parametric <- syn(bindori_dataset_threshold, method = "parametric", seed = my.seed)
+# -------------------------------------------------------------------------------
+# weight for syn.normrank
 
-syn_cart <- syn(bindori_dataset_threshold, method = c("cart"), seed = my.seed)
+# -------------------------------------------------------------------------------
+# weight for syn.pmm
+
+
 
 # utility evaluation
 # one-way marginals using compare()
