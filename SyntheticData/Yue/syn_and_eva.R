@@ -9,7 +9,8 @@ library(ggplot2)
 library(dbplyr)
 library(data.table)
 library(here)
-library(beepr)
+# library(beepr)
+library(svMisc)
 
 # source(here::here("./SyntheticData/Yue/data_preprocess.R"))
 
@@ -70,19 +71,21 @@ colnames(method_list) <- c('E2','E4','E5','E7')
 # as.character(method_list[['E2']][2])
 
 # i=1
-syn_experiment <- function(index_round, method_list, bindori_dataset_threshold_chr, arg_method, arg_col) {
-  arg_method[['E2']] <- as.character(method_list[['E2']][index_round])
-  arg_method[['E4']] <- as.character(method_list[['E4']][index_round])
-  arg_method[['E5']] <- as.character(method_list[['E5']][index_round])
-  arg_method[['E7']] <- as.character(method_list[['E7']][index_round])
-  
-  syn_dataset <- NULL
-  syn_dataset <- syn(bindori_dataset_threshold_chr, method = arg_method, visit.sequence = arg_col)
-  beep(sound = 3)
-  beep(sound = 3)
-  beep(sound = 3)
-  
-  return(data.frame(syn_dataset))
+syn_experiment <- function(method_list, bindori_dataset_threshold_chr, arg_method, arg_col) {
+  for (index_round in 1:256) {
+    arg_method[['E2']] <- as.character(method_list[['E2']][index_round])
+    arg_method[['E4']] <- as.character(method_list[['E4']][index_round])
+    arg_method[['E5']] <- as.character(method_list[['E5']][index_round])
+    arg_method[['E7']] <- as.character(method_list[['E7']][index_round])
+    
+    syn_dataset[[index_round]] <- NULL
+    syn_dataset[[index_round]] <- syn(bindori_dataset_threshold_chr, method = arg_method, visit.sequence = arg_col)
+    
+    progress(index_round, 256)
+    Sys.sleep(0.02)
+    if (index_round == 256) message("Done!")
+  }
+  return(as.data.frame(syn_dataset))
 }
 
 # combination 1~256
