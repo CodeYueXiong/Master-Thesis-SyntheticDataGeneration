@@ -83,8 +83,11 @@ syn_experiment <- function(method_list, bindori_dataset_threshold_chr, arg_metho
     
     progress(index_round, 256)
     Sys.sleep(0.02)
-    if (index_round == 256) message("Done!")
+    if (index_round == 256) {
+      save(as.data.frame(syn_dataset), file = "sample_syn.rda")
+      message("Done!")}
   }
+  
   return(as.data.frame(syn_dataset))
 }
 
