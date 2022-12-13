@@ -14,15 +14,17 @@ library(ggplot2)
 library(dbplyr)
 library(data.table)
 library(tidyverse)
+library(here)
 
 # set the working directory
 # wd <- "F:/Master-Thesis-DifferentialPrivacy" # used for thinkpad
 wd <- "C:/Users/ru27req/Master-Thesis-DifferentialPrivacy"
-setwd(wd)
+setwd(here())
 
 file_path <- "./SyntheticData/Terrance/version_1/syn_k2_2020-08-02_2020-08-08.csv"
 # gpdr_file_path <- "F:/Master-Thesis-DifferentialPrivacy/gpdr.csv" # used for tp
-gpdr_file_path <- "C:/Users/ru27req/Master-Thesis-DifferentialPrivacy/gpdr.csv"
+# gpdr_file_path <- "C:/Users/ru27req/Master-Thesis-DifferentialPrivacy/gpdr.csv"
+gpdr_file_path <- "gpdr.csv"
 
 # step 1: filter with only gdpr countries included
 gpdr_region_preprocess <- function(file_path, gpdr_file_path) {
@@ -60,11 +62,14 @@ gpdr_region_preprocess <- function(file_path, gpdr_file_path) {
     }
 }
 
-# # read in the original dataset and syn data by Terrance
-# gpdr_dataset_list <- gpdr_region_preprocess(file_path, gpdr_file_path)
-# bindori_dataset_gpdr <- data.frame(gpdr_dataset_list$bindori_dataset_gpdr)
-# syn_dataset_gpdr <- data.frame(gpdr_dataset_list$syn_dataset_gpdr)
-# ncol(bindori_dataset_gpdr)
+# read in the original dataset and syn data by Terrance
+gpdr_dataset_list <- gpdr_region_preprocess(file_path, gpdr_file_path)
+bindori_dataset_gpdr <- data.frame(gpdr_dataset_list$bindori_dataset_gpdr)
+syn_dataset_gpdr <- data.frame(gpdr_dataset_list$syn_dataset_gpdr)
+ncol(bindori_dataset_gpdr)
+
+str(syn_dataset_gpdr)
+
 # 
 # bindori_dataset_gpdr$D6_1
 
@@ -81,7 +86,7 @@ for (i in 1:7){
 bindori_dataset <- as.data.frame(bind_rows(ori_dataset))
 print("binding dataset is successful!")
 
-test <- as.data.frame(bindori_dataset[bindori_dataset$GID_0 %in% country_name,])
+test <- as.data.frame(bindori_dataset[bindori_dataset$GID_0 %in% country_name, ])
 
 ori_dataset[[1]]$GID_0 %in% country_name
 gpdr_countries_data <- NA
@@ -161,8 +166,8 @@ threshold_preprocess <- function(bindori_dataset_gpdr) {
     return(data.frame(bindori_dataset_threshold))
 }
 
-bindori_dataset_threshold <- threshold_preprocess(bindori_dataset)
-
+bindori_dataset_threshold <- threshold_preprocess(bindori_dataset_gpdr)
+str(bindori_dataset_threshold)
 # factor all the var types to factor except for the "weight" column
 bindori_dataset_threshold_chr <- bindori_dataset_threshold %>% mutate(across(c(where(is.numeric), -weight), as.character))
 print("factor done!!!")

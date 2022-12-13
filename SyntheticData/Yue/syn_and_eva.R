@@ -15,7 +15,7 @@ library(here)
 # set the working directory
 # wd <- "F:/Master-Thesis-DifferentialPrivacy"
 wd <- "C:/Users/ru27req/Master-Thesis-DifferentialPrivacy"
-setwd(wd)
+setwd(here())
 
 # load the preprocessed original data
 load("bindori_dataset_preprocessed.rda")
@@ -38,7 +38,7 @@ sds.default.para <- syn(bindori_dataset_threshold_chr, method = "parametric", se
 sds.default.para$method
 
 # method 3: by simple random sampling
-sds.sample <- syn(bindori_dataset_threshold_chr, method = "sample")
+# sds.sample <- syn(bindori_dataset_threshold_chr, method = "sample")
 
 # method 4: by unordered polytomous regression
 sds.upr <- syn(bindori_dataset_threshold_chr, method = "polyreg")
@@ -48,6 +48,18 @@ sds.cart <- syn(bindori_dataset_threshold_chr, method = "cart")
 sds.ranger <- syn(bindori_dataset_threshold_chr, method = "ranger")
 # method 7: by bagging
 sds.bag <- syn(bindori_dataset_threshold_chr, method = "bag")
+
+# pay attention to: weight should always be parametric
+### adjustment to the default predictor matrix 
+# example:
+synini <- syn(data = bindori_dataset_threshold_chr,
+m = 0)
+
+
+synini$method 
+synini$visit.sequence
+sds.upr <- syn(bindori_dataset_threshold_chr, method = synini$method, visit.sequence = synini$visit.sequence)
+
 
 sds.parametric <- syn(bindori_dataset_threshold, method = "parametric", seed = my.seed)
 
