@@ -68,55 +68,10 @@ bindori_dataset_gpdr <- data.frame(gpdr_dataset_list$bindori_dataset_gpdr)
 syn_dataset_gpdr <- data.frame(gpdr_dataset_list$syn_dataset_gpdr)
 ncol(bindori_dataset_gpdr)
 
-str(syn_dataset_gpdr)
+str(bindori_dataset_gpdr)
 
-# 
 # bindori_dataset_gpdr$D6_1
 
-syn_data <- read.csv(file = file_path)
-colnames(syn_data)[colnames(syn_data)=="sample_weight"] <- "weight"
-cols_list <- colnames(syn_data)
-ori_dataset <- list()
-# read in the original datasets
-for (i in 1:7){
-  ori_dataset[[i]] <- vroom(list.files(pattern = "*_full.csv$")[i],
-                            show_col_types = FALSE) %>%
-    select(all_of(cols_list))
-}
-bindori_dataset <- as.data.frame(bind_rows(ori_dataset))
-print("binding dataset is successful!")
-
-test <- as.data.frame(bindori_dataset[bindori_dataset$GID_0 %in% country_name, ])
-
-ori_dataset[[1]]$GID_0 %in% country_name
-gpdr_countries_data <- NA
-gpdr_countries_data <- read.csv(file = gpdr_file_path, sep = ",")
-country_name <- unique(as.character(gpdr_countries_data$Country_GID))
-country_name
-
-bindori_dataset$GID_0
-bindori_dataset_gpdr <- bindori_dataset[bindori_dataset$GID_1 %in% country_name ,]
-
-bindori_dataset$GID_1
-country_name
-bindori_dataset_gpdr <- bindori_dataset %>%
-  filter(as.character(.data[["GID_0"]]) %in% country_name)  # where the problem arised
-
-print("filterring gpdr countries is successful!")
-
-bindori_dataset_gpdr
-bindori_dataset_gpdr$D6_2  # numeric [0]
-bindori_dataset[["D6_1"]]
-# 
-# class(bindori_dataset_gpdr[[2]])
-# 
-# for (i in 1:ncol(bindori_dataset_gpdr)) {
-#     if (class(bindori_dataset_gpdr[[i]])=="numeric") {
-#         print(i)
-#     }
-# }
-# 
-# class(syn_dataset_gpdr[[1]])
 
 # step 2: threshold with only gdpr countries included
 threshold_preprocess <- function(bindori_dataset_gpdr) {
@@ -174,8 +129,8 @@ print("factor done!!!")
 str(bindori_dataset_threshold_chr)
 # preprocessed original data import and export
 #-----------------------------------------------
-export_path <- "C:/Users/ru27req/Master-Thesis-DifferentialPrivacy"
-bindori_data_name <- "bindori_dataset_preprocessed.rda"
+export_path <- "/Users/Echo/Documents/MasterThesisYue/Master-Thesis-DifferentialPrivacy"
+bindori_data_name <- "bindori_dataset_preprocessed_new.rda"
 
 class(bindori_dataset_threshold_chr$D6_2)
 
