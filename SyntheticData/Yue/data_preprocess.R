@@ -1,5 +1,5 @@
 ########  ----- source code for data preprocessing -----
-# packages_list <- c("readr", "vroom", "tidyverse", "arsenal", "reshape2", 
+# packages_list <- c("readr", "vroom", "tidyverse", "arsenal", "reshape2",
 #                   "synthpop", "ggplot2", "dbplyr", "data.table")
 # install.packages(packages_list)
 
@@ -18,11 +18,17 @@ library(here)
 
 # set the working directory
 # wd <- "F:/Master-Thesis-DifferentialPrivacy" # used for thinkpad
+
 wd <- "C:/Users/ru27req/Master-Thesis-DifferentialPrivacy"
 setwd(here())
 
-file_path <- "./SyntheticData/Terrance/version_1/syn_k2_2020-08-02_2020-08-08.csv"
+wd <- "/dss/dsshome1/0C/ru27req2"
+setwd(wd)
+
+
+file_path <- "./Master-Thesis-DifferentialPrivacy/SyntheticData/Terrance/version_1/syn_k2_2020-08-02_2020-08-08.csv"
 # gpdr_file_path <- "F:/Master-Thesis-DifferentialPrivacy/gpdr.csv" # used for tp
+
 # gpdr_file_path <- "C:/Users/ru27req/Master-Thesis-DifferentialPrivacy/gpdr.csv"
 gpdr_file_path <- "gpdr.csv"
 
@@ -67,11 +73,17 @@ gpdr_dataset_list <- gpdr_region_preprocess(file_path, gpdr_file_path)
 bindori_dataset_gpdr <- data.frame(gpdr_dataset_list$bindori_dataset_gpdr)
 syn_dataset_gpdr <- data.frame(gpdr_dataset_list$syn_dataset_gpdr)
 ncol(bindori_dataset_gpdr)
+<<<<<<< HEAD
 
 str(bindori_dataset_gpdr)
 
 # bindori_dataset_gpdr$D6_1
 
+=======
+
+str(bindori_dataset_gpdr)
+
+>>>>>>> faf9980 (code update for preprocessing)
 
 # step 2: threshold with only gdpr countries included
 threshold_preprocess <- function(bindori_dataset_gpdr) {
