@@ -16,19 +16,13 @@ library(svMisc) # install.packages("svMisc")
 
 # set the working directory
 # wd <- "F:/Master-Thesis-DifferentialPrivacy"
-wd <- "/dss/dsshome1/0C/ru27req2/Master-Thesis-DifferentialPrivacy"
+
+# wd <- "/dss/dsshome1/0C/ru27req2/Master-Thesis-DifferentialPrivacy"
+wd <- "/Users/Echo/Documents/MasterThesisYue/Master-Thesis-DifferentialPrivacy"
 setwd(wd)
 
 # load the preprocessed original data
 load("bindori_dataset_preprocessed_new.rda")
-# we have the dataframe here named as "bindori_dataset_threshold_chr"
-# # also, we can probably subset those columns with constant inputs
-# cols_remove <- c("B13_1", "B13_2", "B13_3", "B13_4",
-#                  "B13_5", "B13_6", "B13_7",
-#                  "B14_1", "B14_2", "B14_3", "B14_4", "B14_5",
-#                  "D6_1", "D6_2", "D6_3", "F3_de")
-# ds_col_syn <- bindori_dataset_threshold_chr %>% select(-cols_remove)
-# cols_syn <- colnames(ds_col_syn)
 
 
 ##########################################################################
@@ -61,16 +55,6 @@ method_list <- bind_rows(data.frame(t(m1)), data.frame(t(m2)), data.frame(t(m3))
 # rename the columns of the method list
 colnames(method_list) <- c('E2','E4','E5','E7')
 # as.character(method_list[['E2']][2])
-
-#========== tryout for sample_cart ============
-arg_method[['E2']] <- as.character(method_list[['E2']][2])
-arg_method[['E4']] <- as.character(method_list[['E4']][2])
-arg_method[['E5']] <- as.character(method_list[['E5']][2])
-arg_method[['E7']] <- as.character(method_list[['E7']][2])
-
-syn_dataset <- syn(bindori_dataset_threshold_chr, method = c("sample", arg_method[-c(1, E3_index)], "sample"), visit.sequence = c(E3_index, arg_col[-c(1, E3_index)], 1))
-
-write.syn(syn_dataset, filename = "sample_cart_syn", filetype = "rda")
 
 syn_experiment <- function(method, index_round, method_list, bindori_dataset_threshold_chr, arg_method, arg_col) {
   # start from cart index_round=2
