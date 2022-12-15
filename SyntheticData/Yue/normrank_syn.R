@@ -1,5 +1,5 @@
 ##########################################################################
-###---------------weight with parametric=="normrank"-------------------###
+#####------------weight with parametric=="normrank"------------------#####
 ##########################################################################
 
 # load the required packages
@@ -25,6 +25,7 @@ setwd(wd)
 
 # load the preprocessed original data
 load("bindori_dataset_preprocessed_new.rda")
+# we have the dataframe here named as "bindori_dataset_threshold_chr"
 
 ##########################################################################
 ######---------------synthetic data with synthpop-------------------######
@@ -38,12 +39,12 @@ arg_col <- settings_default$visit.sequence
 
 
 # for var weight, we should always try "parametric", sample, norm, normrank, pmm
-# -------------------------try normrank for weight------------------------------
+# ----------------------------try normrank for weight-------------------------------
 
 arg_method[['weight']] <- "normrank"
 # # demographics vars E2,E3,E4,E5,E7, we try finding the column index first
 # E2_index <- match("E2",names(bindori_dataset_threshold_chr))
-# E3_index <- match("E3",names(bindori_dataset_threshold_chr)) # always try "sample"
+E3_index <- match("E3",names(bindori_dataset_threshold_chr)) # always try "sample"
 # E4_index <- match("E4",names(bindori_dataset_threshold_chr))
 # E5_index <- match("E5",names(bindori_dataset_threshold_chr))
 # E7_index <- match("E7",names(bindori_dataset_threshold_chr))
@@ -59,32 +60,30 @@ m4 = c("bag", "bag", "bag", "bag")
 method_list <- bind_rows(data.frame(t(m1)), data.frame(t(m2)), data.frame(t(m3)), data.frame(t(m4)))
 # rename the columns of the method list
 colnames(method_list) <- c('E2','E4','E5','E7')
+# as.character(method_list[['E2']][2])
 
-# design a for loop
-syn_experiment <- function(method_list, bindori_dataset_threshold_chr, arg_method) {
-  for (index_round in 1:4) {
-    arg_method[['E2']] <- as.character(method_list[['E2']][index_round])
-    arg_method[['E4']] <- as.character(method_list[['E4']][index_round])
-    arg_method[['E5']] <- as.character(method_list[['E5']][index_round])
-    arg_method[['E7']] <- as.character(method_list[['E7']][index_round])
-    
-    syn_dataset <- NULL
-    if (index_round == 1) {
-      syn_dataset[[index_round]] <- syn(bindori_dataset_threshold_chr, method = c(arg_method[-1], "sample"), visit.sequence = c(2:90, 1), polyreg.maxit = 10000)
-    } else {
-      syn_dataset[[index_round]] <- syn(bindori_dataset_threshold_chr, method = c(arg_method[-1], "sample"), visit.sequence = c(2:90, 1))
-    }
-    
-    # make the progress bar working
-    progress(index_round, 4)
-    Sys.sleep(0.02)
-    if (index_round == 4) {
-      save(as.data.frame(syn_dataset), file = "normrank_syn.rda")
-      message("Done!")}
-  }
+syn_experiment <- function(method, index_round, method_list, bindori_dataset_threshold_chr, arg_method, arg_col) {
+  # start from cart index_round=2
+  arg_method[['E2']] <- as.character(method_list[['E2']][index_round])
+  arg_method[['E4']] <- as.character(method_list[['E4']][index_round])
+  arg_method[['E5']] <- as.character(method_list[['E5']][index_round])
+  arg_method[['E7']] <- as.character(method_list[['E7']][index_round])
   
-  return(as.data.frame(syn_dataset))
+  syn_dataset <- NULL
+  
+  arg_method[['E3']] <- 'sample'
+  arg_method[['weight']] <- 'normrank'
+  syn_dataset <- syn(bindori_dataset_threshold_chr, method = arg_method[c(2:90,1)], visit.sequence = arg_col[c(2:90, 1)])
+  
+  write.syn(syn_dataset, filename = paste("normrank", method, "syn", sep="_"), filetype = "rda")
+  message("syn done!")
 }
 
-# for loop combination 1~4
-sds_normrank_tryout <- syn_experiment(method_list, bindori_dataset_threshold_chr, arg_method = arg_method)
+# tryout for normrank_cart
+sds_normrankcart_tryout <- syn_experiment(method="cart", index_round=2, method_list, bindori_dataset_threshold_chr, arg_method=arg_method, arg_col=arg_col)
+# tryout for normrank_rf
+sds_normrankrf_tryout <- syn_experiment(method="rf", index_round=3, method_list, bindori_dataset_threshold_chr, arg_method = arg_method, arg_col=arg_col)
+# tryout for normrank_bag
+sds_normrankbag_tryout <- syn_experiment(method="bag", index_round=4, method_list, bindori_dataset_threshold_chr, arg_method = arg_method, arg_col=arg_col)
+# tryout for normrank_polyreg
+sds_normrankpolyreg_tryout <- syn_experiment(method="polyreg", index_round=1, method_list, bindori_dataset_threshold_chr, arg_method = arg_method)
