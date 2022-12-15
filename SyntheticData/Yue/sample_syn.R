@@ -21,6 +21,16 @@ setwd(wd)
 
 # load the preprocessed original data
 load("bindori_dataset_preprocessed_new.rda")
+# dummify the data, first we change them to factor
+col_names <- names(bindori_dataset_threshold_chr)[2:90]
+bindori_dataset_threshold_chr[col_names] <- lapply(bindori_dataset_threshold_chr[col_names] , factor)
+
+str(bindori_dataset_threshold_chr)
+export_path <- "/dss/dsshome1/0C/ru27req2/Master-Thesis-DifferentialPrivacy"
+bindori_data_name <- "bindori_dataset_preprocessed_factor.rda"
+
+save(bindori_dataset_threshold_chr, file=paste(c(export_path, bindori_data_name), 
+                                               collapse="/"))
 # we have the dataframe here named as "bindori_dataset_threshold_chr"
 # # also, we can probably subset those columns with constant inputs
 # cols_remove <- c("B13_1", "B13_2", "B13_3", "B13_4",

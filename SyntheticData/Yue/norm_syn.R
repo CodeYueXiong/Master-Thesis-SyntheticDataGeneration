@@ -13,8 +13,10 @@ library(ggplot2)
 library(dbplyr)
 library(data.table)
 library(here)
+library(caret)
+
 # library(beepr)
-library(svMisc) # install.packages("svMisc")
+# library(svMisc) # install.packages("svMisc")
 
 # source(here::here("./SyntheticData/Yue/data_preprocess.R"))
 
@@ -24,7 +26,7 @@ wd <- "/dss/dsshome1/0C/ru27req2/Master-Thesis-DifferentialPrivacy"
 setwd(wd)
 
 # load the preprocessed original data
-load("bindori_dataset_preprocessed_new.rda")
+load("bindori_dataset_preprocessed_factor.rda")
 # we have the dataframe here named as "bindori_dataset_threshold_chr"
 
 ##########################################################################
@@ -62,6 +64,13 @@ method_list <- bind_rows(data.frame(t(m1)), data.frame(t(m2)), data.frame(t(m3))
 colnames(method_list) <- c('E2','E4','E5','E7')
 # as.character(method_list[['E2']][2])
 
+# change as integer for B2, B4, E5, E6
+# !!! pay attention to the reverse!!!
+bindori_dataset_threshold_chr$B2 <- as.integer(bindori_dataset_threshold_chr$B2)
+bindori_dataset_threshold_chr$B4 <- as.integer(bindori_dataset_threshold_chr$B4)
+bindori_dataset_threshold_chr$E5 <- as.integer(bindori_dataset_threshold_chr$E5)
+bindori_dataset_threshold_chr$E6 <- as.integer(bindori_dataset_threshold_chr$E6)
+
 syn_experiment <- function(method, index_round, method_list, bindori_dataset_threshold_chr, arg_method, arg_col) {
   # start from cart index_round=2
   arg_method[['E2']] <- as.character(method_list[['E2']][index_round])
@@ -72,7 +81,7 @@ syn_experiment <- function(method, index_round, method_list, bindori_dataset_thr
   syn_dataset <- NULL
   arg_method[['E3']] <- 'sample'
   arg_method[['weight']] <- 'norm'
-  arg_method[['E6']] <- 'cart'
+  # arg_method[['E6']] <- 'cart'
   
   syn_dataset <- syn(bindori_dataset_threshold_chr, method = arg_method[c(2:90,1)], visit.sequence = arg_col[c(2:90, 1)])
   
