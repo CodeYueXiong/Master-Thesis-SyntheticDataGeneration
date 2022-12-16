@@ -15,32 +15,36 @@ library(here)
 # source(here::here("./SyntheticData/Yue/data_preprocess.R"))
 
 # set the working directory
-# wd <- "F:/Master-Thesis-DifferentialPrivacy"
-wd <- "/dss/dsshome1/0C/ru27req2/Master-Thesis-DifferentialPrivacy"
+wd <- "Z:/MasterThesisRoxy/Master-Thesis-DifferentialPrivacy"
+# wd <- "/dss/dsshome1/0C/ru27req2/Master-Thesis-DifferentialPrivacy"
 setwd(wd)
 
 # load the preprocessed original data
-load("bindori_dataset_preprocessed_new.rda")
+load("bindori_dataset_preprocessed_factor.rda")
 # dummify the data, first we change them to factor
 col_names <- names(bindori_dataset_threshold_chr)[2:90]
 bindori_dataset_threshold_chr[col_names] <- lapply(bindori_dataset_threshold_chr[col_names] , factor)
 
 str(bindori_dataset_threshold_chr)
-export_path <- "/dss/dsshome1/0C/ru27req2/Master-Thesis-DifferentialPrivacy"
-bindori_data_name <- "bindori_dataset_preprocessed_factor.rda"
-
-save(bindori_dataset_threshold_chr, file=paste(c(export_path, bindori_data_name), 
-                                               collapse="/"))
+# export_path <- "/dss/dsshome1/0C/ru27req2/Master-Thesis-DifferentialPrivacy"
+# bindori_data_name <- "bindori_dataset_preprocessed_factor.rda"
+# 
+# save(bindori_dataset_threshold_chr, file=paste(c(export_path, bindori_data_name), 
+#                                                collapse="/"))
 # we have the dataframe here named as "bindori_dataset_threshold_chr"
-# # also, we can probably subset those columns with constant inputs
-# cols_remove <- c("B13_1", "B13_2", "B13_3", "B13_4",
-#                  "B13_5", "B13_6", "B13_7",
-#                  "B14_1", "B14_2", "B14_3", "B14_4", "B14_5",
-#                  "D6_1", "D6_2", "D6_3", "F3_de")
-# ds_col_syn <- bindori_dataset_threshold_chr %>% select(-cols_remove)
+# also, we can probably subset those columns with constant inputs
+cols_remove <- c("B13_1", "B13_2", "B13_3", "B13_4",
+                 "B13_5", "B13_6", "B13_7",
+                 "B14_1", "B14_2", "B14_3", "B14_4", "B14_5",
+                 "D6_1", "D6_2", "D6_3", "F3_de")
+bindori_dataset_threshold_chr <- bindori_dataset_threshold_chr %>% select(-cols_remove)
 # cols_syn <- colnames(ds_col_syn)
+# also for those B1b_x like vars and D10, we try exclude them from the synthesis
+cols_rm_bd <- c("B1b_x1", "B1b_x2", "B1b_x3", "B1b_x4", "B1b_x5", "B1b_x6", "B1b_x7",
+                "B1b_x8", "B1b_x9", "B1b_x10", "B1b_x11","B1b_x12", "B1b_x13", "D10")
 
-
+bindori_dataset_threshold_chr <- bindori_dataset_threshold_chr %>% select(-all_of(cols_rm_bd))
+# cols_syn <- colnames(ds_col_syn)
 ##########################################################################
 ######---------------synthetic data with synthpop-------------------######
 ##########################################################################
@@ -95,7 +99,7 @@ syn_experiment <- function(method, index_round, method_list, bindori_dataset_thr
   arg_method[['E6']] <- 'cart'
   
   # syn_dataset <- syn(bindori_dataset_threshold_chr, method = c(E3 = "sample", arg_method[-c(1, E3_index)], weight = "sample"), visit.sequence = c(E3=1, arg_col[-c(1, E3_index)], weight=1))
-  syn_dataset <- syn(bindori_dataset_threshold_chr, method = arg_method[c(2:90,1)], visit.sequence = arg_col[c(2:90, 1)], polyreg.maxit = 100000)
+  syn_dataset <- syn(bindori_dataset_threshold_chr, method = arg_method[c(2:60,1)], visit.sequence = arg_col[c(2:60, 1)], polyreg.maxit = 100000)
   
   write.syn(syn_dataset, filename = paste("sample", method, "syn", sep="_"), filetype = "rda")
   message("syn done!")
