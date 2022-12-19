@@ -13,7 +13,6 @@ library(ggplot2)
 library(dbplyr)
 library(data.table)
 library(here)
-library(caret)
 
 # library(beepr)
 # library(svMisc) # install.packages("svMisc")
@@ -28,7 +27,44 @@ setwd(wd)
 # load the preprocessed original data
 load("bindori_dataset_preprocessed_factor.rda")
 # we have the dataframe here named as "bindori_dataset_threshold_chr"
+# Encoding, var B2, 
+# -1    -99 [0, 1) [1, 3) 
+#  3 151336   2405 106555
+#  1      2      3      4 
+#  3 151336   2405 106555 
+bindori_dataset_threshold_chr$B2 <- as.integer(bindori_dataset_threshold_chr$B2)
+# var B4,
+#    -99 [0, 1) [1, 5)
+# 249422    290  10587
+#      1      2      3 
+# 249422    290  10587 
+bindori_dataset_threshold_chr$B4 <- as.integer(bindori_dataset_threshold_chr$B4)
+# var E5,
+#   -99 [0, 1) [1, 2) 
+# 45595   8766 205938 
+#     1      2      3 
+# 45595   8766 205938
+bindori_dataset_threshold_chr$E5 <- as.integer(bindori_dataset_threshold_chr$E5)
+# var E6,
+#   -99 [0, 9) 
+# 57585 202714 
+#     1      2 
+# 57585 202714  
+bindori_dataset_threshold_chr$E6 <- as.integer(bindori_dataset_threshold_chr$E6)
 
+# also, we can probably subset those columns with constant inputs
+cols_remove <- c("B13_1", "B13_2", "B13_3", "B13_4",
+                 "B13_5", "B13_6", "B13_7",
+                 "B14_1", "B14_2", "B14_3", "B14_4", "B14_5",
+                 "D6_1", "D6_2", "D6_3", "F3_de")
+bindori_dataset_threshold_chr <- bindori_dataset_threshold_chr %>% select(-all_of(cols_remove))
+# cols_syn <- colnames(ds_col_syn)
+# also for those B1b_x like vars and D10, we try exclude them from the synthesis
+cols_rm_bd <- c("B1b_x1", "B1b_x2", "B1b_x3", "B1b_x4", "B1b_x5", "B1b_x6", "B1b_x7",
+                "B1b_x8", "B1b_x9", "B1b_x10", "B1b_x11","B1b_x12", "B1b_x13", "D10")
+
+bindori_dataset_threshold_chr <- bindori_dataset_threshold_chr %>% select(-all_of(cols_rm_bd))
+ncol(bindori_dataset_threshold_chr)==60
 ##########################################################################
 ######---------------synthetic data with synthpop-------------------######
 ##########################################################################
@@ -64,12 +100,12 @@ method_list <- bind_rows(data.frame(t(m1)), data.frame(t(m2)), data.frame(t(m3))
 colnames(method_list) <- c('E2','E4','E5','E7')
 # as.character(method_list[['E2']][2])
 
-# change as integer for B2, B4, E5, E6
-# !!! pay attention to the reverse!!!
-bindori_dataset_threshold_chr$B2 <- as.integer(bindori_dataset_threshold_chr$B2)
-bindori_dataset_threshold_chr$B4 <- as.integer(bindori_dataset_threshold_chr$B4)
-bindori_dataset_threshold_chr$E5 <- as.integer(bindori_dataset_threshold_chr$E5)
-bindori_dataset_threshold_chr$E6 <- as.integer(bindori_dataset_threshold_chr$E6)
+# # change as integer for B2, B4, E5, E6
+# # !!! pay attention to the reverse!!!
+# bindori_dataset_threshold_chr$B2 <- as.integer(bindori_dataset_threshold_chr$B2)
+# bindori_dataset_threshold_chr$B4 <- as.integer(bindori_dataset_threshold_chr$B4)
+# bindori_dataset_threshold_chr$E5 <- as.integer(bindori_dataset_threshold_chr$E5)
+# bindori_dataset_threshold_chr$E6 <- as.integer(bindori_dataset_threshold_chr$E6)
 
 syn_experiment <- function(method, index_round, method_list, bindori_dataset_threshold_chr, arg_method, arg_col) {
   # start from cart index_round=2
@@ -83,7 +119,7 @@ syn_experiment <- function(method, index_round, method_list, bindori_dataset_thr
   arg_method[['weight']] <- 'norm'
   # arg_method[['E6']] <- 'cart'
   
-  syn_dataset <- syn(bindori_dataset_threshold_chr, method = arg_method[c(2:90,1)], visit.sequence = arg_col[c(2:90, 1)])
+  syn_dataset <- syn(bindori_dataset_threshold_chr, method = arg_method[c(2:60,1)], visit.sequence = arg_col[c(2:60, 1)])
   
   write.syn(syn_dataset, filename = paste("norm", method, "syn", sep="_"), filetype = "rda")
   message("syn done!")

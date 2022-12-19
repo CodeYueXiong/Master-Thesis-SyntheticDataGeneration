@@ -14,7 +14,7 @@ library(dbplyr)
 library(data.table)
 library(here)
 # library(beepr)
-library(svMisc) # install.packages("svMisc")
+# library(svMisc) # install.packages("svMisc")
 
 # source(here::here("./SyntheticData/Yue/data_preprocess.R"))
 
@@ -24,7 +24,7 @@ wd <- "/dss/dsshome1/0C/ru27req2/Master-Thesis-DifferentialPrivacy"
 setwd(wd)
 
 # load the preprocessed original data
-load("bindori_dataset_preprocessed_new.rda")
+load("bindori_dataset_preprocessed_factor.rda")
 # we have the dataframe here named as "bindori_dataset_threshold_chr"
 
 ##########################################################################
@@ -61,6 +61,14 @@ method_list <- bind_rows(data.frame(t(m1)), data.frame(t(m2)), data.frame(t(m3))
 # rename the columns of the method list
 colnames(method_list) <- c('E2','E4','E5','E7')
 # as.character(method_list[['E2']][2])
+# # change as integer for B2, B4, E5, E6
+# !!! pay attention to the reverse!!!
+bindori_dataset_threshold_chr$B2 <- as.matrix(as.integer(bindori_dataset_threshold_chr$B2))
+bindori_dataset_threshold_chr$B4 <- as.matrix(as.integer(bindori_dataset_threshold_chr$B4))
+bindori_dataset_threshold_chr$E5 <- as.matrix(as.integer(bindori_dataset_threshold_chr$E5))
+bindori_dataset_threshold_chr$E6 <- as.matrix(as.integer(bindori_dataset_threshold_chr$E6))
+
+# str(bindori_dataset_threshold_chr)
 
 syn_experiment <- function(method, index_round, method_list, bindori_dataset_threshold_chr, arg_method, arg_col) {
   # start from cart index_round=2
