@@ -134,4 +134,4 @@ sds_normrf_tryout <- syn_experiment(method="rf", index_round=3, method_list, bin
 # tryout for norm_bag
 sds_normbag_tryout <- syn_experiment(method="bag", index_round=4, method_list, bindori_dataset_threshold_chr, arg_method = arg_method, arg_col=arg_col)
 # tryout for norm_polyreg
-sds_normpolyreg_tryout <- syn_experiment(method="polyreg", index_round=1, method_list, bindori_dataset_threshold_chr, arg_method = arg_method)
+sds_normpolyreg_tryout <- syn_experiment(method="polyreg", index_round=1, method_list, bindori_dataset_threshold_chr, arg_method = arg_method, arg_col=arg_col)

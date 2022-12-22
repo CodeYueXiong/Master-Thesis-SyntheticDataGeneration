@@ -105,4 +105,4 @@ sds_normrankrf_tryout <- syn_experiment(method="rf", index_round=3, method_list,
 # tryout for normrank_bag
 sds_normrankbag_tryout <- syn_experiment(method="bag", index_round=4, method_list, bindori_dataset_threshold_chr, arg_method = arg_method, arg_col=arg_col)
 # tryout for normrank_polyreg
-sds_normrankpolyreg_tryout <- syn_experiment(method="polyreg", index_round=1, method_list, bindori_dataset_threshold_chr, arg_method = arg_method)
+sds_normrankpolyreg_tryout <- syn_experiment(method="polyreg", index_round=1, method_list, bindori_dataset_threshold_chr, arg_method = arg_method, arg_col=arg_col)
