@@ -21,11 +21,13 @@ library(here)
 
 # set the working directory
 # wd <- "F:/Master-Thesis-DifferentialPrivacy"
-wd <- "/dss/dsshome1/0C/ru27req2/Master-Thesis-DifferentialPrivacy"
+# wd <- "/dss/dsshome1/0C/ru27req2/Master-Thesis-DifferentialPrivacy"
+wd <- "/Volumes/ru27req/MasterThesisRoxy/Master-Thesis-DifferentialPrivacy"
 setwd(wd)
 
 # load the preprocessed original data
 load("bindori_dataset_preprocessed_factor.rda")
+str(bindori_dataset_threshold_chr)
 # we have the dataframe here named as "bindori_dataset_threshold_chr"
 # Encoding, var B2, 
 # -1    -99 [0, 1) [1, 3) 
