@@ -26,31 +26,53 @@ setwd(wd)
 # load the preprocessed original data
 load("bindori_dataset_preprocessed_factor.rda")
 str(bindori_dataset_threshold_chr)
-# we have the dataframe here named as "bindori_dataset_threshold_chr"
-# Encoding, var B2, 
-# -1    -99 [0, 1) [1, 3) 
-#  3 151336   2405 106555
-#  1      2      3      4 
-#  3 151336   2405 106555 
-bindori_dataset_threshold_chr$B2 <- as.integer(bindori_dataset_threshold_chr$B2)
-# var B4,
-#    -99 [0, 1) [1, 5)
-# 249422    290  10587
-#      1      2      3 
-# 249422    290  10587 
+# Encoding c1_m,
+# -99      1      2 
+# 8958 148525 102816
+# 1      2      3 
+# 8958 148525 102816
+bindori_dataset_threshold_chr$C1_m <- as.integer(bindori_dataset_threshold_chr$C1_m)
+# var C3
+bindori_dataset_threshold_chr$C3 <- as.integer(bindori_dataset_threshold_chr$C3)
+# var C5
+# -99      1      2      3      4      5      6 
+# 13673 106397  58551  21450  12313  41348   6567
+bindori_dataset_threshold_chr$C5 <- as.integer(bindori_dataset_threshold_chr$C5)
+# var C8
+# -99      1      2 
+# 11413 247412   1474
+bindori_dataset_threshold_chr$C8 <- as.integer(bindori_dataset_threshold_chr$C8)
+# var D1
+# -99      1      2      3      4      5 
+# 18545   2111   6152  26588  45796 161107 
+bindori_dataset_threshold_chr$D1 <- as.integer(bindori_dataset_threshold_chr$D1)
+# var D3
+# -99      1      2      3      4 
+# 21808  58804 103986  53107  22594
+bindori_dataset_threshold_chr$D3 <- as.integer(bindori_dataset_threshold_chr$D3)
+# var D4
+# -99      1      2      3      4 
+# 18800  10534  20719  45985 164261 
+bindori_dataset_threshold_chr$D4 <- as.integer(bindori_dataset_threshold_chr$D4)
+# var E3
+# -99      1      2      3      4 
+# 37572  92584 127854    509   1780 
+bindori_dataset_threshold_chr$E3 <- as.integer(bindori_dataset_threshold_chr$E3)
+# var E4
+# -99     1     2     3     4     5     6     7 
+# 33977 20154 45379 48939 46555 36414 23079  5802
+bindori_dataset_threshold_chr$E4 <- as.integer(bindori_dataset_threshold_chr$E4)
+# var B4
+# -99   [0, 1) [1, 5) 
+# 249422  290  10587
 bindori_dataset_threshold_chr$B4 <- as.integer(bindori_dataset_threshold_chr$B4)
-# var E5,
-#   -99 [0, 1) [1, 2) 
-# 45595   8766 205938 
-#     1      2      3 
-# 45595   8766 205938
-bindori_dataset_threshold_chr$E5 <- as.integer(bindori_dataset_threshold_chr$E5)
 # var E6,
 #   -99 [0, 9) 
 # 57585 202714
 #     1      2 
 # 57585 202714  
 bindori_dataset_threshold_chr$E6 <- as.integer(bindori_dataset_threshold_chr$E6)
+
 
 # also, we can probably subset those columns with constant inputs
 cols_remove <- c("B13_1", "B13_2", "B13_3", "B13_4",

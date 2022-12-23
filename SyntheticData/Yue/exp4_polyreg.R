@@ -32,19 +32,19 @@ str(bindori_dataset_threshold_chr)
 #  3 151336   2405 106555
 #  1      2      3      4 
 #  3 151336   2405 106555 
-bindori_dataset_threshold_chr$B2 <- as.integer(bindori_dataset_threshold_chr$B2)
+bindori_dataset_threshold_chr$B2 <- as.factor(bindori_dataset_threshold_chr$B2)
 # var B4,
 #    -99 [0, 1) [1, 5)
 # 249422    290  10587
 #      1      2      3 
 # 249422    290  10587 
-bindori_dataset_threshold_chr$B4 <- as.integer(bindori_dataset_threshold_chr$B4)
+# bindori_dataset_threshold_chr$B4 <- as.integer(bindori_dataset_threshold_chr$B4)
 # var E5,
 #   -99 [0, 1) [1, 2) 
 # 45595   8766 205938 
 #     1      2      3 
 # 45595   8766 205938
-bindori_dataset_threshold_chr$E5 <- as.integer(bindori_dataset_threshold_chr$E5)
+# bindori_dataset_threshold_chr$E5 <- as.integer(bindori_dataset_threshold_chr$E5)
 # var E6,
 #   -99 [0, 9) 
 # 57585 202714
@@ -125,7 +125,7 @@ syn_polyreg_experiment <- function(para_weight_list, index, bindori_dataset_thre
   arg_method[['D5']] <- "polyreg"
   
   syn_dataset <- NULL
-  syn_dataset <- syn(bindori_dataset_threshold_chr, method = arg_method[c(2:54,1)], visit.sequence = arg_col[c(2:54, 1)])
+  syn_dataset <- syn(bindori_dataset_threshold_chr, method = arg_method[c(2:54,1)], visit.sequence = arg_col[c(2:54, 1)], polyreg.maxit=10000)
   
   write.syn(syn_dataset, filename = paste("polyreg", para_weight_list[index], "syn", sep="_"), filetype = "rda")
   message("syn done!")
