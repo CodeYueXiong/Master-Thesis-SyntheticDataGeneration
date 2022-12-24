@@ -65,7 +65,7 @@ cols_rm_bd <- c("B1b_x1", "B1b_x2", "B1b_x3", "B1b_x4", "B1b_x5", "B1b_x6", "B1b
 
 bindori_dataset_threshold_chr <- bindori_dataset_threshold_chr %>% select(-all_of(cols_rm_bd))
 ncol(bindori_dataset_threshold_chr)==54
-
+nrow(bindori_dataset_threshold_chr)
 
 ##########################################################################
 ######---------------synthetic data with synthpop-------------------######
@@ -125,7 +125,7 @@ syn_rf_experiment <- function(para_weight_list, index, bindori_dataset_threshold
   arg_method[['D5']] <- "ranger"
   
   syn_dataset <- NULL
-  syn_dataset <- syn(bindori_dataset_threshold_chr, method = arg_method[c(2:54,1)], visit.sequence = arg_col[c(2:54, 1)])
+  syn_dataset <- syn(bindori_dataset_threshold_chr, method = arg_method[c(2:54,1)], visit.sequence = arg_col[c(2:54, 1)], ranger.num.trees=5, ranger.num.samples=5000)
   
   write.syn(syn_dataset, filename = paste("ranger", para_weight_list[index], "syn", sep="_"), filetype = "rda")
   message("syn done!")
