@@ -19,7 +19,8 @@ library(here)
 
 # set the working directory
 # wd <- "F:/Master-Thesis-DifferentialPrivacy"
-wd <- "/dss/dsshome1/0C/ru27req2/Master-Thesis-DifferentialPrivacy"
+wd <- "/Users/Echo/Documents/MasterThesisYue/Master-Thesis-DifferentialPrivacy"
+# wd <- "/dss/dsshome1/0C/ru27req2/Master-Thesis-DifferentialPrivacy"
 # wd <- "/Volumes/ru27req/MasterThesisRoxy/Master-Thesis-DifferentialPrivacy"
 setwd(wd)
 
@@ -66,6 +67,8 @@ cols_rm_bd <- c("B1b_x1", "B1b_x2", "B1b_x3", "B1b_x4", "B1b_x5", "B1b_x6", "B1b
 bindori_dataset_threshold_chr <- bindori_dataset_threshold_chr %>% select(-all_of(cols_rm_bd))
 ncol(bindori_dataset_threshold_chr)==54
 nrow(bindori_dataset_threshold_chr)
+# decrease the size by randomly subsetting 5000 instances from the dataset
+# bindori_dataset_threshold_chr[sample(nrow(real_data), size = 1000),]
 
 ##########################################################################
 ######---------------synthetic data with synthpop-------------------######
@@ -96,44 +99,44 @@ syn_rf_experiment <- function(para_weight_list, index, bindori_dataset_threshold
   arg_method[['E3']] <- "sample"
   arg_method[['weight']] <- para_weight_list[index]  # sample(1), norm(2), normrank(3) to choose
   # E2, E4, E5, E7, ranger for exp_rf
-  arg_method[['E2']] <- "ranger"
-  arg_method[['E4']] <- "ranger"
-  arg_method[['E5']] <- "ranger"
-  arg_method[['E7']] <- "ranger"
+  arg_method[['E2']] <- "rf"
+  arg_method[['E4']] <- "rf"
+  arg_method[['E5']] <- "rf"
+  arg_method[['E7']] <- "rf"
   # B3 to B11, ranger
-  arg_method[['B3']] <- "ranger"
-  arg_method[['B4']] <- "ranger"
-  arg_method[['B5']] <- "ranger"
-  arg_method[['B6']] <- "ranger"
-  arg_method[['B7']] <- "ranger"
-  arg_method[['B8']] <- "ranger"
-  arg_method[['B9']] <- "ranger"
-  arg_method[['B10']] <- "ranger"
-  arg_method[['B11']] <- "ranger"
+  arg_method[['B3']] <- "rf"
+  arg_method[['B4']] <- "rf"
+  arg_method[['B5']] <- "rf"
+  arg_method[['B6']] <- "rf"
+  arg_method[['B7']] <- "rf"
+  arg_method[['B8']] <- "rf"
+  arg_method[['B9']] <- "rf"
+  arg_method[['B10']] <- "rf"
+  arg_method[['B11']] <- "rf"
   # C3, C8
-  arg_method[['C3']] <- "ranger"
-  arg_method[['C8']] <- "ranger"
+  arg_method[['C3']] <- "rf"
+  arg_method[['C8']] <- "rf"
   # C2, C4, C5, C6
-  arg_method[['C2']] <- "ranger"
-  arg_method[['C4']] <- "ranger"
-  arg_method[['C5']] <- "ranger"
-  arg_method[['C6']] <- "ranger"
+  arg_method[['C2']] <- "rf"
+  arg_method[['C4']] <- "rf"
+  arg_method[['C5']] <- "rf"
+  arg_method[['C6']] <- "rf"
   # D1, D2, D4, D5
-  arg_method[['D1']] <- "ranger"
-  arg_method[['D2']] <- "ranger"
-  arg_method[['D4']] <- "ranger"
-  arg_method[['D5']] <- "ranger"
+  arg_method[['D1']] <- "rf"
+  arg_method[['D2']] <- "rf"
+  arg_method[['D4']] <- "rf"
+  arg_method[['D5']] <- "rf"
   
   syn_dataset <- NULL
-  syn_dataset <- syn(bindori_dataset_threshold_chr, method = arg_method[c(2:54,1)], visit.sequence = arg_col[c(2:54, 1)], ranger.num.trees=5, ranger.num.samples=5000)
+  syn_dataset <- syn(bindori_dataset_threshold_chr, method = arg_method[c(2:54,1)], visit.sequence = arg_col[c(2:54, 1)])
   
-  write.syn(syn_dataset, filename = paste("ranger", para_weight_list[index], "syn", sep="_"), filetype = "rda")
+  write.syn(syn_dataset, filename = paste("rf", para_weight_list[index], "syn", sep="_"), filetype = "rda")
   message("syn done!")
 }
 
-# tryout for ranger_sample
-sds_rangersample_tryout <- syn_rf_experiment(para_weight_list, index=1, bindori_dataset_threshold_chr, arg_method, arg_col)
-# tryout for ranger_norm
-sds_rangernorm_tryout <- syn_rf_experiment(para_weight_list, index=2, bindori_dataset_threshold_chr, arg_method, arg_col)
-# tryout for ranger_normrank
-sds_rangernormrank_tryout <- syn_rf_experiment(para_weight_list, index=3, bindori_dataset_threshold_chr, arg_method, arg_col)
+# tryout for rf_sample
+sds_rfsample_tryout <- syn_rf_experiment(para_weight_list, index=1, bindori_dataset_threshold_chr, arg_method, arg_col)
+# tryout for rf_norm
+sds_rfnorm_tryout <- syn_rf_experiment(para_weight_list, index=2, bindori_dataset_threshold_chr, arg_method, arg_col)
+# tryout for rf_normrank
+sds_rfnormrank_tryout <- syn_rf_experiment(para_weight_list, index=3, bindori_dataset_threshold_chr, arg_method, arg_col)
