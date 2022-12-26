@@ -19,8 +19,8 @@ library(here)
 # set the working directory
 # wd <- "F:/Master-Thesis-DifferentialPrivacy" # used for thinkpad
 
-wd <- "C:/Users/ru27req/Master-Thesis-DifferentialPrivacy"
-setwd(here())
+# wd <- "C:/Users/ru27req/Master-Thesis-DifferentialPrivacy"
+# setwd(here())
 
 wd <- "/dss/dsshome1/0C/ru27req2"
 setwd(wd)
@@ -59,6 +59,7 @@ gpdr_region_preprocess <- function(file_path, gpdr_file_path) {
     gpdr_dataset_list <- list()
     gpdr_dataset_list$bindori_dataset_gpdr <- bindori_dataset_gpdr
     gpdr_dataset_list$syn_dataset_gpdr <- syn_dataset_gpdr
+    gpdr_dataset_list$ori_dataset_list <- ori_dataset # store the original datalist datewise
     if(ncol(gpdr_dataset_list$bindori_dataset_gpdr)==ncol(gpdr_dataset_list$syn_dataset_gpdr)) {
         print("stored in list successful!")
         return(gpdr_dataset_list)
@@ -70,6 +71,16 @@ gpdr_region_preprocess <- function(file_path, gpdr_file_path) {
 
 # read in the original dataset and syn data by Terrance
 gpdr_dataset_list <- gpdr_region_preprocess(file_path, gpdr_file_path)
+class(gpdr_dataset_list$ori_dataset_list[[1]]) # No. = 7
+ods_gpdr_0802 <- data.frame(gpdr_dataset_list$ori_dataset_list[[1]])
+ods_gpdr_0803 <- data.frame(gpdr_dataset_list$ori_dataset_list[[2]])
+ods_gpdr_0804 <- data.frame(gpdr_dataset_list$ori_dataset_list[[3]])
+ods_gpdr_0805 <- data.frame(gpdr_dataset_list$ori_dataset_list[[4]])
+ods_gpdr_0806 <- data.frame(gpdr_dataset_list$ori_dataset_list[[5]])
+ods_gpdr_0807 <- data.frame(gpdr_dataset_list$ori_dataset_list[[6]])
+ods_gpdr_0808 <- data.frame(gpdr_dataset_list$ori_dataset_list[[7]])
+# ncol(ods_gpdr_0802)
+
 bindori_dataset_gpdr <- data.frame(gpdr_dataset_list$bindori_dataset_gpdr)
 syn_dataset_gpdr <- data.frame(gpdr_dataset_list$syn_dataset_gpdr)
 ncol(bindori_dataset_gpdr)
@@ -131,6 +142,14 @@ threshold_preprocess <- function(bindori_dataset_gpdr) {
     return(data.frame(bindori_dataset_threshold))
 }
 
+ods_threshold_0802 <- threshold_preprocess(ods_gpdr_0802)
+ods_threshold_0803 <- threshold_preprocess(ods_gpdr_0803)
+ods_threshold_0804 <- threshold_preprocess(ods_gpdr_0804)
+ods_threshold_0805 <- threshold_preprocess(ods_gpdr_0805)
+ods_threshold_0806 <- threshold_preprocess(ods_gpdr_0806)
+ods_threshold_0807 <- threshold_preprocess(ods_gpdr_0807)
+ods_threshold_0808 <- threshold_preprocess(ods_gpdr_0808)
+
 bindori_dataset_threshold <- threshold_preprocess(bindori_dataset_gpdr)
 str(bindori_dataset_threshold)
 # factor all the var types to factor except for the "weight" column
@@ -139,6 +158,17 @@ print("factor done!!!")
 str(bindori_dataset_threshold_chr)
 
 # dummify the data, first we change them to factor
+names(ods_threshold_0802)[2:90]==names(ods_threshold_0803)[2:90] # check
+colnames_ods_datewise <- names(ods_threshold_0802)[2:90]
+ods_threshold_0802[colnames_ods_datewise] <- lapply(ods_threshold_0802[colnames_ods_datewise] , factor)
+ods_threshold_0803[colnames_ods_datewise] <- lapply(ods_threshold_0803[colnames_ods_datewise] , factor)
+ods_threshold_0804[colnames_ods_datewise] <- lapply(ods_threshold_0804[colnames_ods_datewise] , factor)
+ods_threshold_0805[colnames_ods_datewise] <- lapply(ods_threshold_0805[colnames_ods_datewise] , factor)
+ods_threshold_0806[colnames_ods_datewise] <- lapply(ods_threshold_0806[colnames_ods_datewise] , factor)
+ods_threshold_0807[colnames_ods_datewise] <- lapply(ods_threshold_0807[colnames_ods_datewise] , factor)
+ods_threshold_0808[colnames_ods_datewise] <- lapply(ods_threshold_0808[colnames_ods_datewise] , factor)
+
+
 col_names <- names(bindori_dataset_threshold_chr)[2:90]
 bindori_dataset_threshold_chr[col_names] <- lapply(bindori_dataset_threshold_chr[col_names] , factor)
 
@@ -146,6 +176,27 @@ bindori_dataset_threshold_chr[col_names] <- lapply(bindori_dataset_threshold_chr
 #-----------------------------------------------
 export_path <- "/dss/dsshome1/0C/ru27req2/Master-Thesis-DifferentialPrivacy"
 bindori_data_name <- "bindori_dataset_preprocessed_factor.rda"
+ods_0802 <- "ods_preprocess_0802.rda"
+ods_0803 <- "ods_preprocess_0803.rda"
+ods_0804 <- "ods_preprocess_0804.rda"
+ods_0805 <- "ods_preprocess_0805.rda"
+ods_0806 <- "ods_preprocess_0806.rda"
+ods_0807 <- "ods_preprocess_0807.rda"
+ods_0808 <- "ods_preprocess_0808.rda"
+save(ods_threshold_0802, file=paste(c(export_path, ods_0802), 
+                                               collapse="/"))
+save(ods_threshold_0803, file=paste(c(export_path, ods_0803), 
+                                               collapse="/"))
+save(ods_threshold_0804, file=paste(c(export_path, ods_0804), 
+                                               collapse="/"))
+save(ods_threshold_0805, file=paste(c(export_path, ods_0805), 
+                                               collapse="/"))
+save(ods_threshold_0806, file=paste(c(export_path, ods_0806), 
+                                               collapse="/"))
+save(ods_threshold_0807, file=paste(c(export_path, ods_0807), 
+                                               collapse="/"))
+save(ods_threshold_0808, file=paste(c(export_path, ods_0808), 
+                                               collapse="/"))
 
 save(bindori_dataset_threshold_chr, file=paste(c(export_path, bindori_data_name), 
                                                collapse="/"))

@@ -1,0 +1,15 @@
+Date saved: 25 Dec 2022, 00:09 
+Data frame with original data: bindori_dataset_threshold_chr 
+Number of synthetic data sets: 1 
+Output file(s):(rda) cart_norm_syn.rda
+Additional file: synobject_cart_norm_syn.RData
+Methods used:
+  weight     B1_1     B1_2     B1_3     B1_4     B1_5     B1_6     B1_7     B1_8     B1_9    B1_10    B1_11    B1_12    B1_13 
+  "cart" "sample"   "cart"   "cart"   "cart"   "cart"   "cart"   "cart"   "cart"   "cart"   "cart"   "cart"   "cart"   "cart" 
+      B3       B5       B6       B7       B8       B9      B10      B11    B12_1    B12_2    B12_3    B12_4    B12_5    B12_6 
+  "cart"   "cart"   "cart"   "cart"   "cart"   "cart"   "cart"   "cart"   "cart"   "cart"   "cart"   "cart"   "cart"   "cart" 
+    C1_m       C2       C3       C5       C6       C7       C8       D1       D2       D3       D4       D5       D7       D8 
+  "cart"   "cart"   "cart"   "cart"   "cart"   "cart"   "cart"   "cart"   "cart"   "cart"   "cart"   "cart"   "cart"   "cart" 
+      D9       E2       E3       E4       E7       F1     F2_1     F2_2       B2       B4       E5       E6 
+  "cart" "sample"   "cart"   "cart"   "cart"   "cart"   "cart"   "cart"   "cart"   "cart"   "cart"   "norm" 
+Seed used: 52839566 

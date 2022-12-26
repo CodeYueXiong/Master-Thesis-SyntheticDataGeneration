@@ -125,7 +125,7 @@ syn_bag_experiment <- function(para_weight_list, index, bindori_dataset_threshol
   arg_method[['D5']] <- "bag"
   
   syn_dataset <- NULL
-  syn_dataset <- syn(bindori_dataset_threshold_chr, method = arg_method[c(2:54,1)], visit.sequence = arg_col[c(2:54, 1)])
+  syn_dataset <- syn(bindori_dataset_threshold_chr, method = arg_method[c(2:54,1)], visit.sequence = arg_col[c(2:54, 1)], bag.ntree=5)
   
   write.syn(syn_dataset, filename = paste("bag", para_weight_list[index], "syn", sep="_"), filetype = "rda")
   message("syn done!")
