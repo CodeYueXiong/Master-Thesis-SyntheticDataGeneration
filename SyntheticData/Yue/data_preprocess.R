@@ -50,8 +50,10 @@ gpdr_region_preprocess <- function(file_path, gpdr_file_path) {
     gpdr_countries_data <- NA
     gpdr_countries_data <- read.csv(file = gpdr_file_path, sep = ",")
     country_name <- unique(as.character(gpdr_countries_data$Country_GID))
+    
     bindori_dataset_gpdr <- bindori_dataset %>%
                                         filter(GID_0 %in% country_name)
+    
     syn_dataset_gpdr <- syn_data %>%
                             filter(GID_0 %in% country_name)
     print("filterring gpdr countries is successful!")
@@ -71,7 +73,7 @@ gpdr_region_preprocess <- function(file_path, gpdr_file_path) {
 
 # read in the original dataset and syn data by Terrance
 gpdr_dataset_list <- gpdr_region_preprocess(file_path, gpdr_file_path)
-class(gpdr_dataset_list$ori_dataset_list[[1]]) # No. = 7
+class(gpdr_dataset_list$ori_dataset_list[[7]]) # No. = 7
 ods_gpdr_0802 <- data.frame(gpdr_dataset_list$ori_dataset_list[[1]])
 ods_gpdr_0803 <- data.frame(gpdr_dataset_list$ori_dataset_list[[2]])
 ods_gpdr_0804 <- data.frame(gpdr_dataset_list$ori_dataset_list[[3]])
@@ -80,6 +82,24 @@ ods_gpdr_0806 <- data.frame(gpdr_dataset_list$ori_dataset_list[[5]])
 ods_gpdr_0807 <- data.frame(gpdr_dataset_list$ori_dataset_list[[6]])
 ods_gpdr_0808 <- data.frame(gpdr_dataset_list$ori_dataset_list[[7]])
 # ncol(ods_gpdr_0802)
+gpdr_countries_data <- NA
+gpdr_countries_data <- read.csv(file = gpdr_file_path, sep = ",")
+country_name <- unique(as.character(gpdr_countries_data$Country_GID))
+
+ods_gpdr_0802 <- ods_gpdr_0802 %>%
+                 filter(GID_0 %in% country_name)
+ods_gpdr_0803 <- ods_gpdr_0803 %>%
+                 filter(GID_0 %in% country_name)
+ods_gpdr_0804 <- ods_gpdr_0804 %>%
+                 filter(GID_0 %in% country_name)
+ods_gpdr_0805 <- ods_gpdr_0805 %>%
+                 filter(GID_0 %in% country_name)
+ods_gpdr_0806 <- ods_gpdr_0806 %>%
+                 filter(GID_0 %in% country_name)
+ods_gpdr_0807 <- ods_gpdr_0807 %>%
+                 filter(GID_0 %in% country_name)
+ods_gpdr_0808 <- ods_gpdr_0808 %>%
+                 filter(GID_0 %in% country_name)
 
 bindori_dataset_gpdr <- data.frame(gpdr_dataset_list$bindori_dataset_gpdr)
 syn_dataset_gpdr <- data.frame(gpdr_dataset_list$syn_dataset_gpdr)
