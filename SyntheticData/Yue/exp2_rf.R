@@ -33,19 +33,19 @@ str(ods_threshold_0804)
 #  3 151336   2405 106555
 #  1      2      3      4 
 #  3 151336   2405 106555 
-ods_threshold_0804$B2 <- as.integer(ods_threshold_0804$B2)
+# ods_threshold_0804$B2 <- as.integer(ods_threshold_0804$B2)
 # var B4,
 #    -99 [0, 1) [1, 5)
 # 249422    290  10587
 #      1      2      3 
 # 249422    290  10587 
-ods_threshold_0804$B4 <- as.integer(ods_threshold_0804$B4)
+# ods_threshold_0804$B4 <- as.integer(ods_threshold_0804$B4)
 # var E5,
 #   -99 [0, 1) [1, 2) 
 # 45595   8766 205938 
 #     1      2      3 
 # 45595   8766 205938
-ods_threshold_0804$E5 <- as.integer(ods_threshold_0804$E5)
+# ods_threshold_0804$E5 <- as.integer(ods_threshold_0804$E5)
 # var E6,
 #   -99 [0, 9) 
 # 57585 202714 
@@ -128,7 +128,7 @@ syn_ranger_experiment <- function(para_weight_list, index, bindori_dataset_thres
   arg_method[['D5']] <- "rf"
   
   syn_dataset <- NULL
-  syn_dataset <- syn(bindori_dataset_threshold_chr, method = arg_method[c(2:54,1)], visit.sequence = arg_col[c(2:54, 1)], rf.ntree=3)
+  syn_dataset <- syn(bindori_dataset_threshold_chr, method = arg_method[c(2:54,1)], visit.sequence = arg_col[c(2:54, 1)], rf.ntree=2)
   
   write.syn(syn_dataset, filename = paste("rf0804", para_weight_list[index], "syn", sep="_"), filetype = "rda")
   message("syn done!")
