@@ -24,55 +24,55 @@ wd <- "/dss/dsshome1/0C/ru27req2/Master-Thesis-DifferentialPrivacy"
 setwd(wd)
 
 # load the preprocessed original data
-load("ods_preprocess_0802.rda")
-str(ods_threshold_0802)
+load("ods_preprocess_0808.rda")
+str(ods_threshold_0808)
 # we have the dataframe here named as "ods_threshold_0802"
 # Encoding, var B2, 
 # -1    -99 [0, 1) [1, 3) 
 #  3 151336   2405 106555
 #  1      2      3      4 
 #  3 151336   2405 106555 
-ods_threshold_0802$B2 <- as.integer(ods_threshold_0802$B2)
+# ods_threshold_0805$B2 <- as.integer(ods_threshold_0805$B2)
 # var B4,
 #    -99 [0, 1) [1, 5)
 # 249422    290  10587
 #      1      2      3 
 # 249422    290  10587 
-ods_threshold_0802$B4 <- as.integer(ods_threshold_0802$B4)
+# ods_threshold_0805$B4 <- as.integer(ods_threshold_0805$B4)
 # var E5,
 #   -99 [0, 1) [1, 2) 
 # 45595   8766 205938 
 #     1      2      3 
 # 45595   8766 205938
-ods_threshold_0802$E5 <- as.integer(ods_threshold_0802$E5)
+# ods_threshold_0805$E5 <- as.integer(ods_threshold_0805$E5)
 # var E6,
 #   -99 [0, 9) 
 # 57585 202714 
 #     1      2 
 # 57585 202714  
-ods_threshold_0802$E6 <- as.integer(ods_threshold_0802$E6)
+ods_threshold_0808$E6 <- as.integer(ods_threshold_0808$E6)
 
 # also, we can probably subset those columns with constant inputs
 cols_remove <- c("B13_1", "B13_2", "B13_3", "B13_4",
                  "B13_5", "B13_6", "B13_7",
                  "B14_1", "B14_2", "B14_3", "B14_4", "B14_5",
                  "D6_1", "D6_2", "D6_3", "F3_de")
-ods_threshold_0802 <- ods_threshold_0802 %>% select(-all_of(cols_remove))
+ods_threshold_0808 <- ods_threshold_0808 %>% select(-all_of(cols_remove))
 # also for those B1b_x like vars and D10, we try exclude them from the synthesis
 cols_rm_bd <- c("B1b_x1", "B1b_x2", "B1b_x3", "B1b_x4", "B1b_x5", "B1b_x6", "B1b_x7",
                 "B1b_x8", "B1b_x9", "B1b_x10", "B1b_x11","B1b_x12", "B1b_x13", "D10",
                 "C0_1", "C0_2", "C0_3", "C0_4", "C0_5", "C0_6")
 
-ods_threshold_0802 <- ods_threshold_0802 %>% select(-all_of(cols_rm_bd))
-ncol(ods_threshold_0802)==54
-nrow(ods_threshold_0802)
+ods_threshold_0808 <- ods_threshold_0808 %>% select(-all_of(cols_rm_bd))
+ncol(ods_threshold_0808)==54
+nrow(ods_threshold_0808)
 
 ##########################################################################
 ######---------------synthetic data with synthpop-------------------######
 ##########################################################################
 
 # first of all, we try extract all the methods with m=0 set in cart
-settings_default <- syn(ods_threshold_0802, method = "cart", m = 0)
+settings_default <- syn(ods_threshold_0808, method = "cart", m = 0)
 # now we take a look at the extracted settings with $method and $visit.sequence
 arg_method <- settings_default$method
 arg_col <- settings_default$visit.sequence
@@ -125,15 +125,15 @@ syn_bag_experiment <- function(para_weight_list, index, bindori_dataset_threshol
   arg_method[['D5']] <- "bag"
   
   syn_dataset <- NULL
-  syn_dataset <- syn(bindori_dataset_threshold_chr, method = arg_method[c(2:54,1)], visit.sequence = arg_col[c(2:54, 1)], bag.ntree=3)
+  syn_dataset <- syn(bindori_dataset_threshold_chr, method = arg_method[c(2:54,1)], visit.sequence = arg_col[c(2:54, 1)], bag.ntree=2)
   
-  write.syn(syn_dataset, filename = paste("bag0802", para_weight_list[index], "syn", sep="_"), filetype = "rda")
+  write.syn(syn_dataset, filename = paste("bag0808", para_weight_list[index], "syn", sep="_"), filetype = "rda")
   message("syn done!")
 }
 
 # tryout for bag_sample
-sds_bagsample_tryout <- syn_bag_experiment(para_weight_list, index=1, ods_threshold_0802, arg_method, arg_col)
+sds_bagsample_tryout <- syn_bag_experiment(para_weight_list, index=1, ods_threshold_0808, arg_method, arg_col)
 # tryout for bag_norm
-sds_bagnorm_tryout <- syn_bag_experiment(para_weight_list, index=2, ods_threshold_0802, arg_method, arg_col)
+sds_bagnorm_tryout <- syn_bag_experiment(para_weight_list, index=2, ods_threshold_0808, arg_method, arg_col)
 # tryout for bag_normrank
-sds_bagnormrank_tryout <- syn_bag_experiment(para_weight_list, index=3, ods_threshold_0802, arg_method, arg_col)
+sds_bagnormrank_tryout <- syn_bag_experiment(para_weight_list, index=3, ods_threshold_0808, arg_method, arg_col)
