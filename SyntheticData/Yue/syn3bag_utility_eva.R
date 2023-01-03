@@ -24,8 +24,8 @@ str(bindori_dataset_threshold_chr)
 
 
 #----------------------------------------------------------------#
-#                           Exp-1
-#--------------------- method = cart ----------------------------#
+#                           Exp-3
+#--------------------- method = bag ----------------------------#
 #----------------------------------------------------------------#
 
 # now we start with the cart group by looping the saved .rda files
@@ -35,228 +35,268 @@ rda2list <- function(file) {
   as.list(e)
 }
 
-folder <- "./SyntheticData/Yue/syn1_cart"
+folder <- "./SyntheticData/Yue/syn3_bag"
 files <- list.files(folder, pattern = ".rda$")
 
-syn_cart_models <- Map(rda2list, file.path(folder, files))
-names(syn_cart_models) <- tools::file_path_sans_ext(files)
+syn_bag_models <- Map(rda2list, file.path(folder, files))
+names(syn_bag_models) <- tools::file_path_sans_ext(files)
 
 # we dataframe the lists
-cart_sample_sds <- data.frame(syn_cart_models$cart_sample_syn)
-cart_norm_sds <- data.frame(syn_cart_models$cart_norm_syn)
-cart_normrank_sds <- data.frame(syn_cart_models$cart_normrank_syn)
+# bag sample
+bag_sample_0802 <- data.frame(syn_bag_models$bag0802_sample_syn)
+bag_sample_0803 <- data.frame(syn_bag_models$bag0803_sample_syn)
+bag_sample_0804 <- data.frame(syn_bag_models$bag0804_sample_syn)
+bag_sample_0805 <- data.frame(syn_bag_models$bag0805_sample_syn)
+bag_sample_0806 <- data.frame(syn_bag_models$bag0806_sample_syn)
+bag_sample_0807 <- data.frame(syn_bag_models$bag0807_sample_syn)
+bag_sample_0808 <- data.frame(syn_bag_models$bag0808_sample_syn)
+names(bag_sample_0802) <- sub('^syn.', '', names(bag_sample_0802))
+names(bag_sample_0803) <- sub('^syn.', '', names(bag_sample_0803))
+names(bag_sample_0804) <- sub('^syn.', '', names(bag_sample_0804))
+names(bag_sample_0805) <- sub('^syn.', '', names(bag_sample_0805))
+names(bag_sample_0806) <- sub('^syn.', '', names(bag_sample_0806))
+names(bag_sample_0807) <- sub('^syn.', '', names(bag_sample_0807))
+names(bag_sample_0808) <- sub('^syn.', '', names(bag_sample_0808))
+# first try change them to char from var B2 to E6 (51-54)
+str(bag_sample_0802)  # 54, E6
+str(bag_sample_0803)  # 51-54
+str(bag_sample_0804)  # 54, E6
+str(bag_sample_0805)  # 54, E6
+str(bag_sample_0806)  # 54, E6
+str(bag_sample_0807)  # 54, E6
+str(bag_sample_0808)  # 54, E6
+col_names <- names(bag_sample_0803)[51:54]
+bag_sample_0803[col_names] <- lapply(bag_sample_0803[col_names], as.character)
 
-# delete the prefix in variable naming
-names(cart_sample_sds) <- sub('^syn.', '', names(cart_sample_sds))
-names(cart_norm_sds) <- sub('^syn.', '', names(cart_norm_sds))
-names(cart_normrank_sds) <- sub('^syn.', '', names(cart_normrank_sds))
+bag_sample_0803$B2[bag_sample_0803$B2 == "1"] <- "-1"
+bag_sample_0803$B2[bag_sample_0803$B2 == "2"] <- "-99"
+bag_sample_0803$B2[bag_sample_0803$B2 == "3"] <- "[0, 1)"
+bag_sample_0803$B2[bag_sample_0803$B2 == "4"] <- "[1, 3)"
+bag_sample_0803$B4[bag_sample_0803$B4 == "1"] <- "-99"
+bag_sample_0803$B4[bag_sample_0803$B4 == "2"] <- "[0, 1)"
+bag_sample_0803$B4[bag_sample_0803$B4 == "3"] <- "[1, 5)"
+bag_sample_0803$E5[bag_sample_0803$E5 == "1"] <- "-99"
+bag_sample_0803$E5[bag_sample_0803$E5 == "2"] <- "[0, 1)"
+bag_sample_0803$E5[bag_sample_0803$E5 == "3"] <- "[1, 2)"
 
-str(cart_sample_sds)
-str(cart_norm_sds)
-str(cart_normrank_sds)
+bag_sample_0802["E6"] <- lapply(bag_sample_0802["E6"], as.character)
+bag_sample_0804["E6"] <- lapply(bag_sample_0804["E6"], as.character)
+bag_sample_0805["E6"] <- lapply(bag_sample_0805["E6"], as.character)
+bag_sample_0806["E6"] <- lapply(bag_sample_0806["E6"], as.character)
+bag_sample_0807["E6"] <- lapply(bag_sample_0807["E6"], as.character)
+bag_sample_0808["E6"] <- lapply(bag_sample_0808["E6"], as.character)
 
-# # for cart_sample
-# # also, we can probably subset those columns with constant inputs
-# cols_remove <- c("B13_1", "B13_2", "B13_3", "B13_4",
-#                  "B13_5", "B13_6", "B13_7",
-#                  "B14_1", "B14_2", "B14_3", "B14_4", "B14_5",
-#                  "D6_1", "D6_2", "D6_3", "F3_de")
-# cart_sample_sds <- cart_sample_sds %>% select(-(cols_remove))
-# cart_norm_sds <- cart_norm_sds %>% select(-(cols_remove))
-# cart_normrank_sds <- cart_normrank_sds %>% select(-(cols_remove))
-# 
-# # also for those B1b_x like vars and D10, we try exclude them from the synthesis
-# cols_rm_bd <- c("B1b_x1", "B1b_x2", "B1b_x3", "B1b_x4", "B1b_x5", "B1b_x6", "B1b_x7",
-#                 "B1b_x8", "B1b_x9", "B1b_x10", "B1b_x11","B1b_x12", "B1b_x13", "D10", "D9")
-# cart_sample_sds <- cart_sample_sds %>% select(-(cols_rm_bd))
-# cart_norm_sds <- cart_norm_sds %>% select(-(cols_rm_bd))
-# cart_normrank_sds <- cart_normrank_sds %>% select(-(cols_rm_bd))
+bag_sample_sds <- bind_rows(bag_sample_0802, bag_sample_0803, bag_sample_0804, bag_sample_0805,
+                           bag_sample_0806, bag_sample_0807, bag_sample_0808)
+table(bag_sample_sds$B2)  # -1    -99 [0, 1) [1, 3)
+table(bag_sample_sds$B4)  # -99 [0, 1) [1, 5)
+table(bag_sample_sds$E5)  # -99 [0, 1) [1, 2)
+table(bag_sample_sds$E6)  # 1     2
 
-ncol(cart_norm_sds)==54  # there are 54 variables in total
+# bag norm
+bag_norm_0802 <- data.frame(syn_bag_models$bag0802_norm_syn)
+bag_norm_0803 <- data.frame(syn_bag_models$bag0803_norm_syn)
+bag_norm_0804 <- data.frame(syn_bag_models$bag0804_norm_syn)
+bag_norm_0805 <- data.frame(syn_bag_models$bag0805_norm_syn)
+bag_norm_0806 <- data.frame(syn_bag_models$bag0806_norm_syn)
+bag_norm_0807 <- data.frame(syn_bag_models$bag0807_norm_syn)
+bag_norm_0808 <- data.frame(syn_bag_models$bag0808_norm_syn)
 
-# # for cart_sample, we try change all the character type back to factor except "weight"
-# col_names <- names(cart_sample_sds)[2:59]
-# cart_sample_sds[col_names] <- lapply(cart_sample_sds[col_names], factor)
-# str(cart_sample_sds)
+names(bag_norm_0802) <- sub('^syn.', '', names(bag_norm_0802))
+names(bag_norm_0803) <- sub('^syn.', '', names(bag_norm_0803))
+names(bag_norm_0804) <- sub('^syn.', '', names(bag_norm_0804))
+names(bag_norm_0805) <- sub('^syn.', '', names(bag_norm_0805))
+names(bag_norm_0806) <- sub('^syn.', '', names(bag_norm_0806))
+names(bag_norm_0807) <- sub('^syn.', '', names(bag_norm_0807))
+names(bag_norm_0808) <- sub('^syn.', '', names(bag_norm_0808))
+table(bindori_dataset_threshold_chr$B2)
+table(bag_norm_0802$B2)  # -1    -99 [0, 1) [1, 3)
+table(bag_norm_0802$B4)  # -99 [0, 1) [1, 5)
+table(bag_norm_0802$E5)  # -99 [0, 1) [1, 2)
+table(bag_norm_0802$E6)  # 0     1     2     3
+table(bag_norm_0803$B2)  #  -1    -99 [0, 1) [1, 3)
+table(bag_norm_0803$B4)  # -99 [0, 1) [1, 5)
+table(bag_norm_0803$E5)  # -99 [0, 1) [1, 2)
+table(bag_norm_0803$E6)  # 0     1     2     3
+table(bag_norm_0804$B2)  # -1    -99 [0, 1) [1, 3)
+table(bag_norm_0804$B4)  # -99 [0, 1) [1, 5)
+table(bag_norm_0804$E5)  # -99 [0, 1) [1, 2)
+table(bag_norm_0804$E6)  # 0     1     2     3
+table(bag_norm_0805$B2)  # -99 [0, 1) [1, 3) missing -1
+table(bag_norm_0805$B4)  # -99 [0, 1) [1, 5)
+table(bag_norm_0805$E5)  # -99 [0, 1) [1, 2)
+table(bag_norm_0805$E6)  # 0     1     2     3
+table(bag_norm_0806$B2)  # -99 [0, 1) [1, 3) missing -1
+table(bag_norm_0806$B4)  # -99 [0, 1) [1, 5)
+table(bag_norm_0806$E5)  # -99 [0, 1) [1, 2)
+table(bag_norm_0806$E6)  # 0     1     2     3
+table(bag_norm_0807$B2)  # -99 [0, 1) [1, 3) missing -1
+table(bag_norm_0807$B4)  # -99 [0, 1) [1, 5)
+table(bag_norm_0807$E5)  # -99 [0, 1) [1, 2)
+table(bag_norm_0807$E6)  # 0     1     2     3
+table(bag_norm_0808$B2)  # -99 [0, 1) [1, 3) missing -1
+table(bag_norm_0808$B4)  # -99 [0, 1) [1, 5)
+table(bag_norm_0808$E5)  # -99 [0, 1) [1, 2)
+table(bag_norm_0808$E6)  # 0     1     2     3
 
-# for cart_sample, cart_norm and normrank, we will have to reverse the integer back to the factor
+col_names <- names(bag_norm_0802)[54]
+bag_norm_0802[col_names] <- lapply(bag_norm_0802[col_names], as.character)
+bag_norm_0803[col_names] <- lapply(bag_norm_0803[col_names], as.character)
+bag_norm_0804[col_names] <- lapply(bag_norm_0804[col_names], as.character)
+bag_norm_0805[col_names] <- lapply(bag_norm_0805[col_names], as.character)
+bag_norm_0806[col_names] <- lapply(bag_norm_0806[col_names], as.character)
+bag_norm_0807[col_names] <- lapply(bag_norm_0807[col_names], as.character)
+bag_norm_0808[col_names] <- lapply(bag_norm_0808[col_names], as.character)
+bag_norm_sds <- bind_rows(bag_norm_0802, bag_norm_0803, bag_norm_0804, bag_norm_0805,
+                          bag_norm_0806, bag_norm_0807, bag_norm_0808)
+# check whether there are conflicts in B2, B4, E5 and E6
+table(bag_norm_sds$B2)
+table(bag_norm_sds$B4)
+table(bag_norm_sds$E5)
+table(bag_norm_sds$E6)
+str(bag_norm_sds)
 
-# additionally, for cart sample, norm and norm, we reverse the integer back to interval
-cart_sample_sds$B2[cart_sample_sds$B2 == "1"] <- "-1"
-cart_sample_sds$B2[cart_sample_sds$B2 == "2"] <- "-99"
-cart_sample_sds$B2[cart_sample_sds$B2 == "3"] <- "[0, 1)"
-cart_sample_sds$B2[cart_sample_sds$B2 == "4"] <- "[1, 3)"
-cart_norm_sds$B2[cart_norm_sds$B2 == "1"] <- "-1"
-cart_norm_sds$B2[cart_norm_sds$B2 == "2"] <- "-99"
-cart_norm_sds$B2[cart_norm_sds$B2 == "3"] <- "[0, 1)"
-cart_norm_sds$B2[cart_norm_sds$B2 == "4"] <- "[1, 3)"
-cart_normrank_sds$B2[cart_normrank_sds$B2 == "1"] <- "-1"
-cart_normrank_sds$B2[cart_normrank_sds$B2 == "2"] <- "-99"
-cart_normrank_sds$B2[cart_normrank_sds$B2 == "3"] <- "[0, 1)"
-cart_normrank_sds$B2[cart_normrank_sds$B2 == "4"] <- "[1, 3)"
+# bag normrank
+bag_normrank_0802 <- data.frame(syn_bag_models$bag0802_normrank_syn)
+bag_normrank_0803 <- data.frame(syn_bag_models$bag0803_normrank_syn)
+bag_normrank_0804 <- data.frame(syn_bag_models$bag0804_normrank_syn)
+bag_normrank_0805 <- data.frame(syn_bag_models$bag0805_normrank_syn)
+bag_normrank_0806 <- data.frame(syn_bag_models$bag0806_normrank_syn)
+bag_normrank_0807 <- data.frame(syn_bag_models$bag0807_normrank_syn)
+bag_normrank_0808 <- data.frame(syn_bag_models$bag0808_normrank_syn)
+names(bag_normrank_0802) <- sub('^syn.', '', names(bag_normrank_0802))
+names(bag_normrank_0803) <- sub('^syn.', '', names(bag_normrank_0803))
+names(bag_normrank_0804) <- sub('^syn.', '', names(bag_normrank_0804))
+names(bag_normrank_0805) <- sub('^syn.', '', names(bag_normrank_0805))
+names(bag_normrank_0806) <- sub('^syn.', '', names(bag_normrank_0806))
+names(bag_normrank_0807) <- sub('^syn.', '', names(bag_normrank_0807))
+names(bag_normrank_0808) <- sub('^syn.', '', names(bag_normrank_0808))
+table(bag_normrank_0802$B2)  # -1    -99 [0, 1) [1, 3)
+table(bag_normrank_0802$B4)  # -99 [0, 1) [1, 5)
+table(bag_normrank_0802$E5)  # -99 [0, 1) [1, 2)
+table(bag_normrank_0802$E6)  # 1     2
+table(bag_normrank_0803$B2)  # -1    -99 [0, 1) [1, 3)
+table(bag_normrank_0803$B4)  # -99 [0, 1) [1, 5) 
+table(bag_normrank_0803$E5)  # -99 [0, 1) [1, 2)
+table(bag_normrank_0803$E6)  # 1     2
+table(bag_normrank_0804$B2)  # -1  -99 [0, 1) [1, 3)
+table(bag_normrank_0804$B4)  # -99 [0, 1) [1, 5)
+table(bag_normrank_0804$E5)  # -99 [0, 1) [1, 2)
+table(bag_normrank_0804$E6)  # 1    2
+table(bag_normrank_0805$B2)  # -99 [0, 1) [1, 3), missing -1
+table(bag_normrank_0805$B4)  # -99 [0, 1) [1, 5)
+table(bag_normrank_0805$E5)  # -99 [0, 1) [1, 2)
+table(bag_normrank_0805$E6)  # 1     2
+table(bag_normrank_0806$B2)  # -99 [0, 1) [1, 3), missing -1
+table(bag_normrank_0806$B4)  # -99 [0, 1) [1, 5)
+table(bag_normrank_0806$E5)  # -99 [0, 1) [1, 2)
+table(bag_normrank_0806$E6)  # 1     2
+table(bag_normrank_0807$B2)  # -99 [0, 1) [1, 3), missing -1
+table(bag_normrank_0807$B4)  # -99 [0, 1) [1, 5)
+table(bag_normrank_0807$E5)  # -99 [0, 1) [1, 2)
+table(bag_normrank_0807$E6)  # 1     2
+table(bag_normrank_0808$B2)  # -99 [0, 1) [1, 3), missing -1
+table(bag_normrank_0808$B4)  # -99 [0, 1) [1, 5)
+table(bag_normrank_0808$E5)  # -99 [0, 1) [1, 2)
+table(bag_normrank_0808$E6)  # 1     2
 
-cart_sample_sds$B4[cart_sample_sds$B4 == "1"] <- "-99"
-cart_sample_sds$B4[cart_sample_sds$B4 == "2"] <- "[0, 1)"
-cart_sample_sds$B4[cart_sample_sds$B4 == "3"] <- "[1, 5)"
-cart_norm_sds$B4[cart_norm_sds$B4 == "1"] <- "-99"
-cart_norm_sds$B4[cart_norm_sds$B4 == "2"] <- "[0, 1)"
-cart_norm_sds$B4[cart_norm_sds$B4 == "3"] <- "[1, 5)"
-cart_normrank_sds$B4[cart_normrank_sds$B4 == "1"] <- "-99"
-cart_normrank_sds$B4[cart_normrank_sds$B4 == "2"] <- "[0, 1)"
-cart_normrank_sds$B4[cart_normrank_sds$B4 == "3"] <- "[1, 5)"
+col_names <- names(bag_normrank_0807)[54]
+bag_normrank_0802[col_names] <- lapply(bag_normrank_0802[col_names], as.character)
+bag_normrank_0803[col_names] <- lapply(bag_normrank_0803[col_names], as.character)
+bag_normrank_0804[col_names] <- lapply(bag_normrank_0804[col_names], as.character)
+bag_normrank_0805[col_names] <- lapply(bag_normrank_0805[col_names], as.character)
+bag_normrank_0806[col_names] <- lapply(bag_normrank_0806[col_names], as.character)
+bag_normrank_0807[col_names] <- lapply(bag_normrank_0807[col_names], as.character)
+bag_normrank_0808[col_names] <- lapply(bag_normrank_0808[col_names], as.character)
+bag_normrank_sds <- bind_rows(bag_normrank_0802, bag_normrank_0803, bag_normrank_0804, bag_normrank_0805,
+                              bag_normrank_0806, bag_normrank_0807, bag_normrank_0808)
+table(bag_normrank_sds$B2)  # -1    -99 [0, 1) [1, 3)
+table(bag_normrank_sds$B4)  # -99 [0, 1) [1, 5)
+table(bag_normrank_sds$E5)  # -99 [0, 1) [1, 2)
+table(bag_normrank_sds$E6)  # 1      2, only E6 needs to be factored
 
-cart_sample_sds$E5[cart_sample_sds$E5 == "1"] <- "-99"
-cart_sample_sds$E5[cart_sample_sds$E5 == "2"] <- "[0, 1)"
-cart_sample_sds$E5[cart_sample_sds$E5 == "3"] <- "[1, 2)"
-cart_norm_sds$E5[cart_norm_sds$E5 == "1"] <- "-99"
-cart_norm_sds$E5[cart_norm_sds$E5 == "2"] <- "[0, 1)"
-cart_norm_sds$E5[cart_norm_sds$E5 == "3"] <- "[1, 2)"
-cart_normrank_sds$E5[cart_normrank_sds$E5 == "1"] <- "-99"
-cart_normrank_sds$E5[cart_normrank_sds$E5 == "2"] <- "[0, 1)"
-cart_normrank_sds$E5[cart_normrank_sds$E5 == "3"] <- "[1, 2)"
+str(bag_sample_sds)  # B2 to E6, chr
+str(bag_norm_sds)   # E6 chr
+str(bag_normrank_sds)  # E6 chr
 
-cart_sample_sds$E6[cart_sample_sds$E6 == "1"] <- "-99"
-cart_sample_sds$E6[cart_sample_sds$E6 == "2"] <- "[0, 9)"
-cart_norm_sds$E6[cart_norm_sds$E6 == "1"] <- "-99"
-cart_norm_sds$E6[cart_norm_sds$E6 == "2"] <- "[0, 9)"
-cart_normrank_sds$E6[cart_normrank_sds$E6 == "1"] <- "-99"
-cart_normrank_sds$E6[cart_normrank_sds$E6 == "2"] <- "[0, 9)"
+# we will have to reverse the integer back to the factor
 
+# additionally, for sample, norm and norm, we reverse the integer back to interval
+table(bag_sample_sds$B2, bag_norm_sds$B2) # B2 is safe
+table(bag_sample_sds$B2, bag_normrank_sds$B2)
+table(bindori_dataset_threshold_chr$B2)
+table(bag_sample_sds$B2)
+
+table(bag_sample_sds$B4, bag_norm_sds$B4) # B4 is safe
+table(bag_sample_sds$B4, bag_normrank_sds$B4)
+table(bindori_dataset_threshold_chr$B4)
+
+table(bag_sample_sds$E5, bag_norm_sds$E5) # E5 is safe
+table(bag_sample_sds$E5, bag_normrank_sds$E5)
+table(bindori_dataset_threshold_chr$E5)
+
+table(bag_sample_sds$E6, bag_norm_sds$E6) # exclude E6 for bag-norm
+table(bag_sample_sds$E6, bag_normrank_sds$E6)
+table(bindori_dataset_threshold_chr$E6)
+bag_sample_sds$E6[bag_sample_sds$E6 == "1"] <- "-99"
+bag_sample_sds$E6[bag_sample_sds$E6 == "2"] <- "[0, 9)"
+bag_norm_sds$E6[bag_norm_sds$E6 == "1"] <- "-99"
+bag_norm_sds$E6[bag_norm_sds$E6 == "2"] <- "[0, 9)"
+bag_normrank_sds$E6[bag_normrank_sds$E6 == "1"] <- "-99"
+bag_normrank_sds$E6[bag_normrank_sds$E6 == "2"] <- "[0, 9)"
+
+str(bag_sample_sds)
 # change var "B2", "B4", "E5", "E6" to factor type
 cols_factor <- c("B2", "B4", "E5", "E6")
-cart_sample_sds[cols_factor] <- lapply(cart_sample_sds[cols_factor], factor)
-cart_norm_sds[cols_factor] <- lapply(cart_norm_sds[cols_factor], factor)
-cart_normrank_sds[cols_factor] <- lapply(cart_normrank_sds[cols_factor], factor)
+bag_sample_sds[cols_factor] <- lapply(bag_sample_sds[cols_factor], factor)
+bag_norm_sds["E6"] <- lapply(bag_norm_sds["E6"], factor)
+bag_normrank_sds["E6"] <- lapply(bag_normrank_sds["E6"], factor)
 
-str(cart_sample_sds)
-str(cart_norm_sds)
-str(cart_normrank_sds)
-table(cart_norm_sds$E6)
-table(cart_normrank_sds$E6)
-table(cart_sample_sds$E6)
-#------------------Evaluating the utility of the cart_syn sds------------------
+str(bag_sample_sds)
+str(bag_norm_sds)
+str(bag_normrank_sds)
+table(bag_norm_sds$E6)
+table(bag_normrank_sds$E6)
+# data  export
+#-----------------------------------------------
+export_path <- "./SyntheticData/Yue/syn3_bag"
+bagsample_sds <- "bag_sample_syn.rda"
+bagnorm_sds <- "bag_norm_syn.rda"
+bagnormrank_sds <- "bag_normrank_syn.rda"
+
+save(bag_sample_sds, file=paste(c(export_path, bagsample_sds), 
+                                    collapse="/"))
+save(bag_norm_sds, file=paste(c(export_path, bagnorm_sds), 
+                                    collapse="/"))
+save(bag_normrank_sds, file=paste(c(export_path, bagnormrank_sds), 
+                                    collapse="/"))
+
+# is it necessary to add more levels to the dataset
+levels(bindori_dataset_threshold_chr$E6) <- c(levels(bindori_dataset_threshold_chr$E6), "0", "3")
+levels(bag_sample_sds$E6) <- c(levels(bag_sample_sds$E6), "0", "3")
+levels(bag_normrank_sds$E6) <- c(levels(bag_normrank_sds$E6), "0", "3")
+
+#------------------Evaluating the utility of the bag_syn sds------------------
 
 #=========(1). one-way marginals using compare()
-# try with 54-4 variables firstly, we subset the original ods first
-ncol(cart_norm_sds)
-bindori_dataset_threshold_chr <- bindori_dataset_threshold_chr %>% select(names(cart_sample_sds))
+# try with 54-1 variables firstly, we subset the original ods first
+ncol(bag_sample_sds)
+bindori_dataset_threshold_chr <- bindori_dataset_threshold_chr %>% select(names(bag_sample_sds))
 # cuz the compare function cannot tackle with factor type variables, we delete them for evaluation
-bindori_select_vars <- subset(bindori_dataset_threshold_chr, select = -c(B2, B4, E5, E6))
-cartsample_select_vars <- subset(cart_sample_sds, select = -c(B2, B4, E5, E6))
-cartnorm_select_vars <- subset(cart_norm_sds, select = -c(B2, B4, E5, E6))
-cartnormrank_select_vars <- subset(cart_normrank_sds, select = -c(B2, B4, E5, E6))
+bindori_select_vars <- bindori_dataset_threshold_chr
+bagsample_select_vars <- bag_sample_sds
+bagnorm_select_vars <- bag_norm_sds
+bagnormrank_select_vars <- bag_normrank_sds
 
-ncol(cartsample_select_vars)
+ncol(bagnorm_select_vars)
 
-#******************* for cart sample
-compare_plots_cartsample<- c()
+#******************* for bag sample
+compare_plots_bagsample<- c()
 
-for (i in 1:50) {
+for (i in 1:54) {
   cat(colnames(bindori_select_vars[i]), "\n")  # print the var string under analysis
   
-  compare_plots_cartsample[[i]] <- compare(object = data.frame(Pdata = cartsample_select_vars[i]),
-                                data = data.frame(Pdata = bindori_select_vars[i]),
-                                vars = c(colnames(bindori_select_vars[i])), cont.na = NULL,
-                                msel = NULL, stat = "percents", breaks = 10,
-                                nrow = 2, ncol = 2, rel.size.x = 1,
-                                utility.stats = c("pMSE", "S_pMSE"),
-                                cols = c("#1A3C5A","#4187BF"),
-                                plot = TRUE, table = TRUE)
-  
-}
-
-# specify the file path to store the pdf
-destination_path <- "./SyntheticData/Yue/syn1_cart/oneway_compare_cartsample.pdf"
-
-# Print plots to a pdf file
-pdf(destination_path)
-
-for (i in 1:50) {
-  print(compare_plots_cartsample[[i]]$plots)  # Plot 1 --> in the first page of PDF
-}
-
-dev.off()
-
-# try exporting the __tab_utility__ as a csv file in convenience of comparing 
-# and choose vars which performed better in the synthesis
-pMSE_list_cartsample <- c()
-SpMSE_list_cartsample <- c()
-for (i in 1:50) {
-  pMSE_list_cartsample <- append(pMSE_list_cartsample, compare_plots_cartsample[[i]]$tab.utility[1])
-  SpMSE_list_cartsample <- append(SpMSE_list_cartsample, compare_plots_cartsample[[i]]$tab.utility[2])
-}
-
-#create data frame
-df_utility_cartsample <- data.frame(vars_list=colnames(cartsample_select_vars),
-                         pMSE=pMSE_list_cartsample,
-                         S_pMSE=SpMSE_list_cartsample)
-
-write_utility_cartsample <- "./SyntheticData/Yue/syn1_cart/oneway_utility_cartsample.csv"
-write.csv(df_utility_cartsample, write_utility_cartsample, row.names=FALSE)
-
-vars2show_cartsample <- df_utility_cartsample[df_utility_cartsample[, "S_pMSE"]<10, ][1]
-
-nrow(vars2show_cartsample)  # there are 46 in total for cartsample
-
-
-#******************* for cart norm
-compare_plots_cartnorm<- c()
-
-for (i in 1:50) {
-  cat(colnames(bindori_select_vars[i]), "\n")  # print the var string under analysis
-  
-  compare_plots_cartnorm[[i]] <- compare(object = data.frame(Pdata = cartnorm_select_vars[i]),
-                                           data = data.frame(Pdata = bindori_select_vars[i]),
-                                           vars = c(colnames(bindori_select_vars[i])), cont.na = NULL,
-                                           msel = NULL, stat = "percents", breaks = 10,
-                                           nrow = 2, ncol = 2, rel.size.x = 1,
-                                           utility.stats = c("pMSE", "S_pMSE"),
-                                           cols = c("#1A3C5A","#4187BF"),
-                                           plot = TRUE, table = TRUE)
-  
-}
-
-# specify the file path to store the pdf
-destination_path <- "./SyntheticData/Yue/syn1_cart/oneway_compare_cartnorm.pdf"
-
-# Print plots to a pdf file
-pdf(destination_path)
-
-for (i in 1:50) {
-  print(compare_plots_cartnorm[[i]]$plots)  # Plot 1 --> in the first page of PDF
-}
-
-dev.off()
-
-# try exporting the __tab_utility__ as a csv file in convenience of comparing 
-# and choose vars which performed better in the synthesis
-pMSE_list_cartnorm <- c()
-SpMSE_list_cartnorm <- c()
-for (i in 1:50) {
-  pMSE_list_cartnorm <- append(pMSE_list_cartnorm, compare_plots_cartnorm[[i]]$tab.utility[1])
-  SpMSE_list_cartnorm <- append(SpMSE_list_cartnorm, compare_plots_cartnorm[[i]]$tab.utility[2])
-}
-
-#create data frame
-df_utility_cartnorm <- data.frame(vars_list=colnames(cartnorm_select_vars),
-                                    pMSE=pMSE_list_cartnorm,
-                                    S_pMSE=SpMSE_list_cartnorm)
-
-write_utility_cartnorm <- "./SyntheticData/Yue/syn1_cart/oneway_utility_cartnorm.csv"
-write.csv(df_utility_cartnorm, write_utility_cartnorm, row.names=FALSE)
-
-vars2show_cartnorm <- df_utility_cartnorm[df_utility_cartnorm[, "S_pMSE"]<10, ][1]
-
-nrow(vars2show_cartnorm)  # there are 45 in total for cartnorm
-
-
-#******************* for cart normrank
-compare_plots_cartnormrank<- c()
-
-for (i in 1:50) {
-  cat(colnames(bindori_select_vars[i]), "\n")  # print the var string under analysis
-  
-  compare_plots_cartnormrank[[i]] <- compare(object = data.frame(Pdata = cartnormrank_select_vars[i]),
+  compare_plots_bagsample[[i]] <- compare(object = data.frame(Pdata = bagsample_select_vars[i]),
                                          data = data.frame(Pdata = bindori_select_vars[i]),
                                          vars = c(colnames(bindori_select_vars[i])), cont.na = NULL,
                                          msel = NULL, stat = "percents", breaks = 10,
@@ -268,105 +308,97 @@ for (i in 1:50) {
 }
 
 # specify the file path to store the pdf
-destination_path <- "./SyntheticData/Yue/syn1_cart/oneway_compare_cartnormrank.pdf"
+destination_path <- "./SyntheticData/Yue/syn3_bag/oneway_compare_bagsample.pdf"
 
 # Print plots to a pdf file
 pdf(destination_path)
 
-for (i in 1:50) {
-  print(compare_plots_cartnormrank[[i]]$plots)  # Plot 1 --> in the first page of PDF
+for (i in 1:54) {
+  print(compare_plots_bagsample[[i]]$plots)  # Plot 1 --> in the first page of PDF
 }
 
 dev.off()
 
 # try exporting the __tab_utility__ as a csv file in convenience of comparing 
 # and choose vars which performed better in the synthesis
-pMSE_list_cartnormrank <- c()
-SpMSE_list_cartnormrank <- c()
-for (i in 1:50) {
-  pMSE_list_cartnormrank <- append(pMSE_list_cartnormrank, compare_plots_cartnormrank[[i]]$tab.utility[1])
-  SpMSE_list_cartnormrank <- append(SpMSE_list_cartnormrank, compare_plots_cartnormrank[[i]]$tab.utility[2])
+pMSE_list_bagsample <- c()
+SpMSE_list_bagsample <- c()
+for (i in 1:54) {
+  pMSE_list_bagsample <- append(pMSE_list_bagsample, compare_plots_bagsample[[i]]$tab.utility[1])
+  SpMSE_list_bagsample <- append(SpMSE_list_bagsample, compare_plots_bagsample[[i]]$tab.utility[2])
 }
 
 #create data frame
-df_utility_cartnormrank <- data.frame(vars_list=colnames(cartnormrank_select_vars),
-                                  pMSE=pMSE_list_cartnormrank,
-                                  S_pMSE=SpMSE_list_cartnormrank)
+df_utility_bagsample <- data.frame(vars_list=colnames(bagsample_select_vars),
+                                  pMSE=pMSE_list_bagsample,
+                                  S_pMSE=SpMSE_list_bagsample)
 
-write_utility_cartnormrank <- "./SyntheticData/Yue/syn1_cart/oneway_utility_cartnormrank.csv"
-write.csv(df_utility_cartnormrank, write_utility_cartnormrank, row.names=FALSE)
+write_utility_bagsample <- "./SyntheticData/Yue/syn3_bag/oneway_utility_bagsample.csv"
+write.csv(df_utility_bagsample, write_utility_bagsample, row.names=FALSE)
 
-vars2show_cartnormrank <- df_utility_cartnormrank[df_utility_cartnormrank[, "S_pMSE"]<10, ][1]
+vars2show_bagsample <- df_utility_bagsample[df_utility_bagsample[, "S_pMSE"]<10, ][1]
 
-nrow(vars2show_cartnormrank)  # there are 46 in total for cartsample
+nrow(vars2show_bagsample)  # there are 37 in total for bagsample
 
 
+#******************* for bag norm
+compare_plots_bagnorm<- c()
 
-#----------------------------------------------------------------#
-#--------------------- method = polyreg -------------------------#
-#----------------------------------------------------------------#
+for (i in 1:length(bagnorm_select_vars)) {
+  cat(colnames(bindori_select_vars[1:54][i]), "\n")  # print the var string under analysis
+  
+  compare_plots_bagnorm[[i]] <- compare(object = data.frame(Pdata = bagnorm_select_vars[i]),
+                                       data = data.frame(Pdata = bindori_select_vars[1:54][i]),
+                                       vars = c(colnames(bagnorm_select_vars[i])), cont.na = NULL,
+                                       msel = NULL, stat = "percents", breaks = 10,
+                                       nrow = 2, ncol = 2, rel.size.x = 1,
+                                       utility.stats = c("pMSE", "S_pMSE"),
+                                       cols = c("#1A3C5A","#4187BF"),
+                                       plot = TRUE, table = TRUE)
+  
+}
 
-# now we start with the polyreg group by looping the saved .rda files
+# specify the file path to store the pdf
+destination_path <- "./SyntheticData/Yue/syn3_bag/oneway_compare_bagnorm.pdf"
 
-folder <- "./SyntheticData/Yue/syn4_polyreg"
-files <- list.files(folder, pattern = ".rda$")
+# Print plots to a pdf file
+pdf(destination_path)
 
-syn_polyreg_models <- Map(rda2list, file.path(folder, files))
-names(syn_polyreg_models) <- tools::file_path_sans_ext(files)
+for (i in 1:54) {
+  print(compare_plots_bagnorm[[i]]$plots)  # Plot 1 --> in the first page of PDF
+}
 
-# we dataframe the lists
-polyreg_sample_sds <- data.frame(syn_polyreg_models$polyreg_sample_syn)
-polyreg_norm_sds <- data.frame(syn_polyreg_models$polyreg_norm_syn)
-polyreg_normrank_sds <- data.frame(syn_polyreg_models$polyreg_normrank_syn)
-# cart_norm_sds <- data.frame(syn_cart_models$norm_cart_syn)
-# cart_normrank_sds <- data.frame(syn_cart_models$normrank_cart_syn)
+dev.off()
 
-# delete the prefix in variable naming
-names(polyreg_sample_sds) <- sub('^syn.', '', names(polyreg_sample_sds))
-names(polyreg_norm_sds) <- sub('^syn.', '', names(cart_norm_sds))
-names(polyreg_normrank_sds) <- sub('^syn.', '', names(cart_normrank_sds))
+# try exporting the __tab_utility__ as a csv file in convenience of comparing 
+# and choose vars which performed better in the synthesis
+pMSE_list_bagnorm <- c()
+SpMSE_list_bagnorm <- c()
+for (i in 1:54) {
+  pMSE_list_bagnorm <- append(pMSE_list_bagnorm, compare_plots_bagnorm[[i]]$tab.utility[1])
+  SpMSE_list_bagnorm <- append(SpMSE_list_bagnorm, compare_plots_bagnorm[[i]]$tab.utility[2])
+}
 
-str(polyreg_sample_sds) # =59
-str(polyreg_norm_sds)
-str(polyreg_normrank_sds)
+#create data frame
+df_utility_bagnorm <- data.frame(vars_list=colnames(bagnorm_select_vars),
+                                pMSE=pMSE_list_bagnorm,
+                                S_pMSE=SpMSE_list_bagnorm)
 
-ncol(polyreg_normrank_sds)
-#------------------Evaluating the utility of the polyreg_syn sds------------------
+write_utility_bagnorm <- "./SyntheticData/Yue/syn3_bag/oneway_utility_bagnorm.csv"
+write.csv(df_utility_bagnorm, write_utility_bagnorm, row.names=FALSE)
 
-#=========(1). one-way marginals using compare()
-# try with 55 variables firstly, we subset the original ods first
-ncol(polyreg_sample_sds)
-# bindori_dataset_threshold_chr <- bindori_dataset_threshold_chr %>% select(names(cart_sample_sds))
-# # cuz the compare function cannot tackle with factor type variables, we delete them for evaluation
-# bindori_select_vars <- subset(bindori_dataset_threshold_chr, select = -c(B2, B4, E5, E6))
-polyreg_sample_sds$E6[polyreg_sample_sds$E6 == "1"] <- "-99"
-polyreg_sample_sds$E6[polyreg_sample_sds$E6 == "2"] <- "[0, 9)"
-polyreg_norm_sds$E6[polyreg_norm_sds$E6 == "1"] <- "-99"
-polyreg_norm_sds$E6[polyreg_norm_sds$E6 == "2"] <- "[0, 9)"
-polyreg_normrank_sds$E6[polyreg_normrank_sds$E6 == "1"] <- "-99"
-polyreg_normrank_sds$E6[polyreg_normrank_sds$E6 == "2"] <- "[0, 9)"
+vars2show_bagnorm <- df_utility_bagnorm[df_utility_bagnorm[, "S_pMSE"]<10, ][1]
 
-cols_factor <- c("E6")
+nrow(vars2show_bagnorm)  # there are 38 in total for bagnorm
 
-polyreg_sample_sds[cols_factor] <- lapply(polyreg_sample_sds[cols_factor], factor)
-polyreg_norm_sds[cols_factor] <- lapply(polyreg_norm_sds[cols_factor], factor)
-polyreg_normrank_sds[cols_factor] <- lapply(polyreg_normrank_sds[cols_factor], factor)
 
-str(polyreg_norm_sds)
+#******************* for bag normrank
+compare_plots_bagnormrank<- c()
 
-polyregsample_select_vars <- subset(polyreg_sample_sds, select = -c(B2, B4, E5, E6))
-polyregnorm_select_vars <- subset(polyreg_norm_sds, select = -c(B2, B4, E5, E6))
-polyregnormrank_select_vars <- subset(polyreg_normrank_sds, select = -c(B2, B4, E5, E6))
-
-ncol(polyregsample_select_vars) # ==50 ?
-
-#******************* for polyreg sample
-compare_plots_polyregsample<- c()
-
-for (i in 1:50) {
+for (i in 1:54) {
   cat(colnames(bindori_select_vars[i]), "\n")  # print the var string under analysis
   
-  compare_plots_polyregsample[[i]] <- compare(object = data.frame(Pdata = polyregsample_select_vars[i]),
+  compare_plots_bagnormrank[[i]] <- compare(object = data.frame(Pdata = bagnormrank_select_vars[i]),
                                            data = data.frame(Pdata = bindori_select_vars[i]),
                                            vars = c(colnames(bindori_select_vars[i])), cont.na = NULL,
                                            msel = NULL, stat = "percents", breaks = 10,
@@ -378,48 +410,34 @@ for (i in 1:50) {
 }
 
 # specify the file path to store the pdf
-destination_path <- "./SyntheticData/Yue/syn4_polyreg/oneway_compare_polyregsample.pdf"
+destination_path <- "./SyntheticData/Yue/syn3_bag/oneway_compare_bagnormrank.pdf"
 
 # Print plots to a pdf file
 pdf(destination_path)
 
-for (i in 1:50) {
-  print(compare_plots_polyregsample[[i]]$plots)  # Plot 1 --> in the first page of PDF
+for (i in 1:54) {
+  print(compare_plots_bagnormrank[[i]]$plots)  # Plot 1 --> in the first page of PDF
 }
 
 dev.off()
 
 # try exporting the __tab_utility__ as a csv file in convenience of comparing 
 # and choose vars which performed better in the synthesis
-pMSE_list_polyregsample <- c()
-SpMSE_list_polyregsample <- c()
-for (i in 1:50) {
-  pMSE_list_polyregsample <- append(pMSE_list_polyregsample, compare_plots_polyregsample[[i]]$tab.utility[1])
-  SpMSE_list_polyregsample <- append(SpMSE_list_polyregsample, compare_plots_polyregsample[[i]]$tab.utility[2])
+pMSE_list_bagnormrank <- c()
+SpMSE_list_bagnormrank <- c()
+for (i in 1:54) {
+  pMSE_list_bagnormrank <- append(pMSE_list_bagnormrank, compare_plots_bagnormrank[[i]]$tab.utility[1])
+  SpMSE_list_bagnormrank <- append(SpMSE_list_bagnormrank, compare_plots_bagnormrank[[i]]$tab.utility[2])
 }
 
 #create data frame
-df_utility_polyregsample <- data.frame(vars_list=colnames(polyregsample_select_vars),
-                                    pMSE=pMSE_list_polyregsample,
-                                    S_pMSE=SpMSE_list_polyregsample)
+df_utility_bagnormrank <- data.frame(vars_list=colnames(bagnormrank_select_vars),
+                                    pMSE=pMSE_list_bagnormrank,
+                                    S_pMSE=SpMSE_list_bagnormrank)
 
-write_utility_polyregsample <- "./SyntheticData/Yue/syn4_polyreg/oneway_utility_polyregsample.csv"
-write.csv(df_utility_polyregsample, write_utility_polyregsample, row.names=FALSE)
+write_utility_bagnormrank <- "./SyntheticData/Yue/syn3_bag/oneway_utility_bagnormrank.csv"
+write.csv(df_utility_bagnormrank, write_utility_bagnormrank, row.names=FALSE)
 
-vars2show_polyregsample <- df_utility_polyregsample[df_utility_polyregsample[, "S_pMSE"]<10, ][1]
+vars2show_bagnormrank <- df_utility_bagnormrank[df_utility_bagnormrank[, "S_pMSE"]<10, ][1]
 
-nrow(vars2show_polyregsample)  # there are 46 in total for polyregsample
-
-# two-way marginals with utility.tables()
-# try with F1, F2_1, F2_2
-selected_cols <- c("F1", "F2_1", "F2_2")
-polyregsample_twoway_vars <- polyregsample_select_vars[, selected_cols]
-bindori_twoway_vars <- bindori_select_vars[, selected_cols]
-## S3 method for class 'data.frame'
-utility.twoway <- utility.tables(object = data.frame(polyregsample_twoway_vars), 
-                                 data = data.frame(bindori_twoway_vars),
-                                 tables = "twoway",
-                                 tab.stats = c("pMSE"), 
-                                 plot.stat = "pMSE", plot = TRUE,  
-                                 print.tabs = TRUE)
-utility.twoway$utility.plot
+nrow(vars2show_bagnormrank)  # there are 37 in total for bag normrank

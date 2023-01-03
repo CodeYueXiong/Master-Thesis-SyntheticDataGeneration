@@ -274,6 +274,71 @@ str(norm_sample_sds)
 str(norm_norm_sds)
 str(norm_normrank_sds)
 
+# is it necessary to add more levels to the dataset
+table(bindori_dataset_threshold_chr$C1_m, norm_norm_sds$C1_m)
+levels(bindori_dataset_threshold_chr$C1_m) <- c(levels(norm_norm_sds$C1_m))
+levels(norm_sample_sds$C1_m) <- c(levels(norm_norm_sds$C1_m))
+levels(norm_normrank_sds$C1_m) <- c(levels(norm_norm_sds$C1_m))
+
+table(bindori_dataset_threshold_chr$C3, norm_norm_sds$C3)
+levels(bindori_dataset_threshold_chr$C3) <- c(levels(norm_norm_sds$C3))
+levels(norm_sample_sds$C3) <- c(levels(norm_norm_sds$C3))
+levels(norm_normrank_sds$C3) <- c(levels(norm_norm_sds$C3))
+
+table(bindori_dataset_threshold_chr$C5, norm_norm_sds$C5)
+levels(bindori_dataset_threshold_chr$C5) <- c(levels(norm_sample_sds$C5))
+levels(norm_norm_sds$C5) <- c(levels(norm_sample_sds$C5))
+levels(norm_normrank_sds$C5) <- c(levels(norm_sample_sds$C5))
+
+table(bindori_dataset_threshold_chr$C8, norm_normrank_sds$C8)
+length(levels(norm_normrank_sds$C8))
+levels(bindori_dataset_threshold_chr$C8) <- c(levels(norm_normrank_sds$C8))
+levels(norm_sample_sds$C8) <- c(levels(norm_normrank_sds$C8))
+levels(norm_norm_sds$C8) <- c(levels(norm_normrank_sds$C8))
+
+table(bindori_dataset_threshold_chr$D1, norm_norm_sds$D1)
+length(levels(norm_normrank_sds$D1))
+levels(bindori_dataset_threshold_chr$D1) <- c(levels(norm_normrank_sds$D1))
+levels(norm_sample_sds$D1) <- c(levels(norm_normrank_sds$D1))
+levels(norm_norm_sds$D1) <- c(levels(norm_normrank_sds$D1))
+
+table(bindori_dataset_threshold_chr$D3, norm_norm_sds$D3)
+length(levels(norm_normrank_sds$D3))
+levels(bindori_dataset_threshold_chr$D3) <- c(levels(norm_normrank_sds$D3))
+levels(norm_sample_sds$D3) <- c(levels(norm_normrank_sds$D3))
+levels(norm_norm_sds$D3) <- c(levels(norm_normrank_sds$D3))
+
+table(norm_normrank_sds$D4, norm_norm_sds$D4)
+length(levels(norm_norm_sds$D3))
+levels(bindori_dataset_threshold_chr$D4) <- c(levels(norm_norm_sds$D4))
+levels(norm_sample_sds$D4) <- c(levels(norm_norm_sds$D4))
+levels(norm_normrank_sds$D4) <- c(levels(norm_norm_sds$D4))
+
+table(norm_normrank_sds$E3, norm_norm_sds$E3)
+length(levels(norm_normrank_sds$D3))
+levels(bindori_dataset_threshold_chr$E3) <- c(levels(norm_norm_sds$E3))
+levels(norm_sample_sds$E3) <- c(levels(norm_norm_sds$E3))
+levels(norm_normrank_sds$E3) <- c(levels(norm_norm_sds$E3))
+
+table(bindori_dataset_threshold_chr$E4, norm_norm_sds$E4)
+length(levels(norm_norm_sds$E4))
+levels(bindori_dataset_threshold_chr$E4) <- c(levels(norm_normrank_sds$E4))
+levels(norm_sample_sds$E4) <- c(levels(norm_normrank_sds$E4))
+levels(norm_norm_sds$E4) <- c(levels(norm_normrank_sds$E4))
+
+table(norm_normrank_sds$B4, norm_norm_sds$B4)
+length(levels(norm_normrank_sds$B4))
+levels(bindori_dataset_threshold_chr$B4) <- c(levels(norm_norm_sds$B4))
+levels(norm_sample_sds$B4) <- c(levels(norm_norm_sds$B4))
+levels(norm_normrank_sds$B4) <- c(levels(norm_norm_sds$B4))
+
+table(bindori_dataset_threshold_chr$E6, norm_norm_sds$E6)
+length(levels(norm_norm_sds$E6))
+levels(bindori_dataset_threshold_chr$E6) <- c(levels(norm_norm_sds$E6))
+levels(norm_sample_sds$E6) <- c(levels(norm_norm_sds$E6))
+levels(norm_normrank_sds$E6) <- c(levels(norm_norm_sds$E6))
+
+
 #------------------Evaluating the utility of the norm_syn sds------------------
 
 #=========(1). one-way marginals using compare()
@@ -281,17 +346,22 @@ str(norm_normrank_sds)
 ncol(norm_sample_sds)
 bindori_dataset_threshold_chr <- bindori_dataset_threshold_chr %>% select(names(norm_sample_sds))
 # cuz the compare function cannot tackle with factor type variables, we delete them for evaluation
-bindori_select_vars <- subset(bindori_dataset_threshold_chr, select = -c(C1_m, C3, C5, C8, D1, D3, D4, E3, E4, B4, E6))
-normsample_select_vars <- subset(norm_sample_sds, select = -c(C1_m, C3, C5, C8, D1, D3, D4, E3, E4, B4, E6))
-normnorm_select_vars <- subset(norm_norm_sds, select = -c(C1_m, C3, C5, C8, D1, D3, D4, E3, E4, B4, E6))
-normnormrank_select_vars <- subset(norm_normrank_sds, select = -c(C1_m, C3, C5, C8, D1, D3, D4, E3, E4, B4, E6))
+# bindori_select_vars <- subset(bindori_dataset_threshold_chr, select = -c(C1_m, C3, C5, C8, D1, D3, D4, E3, E4, B4, E6))
+# normsample_select_vars <- subset(norm_sample_sds, select = -c(C1_m, C3, C5, C8, D1, D3, D4, E3, E4, B4, E6))
+# normnorm_select_vars <- subset(norm_norm_sds, select = -c(C1_m, C3, C5, C8, D1, D3, D4, E3, E4, B4, E6))
+# normnormrank_select_vars <- subset(norm_normrank_sds, select = -c(C1_m, C3, C5, C8, D1, D3, D4, E3, E4, B4, E6))
+
+bindori_select_vars <- bindori_dataset_threshold_chr
+normsample_select_vars <- norm_sample_sds
+normnorm_select_vars <- norm_norm_sds
+normnormrank_select_vars <- norm_normrank_sds
 
 ncol(normnormrank_select_vars)
 
 #******************* for norm sample
 compare_plots_normsample<- c()
 
-for (i in 1:43) {
+for (i in 1:54) {
   cat(colnames(bindori_select_vars[i]), "\n")  # print the var string under analysis
   
   compare_plots_normsample[[i]] <- compare(object = data.frame(Pdata = normsample_select_vars[i]),
@@ -311,7 +381,7 @@ destination_path <- "./SyntheticData/Yue/syn5_norm/oneway_compare_normsample.pdf
 # Print plots to a pdf file
 pdf(destination_path)
 
-for (i in 1:43) {
+for (i in 1:54) {
   print(compare_plots_normsample[[i]]$plots)  # Plot 1 --> in the first page of PDF
 }
 
@@ -321,7 +391,7 @@ dev.off()
 # and choose vars which performed better in the synthesis
 pMSE_list_normsample <- c()
 SpMSE_list_normsample <- c()
-for (i in 1:43) {
+for (i in 1:54) {
   pMSE_list_normsample <- append(pMSE_list_normsample, compare_plots_normsample[[i]]$tab.utility[1])
   SpMSE_list_normsample <- append(SpMSE_list_normsample, compare_plots_normsample[[i]]$tab.utility[2])
 }
@@ -336,13 +406,13 @@ write.csv(df_utility_normsample, write_utility_normsample, row.names=FALSE)
 
 vars2show_normsample <- df_utility_normsample[df_utility_normsample[, "S_pMSE"]<10, ][1]
 
-nrow(vars2show_normsample)  # there are 27 in total for normsample
+nrow(vars2show_normsample)  # there are 28 in total for normsample
 
 
 #******************* for norm norm
 compare_plots_normnorm<- c()
 
-for (i in 1:43) {
+for (i in 1:54) {
   cat(colnames(bindori_select_vars[i]), "\n")  # print the var string under analysis
   
   compare_plots_normnorm[[i]] <- compare(object = data.frame(Pdata = normnorm_select_vars[i]),
@@ -362,7 +432,7 @@ destination_path <- "./SyntheticData/Yue/syn5_norm/oneway_compare_normnorm.pdf"
 # Print plots to a pdf file
 pdf(destination_path)
 
-for (i in 1:43) {
+for (i in 1:54) {
   print(compare_plots_normnorm[[i]]$plots)  # Plot 1 --> in the first page of PDF
 }
 
@@ -372,7 +442,7 @@ dev.off()
 # and choose vars which performed better in the synthesis
 pMSE_list_normnorm <- c()
 SpMSE_list_normnorm <- c()
-for (i in 1:43) {
+for (i in 1:54) {
   pMSE_list_normnorm <- append(pMSE_list_normnorm, compare_plots_normnorm[[i]]$tab.utility[1])
   SpMSE_list_normnorm <- append(SpMSE_list_normnorm, compare_plots_normnorm[[i]]$tab.utility[2])
 }
@@ -393,7 +463,7 @@ nrow(vars2show_normnorm)  # there are 25 in total for normnorm
 #******************* for norm normrank
 compare_plots_normnormrank<- c()
 
-for (i in 1:43) {
+for (i in 1:54) {
   cat(colnames(bindori_select_vars[i]), "\n")  # print the var string under analysis
   
   compare_plots_normnormrank[[i]] <- compare(object = data.frame(Pdata = normnormrank_select_vars[i]),
@@ -413,7 +483,7 @@ destination_path <- "./SyntheticData/Yue/syn5_norm/oneway_compare_normnormrank.p
 # Print plots to a pdf file
 pdf(destination_path)
 
-for (i in 1:43) {
+for (i in 1:54) {
   print(compare_plots_normnormrank[[i]]$plots)  # Plot 1 --> in the first page of PDF
 }
 
@@ -423,7 +493,7 @@ dev.off()
 # and choose vars which performed better in the synthesis
 pMSE_list_normnormrank <- c()
 SpMSE_list_normnormrank <- c()
-for (i in 1:43) {
+for (i in 1:54) {
   pMSE_list_normnormrank <- append(pMSE_list_normnormrank, compare_plots_normnormrank[[i]]$tab.utility[1])
   SpMSE_list_normnormrank <- append(SpMSE_list_normnormrank, compare_plots_normnormrank[[i]]$tab.utility[2])
 }

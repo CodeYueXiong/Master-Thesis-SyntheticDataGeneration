@@ -274,6 +274,16 @@ str(normrank_sample_sds)
 str(normrank_norm_sds)
 str(normrank_normrank_sds)
 
+# is it necessary to add more levels to the dataset
+table(bindori_dataset_threshold_chr$C8, normrank_sample_sds$C8)
+levels(normrank_sample_sds$C8) <- c(levels(bindori_dataset_threshold_chr$C8))
+levels(normrank_norm_sds$C8) <- c(levels(bindori_dataset_threshold_chr$C8))
+levels(normrank_normrank_sds$C8) <- c(levels(bindori_dataset_threshold_chr$C8))
+
+table(bindori_dataset_threshold_chr$E6, normrank_norm_sds$E6)
+levels(bindori_dataset_threshold_chr$E6) <- c(levels(normrank_norm_sds$E6))
+levels(normrank_sample_sds$E6) <- c(levels(normrank_norm_sds$E6))
+levels(normrank_normrank_sds$E6) <- c(levels(normrank_norm_sds$E6))
 #------------------Evaluating the utility of the norm_syn sds------------------
 
 #=========(1). one-way marginals using compare()
@@ -281,17 +291,17 @@ str(normrank_normrank_sds)
 ncol(normrank_sample_sds)
 bindori_dataset_threshold_chr <- bindori_dataset_threshold_chr %>% select(names(normrank_sample_sds))
 # cuz the compare function cannot tackle with factor type variables, we delete them for evaluation
-bindori_select_vars <- subset(bindori_dataset_threshold_chr, select = -c(C8))
-normranksample_select_vars <- subset(normrank_sample_sds, select = -c(C8))
-normranknorm_select_vars <- subset(normrank_norm_sds, select = -c(C8))
-normranknormrank_select_vars <- subset(normrank_normrank_sds, select = -c(C8))
+bindori_select_vars <- bindori_dataset_threshold_chr
+normranksample_select_vars <- normrank_sample_sds
+normranknorm_select_vars <- normrank_norm_sds
+normranknormrank_select_vars <- normrank_normrank_sds
 
 ncol(normranknorm_select_vars)
 
 #******************* for norm sample
 compare_plots_normranksample<- c()
 
-for (i in 1:53) {
+for (i in 1:54) {
   cat(colnames(bindori_select_vars[i]), "\n")  # print the var string under analysis
   
   compare_plots_normranksample[[i]] <- compare(object = data.frame(Pdata = normranksample_select_vars[i]),
@@ -311,7 +321,7 @@ destination_path <- "./SyntheticData/Yue/syn6_normrank/oneway_compare_normranksa
 # Print plots to a pdf file
 pdf(destination_path)
 
-for (i in 1:53) {
+for (i in 1:54) {
   print(compare_plots_normranksample[[i]]$plots)  # Plot 1 --> in the first page of PDF
 }
 
@@ -321,7 +331,7 @@ dev.off()
 # and choose vars which performed better in the synthesis
 pMSE_list_normranksample <- c()
 SpMSE_list_normranksample <- c()
-for (i in 1:53) {
+for (i in 1:54) {
   pMSE_list_normranksample <- append(pMSE_list_normranksample, compare_plots_normranksample[[i]]$tab.utility[1])
   SpMSE_list_normranksample <- append(SpMSE_list_normranksample, compare_plots_normranksample[[i]]$tab.utility[2])
 }
@@ -342,7 +352,7 @@ nrow(vars2show_normranksample)  # there are 27 in total for normranksample
 #******************* for normrank norm
 compare_plots_normranknorm<- c()
 table(normranknorm_select_vars$E6, bindori_select_vars$E6) # there are 0 and 3 for norm please exclude them, 52 in total
-for (i in 1:52) {
+for (i in 1:54) {
   cat(colnames(bindori_select_vars[i]), "\n")  # print the var string under analysis
   
   compare_plots_normranknorm[[i]] <- compare(object = data.frame(Pdata = normranknorm_select_vars[i]),
@@ -362,7 +372,7 @@ destination_path <- "./SyntheticData/Yue/syn6_normrank/oneway_compare_normrankno
 # Print plots to a pdf file
 pdf(destination_path)
 
-for (i in 1:52) {
+for (i in 1:54) {
   print(compare_plots_normranknorm[[i]]$plots)  # Plot 1 --> in the first page of PDF
 }
 
@@ -372,13 +382,13 @@ dev.off()
 # and choose vars which performed better in the synthesis
 pMSE_list_normranknorm <- c()
 SpMSE_list_normranknorm <- c()
-for (i in 1:52) {
+for (i in 1:54) {
   pMSE_list_normranknorm <- append(pMSE_list_normranknorm, compare_plots_normranknorm[[i]]$tab.utility[1])
   SpMSE_list_normranknorm <- append(SpMSE_list_normranknorm, compare_plots_normranknorm[[i]]$tab.utility[2])
 }
 
 #create data frame
-df_utility_normranknorm <- data.frame(vars_list=colnames(normranknorm_select_vars[1:52]),
+df_utility_normranknorm <- data.frame(vars_list=colnames(normranknorm_select_vars[1:54]),
                                     pMSE=pMSE_list_normranknorm,
                                     S_pMSE=SpMSE_list_normranknorm)
 
@@ -393,7 +403,7 @@ nrow(vars2show_normranknorm)  # there are 27 in total for normranknorm
 #******************* for cart normrank
 compare_plots_normranknormrank<- c()
 
-for (i in 1:53) {
+for (i in 1:54) {
   cat(colnames(bindori_select_vars[i]), "\n")  # print the var string under analysis
   
   compare_plots_normranknormrank[[i]] <- compare(object = data.frame(Pdata = normranknormrank_select_vars[i]),
@@ -413,7 +423,7 @@ destination_path <- "./SyntheticData/Yue/syn6_normrank/oneway_compare_normrankno
 # Print plots to a pdf file
 pdf(destination_path)
 
-for (i in 1:53) {
+for (i in 1:54) {
   print(compare_plots_normranknormrank[[i]]$plots)  # Plot 1 --> in the first page of PDF
 }
 
@@ -423,7 +433,7 @@ dev.off()
 # and choose vars which performed better in the synthesis
 pMSE_list_normranknormrank <- c()
 SpMSE_list_normranknormrank <- c()
-for (i in 1:53) {
+for (i in 1:54) {
   pMSE_list_normranknormrank <- append(pMSE_list_normranknormrank, compare_plots_normranknormrank[[i]]$tab.utility[1])
   SpMSE_list_normranknormrank <- append(SpMSE_list_normranknormrank, compare_plots_normranknormrank[[i]]$tab.utility[2])
 }

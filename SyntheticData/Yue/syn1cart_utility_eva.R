@@ -139,6 +139,12 @@ str(cart_normrank_sds)
 table(cart_norm_sds$E6)
 table(cart_normrank_sds$E6)
 table(cart_sample_sds$E6)
+table(bindori_dataset_threshold_chr$E6)
+# is it necessary to add more levels to the dataset
+levels(bindori_dataset_threshold_chr$E6) <- c(levels(bindori_dataset_threshold_chr$E6), "0", "3")
+levels(cart_sample_sds$E6) <- c(levels(cart_sample_sds$E6), "0", "3")
+levels(cart_normrank_sds$E6) <- c(levels(cart_normrank_sds$E6), "0", "3")
+
 #------------------Evaluating the utility of the cart_syn sds------------------
 
 #=========(1). one-way marginals using compare()
@@ -148,7 +154,7 @@ bindori_dataset_threshold_chr <- bindori_dataset_threshold_chr %>% select(names(
 # cuz the compare function cannot tackle with factor type variables, we delete them for evaluation
 bindori_select_vars <- bindori_dataset_threshold_chr  # 54
 cartsample_select_vars <- cart_sample_sds  # 54
-cartnorm_select_vars <- subset(cart_norm_sds, select = -c(E6)) # 53
+cartnorm_select_vars <- cart_norm_sds
 cartnormrank_select_vars <- cart_normrank_sds  # 54
 
 ncol(cartnorm_select_vars)
@@ -207,11 +213,11 @@ nrow(vars2show_cartsample)  # there are 45 in total for cartsample
 #******************* for cart norm
 compare_plots_cartnorm<- c()
 
-for (i in 1:53) {
+for (i in 1:54) {
   cat(colnames(bindori_select_vars[i]), "\n")  # print the var string under analysis
   
   compare_plots_cartnorm[[i]] <- compare(object = data.frame(Pdata = cartnorm_select_vars[i]),
-                                           data = data.frame(Pdata = bindori_select_vars[1:53][i]),
+                                           data = data.frame(Pdata = bindori_select_vars[i]),
                                            vars = c(colnames(bindori_select_vars[i])), cont.na = NULL,
                                            msel = NULL, stat = "percents", breaks = 10,
                                            nrow = 2, ncol = 2, rel.size.x = 1,
@@ -227,7 +233,7 @@ destination_path <- "./SyntheticData/Yue/syn1_cart/oneway_compare_cartnorm.pdf"
 # Print plots to a pdf file
 pdf(destination_path)
 
-for (i in 1:53) {
+for (i in 1:54) {
   print(compare_plots_cartnorm[[i]]$plots)  # Plot 1 --> in the first page of PDF
 }
 
@@ -237,7 +243,7 @@ dev.off()
 # and choose vars which performed better in the synthesis
 pMSE_list_cartnorm <- c()
 SpMSE_list_cartnorm <- c()
-for (i in 1:53) {
+for (i in 1:54) {
   pMSE_list_cartnorm <- append(pMSE_list_cartnorm, compare_plots_cartnorm[[i]]$tab.utility[1])
   SpMSE_list_cartnorm <- append(SpMSE_list_cartnorm, compare_plots_cartnorm[[i]]$tab.utility[2])
 }

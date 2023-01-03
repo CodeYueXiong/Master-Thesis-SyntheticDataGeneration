@@ -80,7 +80,12 @@ str(polyreg_norm_sds)
 # polyregnorm_select_vars <- subset(polyreg_norm_sds, select = -c(B2, B4, E5, E6))
 # polyregnormrank_select_vars <- subset(polyreg_normrank_sds, select = -c(B2, B4, E5, E6))
 bindori_select_vars <- bindori_dataset_threshold_chr %>% select(names(polyreg_sample_sds))
-ncol(bindori_select_vars) # ==50 ?
+ncol(bindori_select_vars) # ==54 ?
+# is it necessary to add more levels to the dataset
+table(bindori_dataset_threshold_chr$E6, polyreg_norm_sds$E6)
+levels(bindori_select_vars$E6) <- c(levels(bindori_select_vars$E6), "0", "3")
+levels(polyreg_sample_sds$E6) <- c(levels(polyreg_sample_sds$E6), "0", "3")
+levels(polyreg_normrank_sds$E6) <- c(levels(polyreg_normrank_sds$E6), "0", "3")
 
 #******************* for polyreg sample
 compare_plots_polyregsample<- c()
@@ -137,7 +142,7 @@ nrow(vars2show_polyregsample)  # there are 43 in total for polyregsample
 #******************* for polyreg norm
 compare_plots_polyregnorm<- c()
 
-for (i in 1:53) {
+for (i in 1:54) {
   cat(colnames(bindori_select_vars[i]), "\n")  # print the var string under analysis
   
   compare_plots_polyregnorm[[i]] <- compare(object = data.frame(Pdata = polyreg_norm_sds[i]),
@@ -157,7 +162,7 @@ destination_path <- "./SyntheticData/Yue/syn4_polyreg/oneway_compare_polyregnorm
 # Print plots to a pdf file
 pdf(destination_path)
 
-for (i in 1:53) {
+for (i in 1:54) {
   print(compare_plots_polyregnorm[[i]]$plots)  # Plot 1 --> in the first page of PDF
 }
 
@@ -168,13 +173,13 @@ table(bindori_select_vars$E6, polyreg_norm_sds$E6)  # E6 should be left aside to
 # and choose vars which performed better in the synthesis
 pMSE_list_polyregnorm <- c()
 SpMSE_list_polyregnorm <- c()
-for (i in 1:53) {
+for (i in 1:54) {
   pMSE_list_polyregnorm <- append(pMSE_list_polyregnorm, compare_plots_polyregnorm[[i]]$tab.utility[1])
   SpMSE_list_polyregnorm <- append(SpMSE_list_polyregnorm, compare_plots_polyregnorm[[i]]$tab.utility[2])
 }
 
 #create data frame
-df_utility_polyregnorm <- data.frame(vars_list=colnames(polyreg_norm_sds)[1:53],
+df_utility_polyregnorm <- data.frame(vars_list=colnames(polyreg_norm_sds)[1:54],
                                        pMSE=pMSE_list_polyregnorm,
                                        S_pMSE=SpMSE_list_polyregnorm)
 
