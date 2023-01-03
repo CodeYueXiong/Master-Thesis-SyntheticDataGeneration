@@ -139,13 +139,17 @@ table(bindori_dataset_filtered["B2"])
 ```
 
 ```{r}
-bindori_dataset_filtered["B2"][bindori_dataset_filtered["B2"] == -99] <- "-99"
+
 ```
 
 ```{r}
-bindori_dataset_filtered["B2"][bindori_dataset_filtered["B2"] >= 1000] <- "1000"
+
 ```
 ```{r}
+bindori_dataset_filtered["B2"][bindori_dataset_filtered["B2"] == -99] <- "-99"
+
+bindori_dataset_filtered["B2"][bindori_dataset_filtered["B2"] >= 1000] <- "1000"
+
 bindori_dataset_filtered$B2[bindori_dataset_filtered$B2 >= 0 & bindori_dataset_filtered$B2 < 1] <- "[0, 1)"
 
 bindori_dataset_filtered$B2[bindori_dataset_filtered$B2 >= 1 & bindori_dataset_filtered$B2 < 3] <- "[1, 3)"
