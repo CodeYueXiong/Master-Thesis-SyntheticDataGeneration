@@ -1,7 +1,7 @@
 # load the required packages
 pkg_list <- c("mlr3", "mlr3learners", "mlr3filters", "mlr3pipelines", "mlr3tuning",
-              "mlr3viz", "mlr3verse",
-              "MASS", "e1071")
+              "mlr3viz", "mlr3verse", "mlr3benchmark",
+              "MASS", "e1071", "glmnet")
 install.packages(pkg_list)
 # install.packages("mlr3benchmark")
 

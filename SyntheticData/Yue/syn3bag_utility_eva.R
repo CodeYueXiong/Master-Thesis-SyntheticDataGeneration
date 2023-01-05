@@ -441,3 +441,133 @@ write.csv(df_utility_bagnormrank, write_utility_bagnormrank, row.names=FALSE)
 vars2show_bagnormrank <- df_utility_bagnormrank[df_utility_bagnormrank[, "S_pMSE"]<10, ][1]
 
 nrow(vars2show_bagnormrank)  # there are 37 in total for bag normrank
+
+# -----------------------------------------------------------------------------
+################################# Machine Learning #############################
+# -----------------------------------------------------------------------------
+library(mlr3)
+library(mlr3learners)
+library(mlr3filters)
+library(mlr3pipelines)
+library(mlr3tuning)
+library(mlr3viz)
+library(mlr3verse)
+library(mlr3benchmark)
+
+library(e1071)
+library(MASS)
+library(glmnet)
+
+set.seed(2023) # make sure the results is reproducible
+#*****************************************************
+# Model 1: contact tracing app -- F2_1
+
+# step1: prepare the datasets
+vars_inc_m1 <- c("D1","D2","D3","D4","D5","D7","D8","D9","E2","E3","E4","E7","E5","E6","F2_1")
+ods_m1 <- bindori_dataset_threshold_chr[vars_inc_m1]
+table(ods_m1$F2_1)
+
+sds_bagsample_m1 <- bag_sample_sds[vars_inc_m1]
+table(sds_bagsample_m1$F2_1)
+
+sds_bagnorm_m1 <- bag_norm_sds[vars_inc_m1]
+table(sds_bagnorm_m1$F2_1)
+
+sds_bagnormrank_m1 <- bag_normrank_sds[vars_inc_m1]
+table(sds_bagnormrank_m1$F2_1)
+
+# Step2: new machine learning tasks for ods and sds
+tsk_ods_m1 <- TaskClassif$new(id="tsk_ods_m1",
+                              backend=ods_m1, target="F2_1")
+
+tsk_bagsample_m1 <- TaskClassif$new(id="tsk_bagsample_m1", 
+                                   backend=sds_bagsample_m1, target="F2_1")
+
+tsk_bagnorm_m1 <- TaskClassif$new(id="tsk_bagnorm_m1", 
+                                 backend=sds_bagnorm_m1, target="F2_1")
+
+tsk_bagnormrank_m1 <- TaskClassif$new(id="tsk_bagnormrank_m1",
+                                     backend=sds_bagnormrank_m1, target="F2_1")
+
+tasks_list_m1 <- list(tsk_ods_m1, tsk_bagsample_m1, tsk_bagnorm_m1, tsk_bagnormrank_m1)
+
+# step3: prepare the required learners
+learners_list_model1 <- lrns(c("classif.naive_bayes", "classif.lda"))  # classif.lda
+
+# step4: benchmark the task and learners with cross-validation
+# benchmark_grid is the design
+bm_model1 <- benchmark(benchmark_grid(tasks = tasks_list_m1,
+                                      learners = learners_list_model1, resamplings = rsmp("cv", folds = 2)),
+                       store_models = TRUE)
+
+# step5: validate the accuracy of the model
+#****** Measure to compare true observed 
+#****** labels with predicted labels in 
+#****** multiclass classification tasks.
+bm_model1$aggregate(msr("classif.acc"))
+
+# step6: extract the coefficients of the trained instances
+coef_info_m1 <- mlr3misc::map(as.data.table(bm_model1)$learner, "model")
+
+# step7: save bm_model as rds
+saveRDS(bm_model1, './SyntheticData/Yue/syn3_bag/bm_bag_model1.rds')
+saveRDS(coef_info_m1, './SyntheticData/Yue/syn3_bag/coef_bag_model1.rds')
+
+#*****************************************************
+# Model 2: covid positive -- B8 (multiclass)
+
+# step1: prepare the datasets
+vars_inc_m2 <- c("E2","E3","E4","E7","E5","E6","C1_m","C2","C3","C5","C6","C7","C8","B8")
+ods_m2 <- bindori_dataset_threshold_chr[vars_inc_m2]
+ods_m2$B8 = factor(ods_m2$B8)
+table(ods_m2$B8)
+
+sds_bagsample_m2 <- bag_sample_sds[vars_inc_m2]
+sds_bagsample_m2$B8 = factor(sds_bagsample_m2$B8)
+
+sds_bagnorm_m2 <- bag_norm_sds[vars_inc_m2]
+sds_bagnorm_m2$B8 = factor(sds_bagnorm_m2$B8)
+
+sds_bagnormrank_m2 <- bag_normrank_sds[vars_inc_m2]
+sds_bagnormrank_m2$B8 = factor(sds_bagnormrank_m2$B8)
+
+# Step2: new machine learning tasks for ods and sds
+tsk_ods_m2 <- TaskClassif$new(id="tsk_ods_m2",
+                              backend=ods_m2, target="B8")
+
+tsk_bagsample_m2 <- TaskClassif$new(id="tsk_bagsample_m2", 
+                                   backend=sds_bagsample_m2, target="B8")
+
+tsk_bagnorm_m2 <- TaskClassif$new(id="tsk_bagnorm_m2", 
+                                 backend=sds_bagnorm_m2, target="B8")
+
+tsk_bagnormrank_m2 <- TaskClassif$new(id="tsk_bagnormrank_m2",
+                                     backend=sds_bagnormrank_m2, target="B8")
+
+tasks_list_m2 <- list(tsk_ods_m2, tsk_bagsample_m2, tsk_bagnorm_m2, tsk_bagnormrank_m2)
+
+# step3: prepare the required learners
+learners_list_model2 <- lrns(c("classif.naive_bayes", "classif.lda"))
+
+# step4: benchmark the task and learners with cross-validation
+# benchmark_grid is the design
+bm_model2 <- benchmark(benchmark_grid(tasks = tasks_list_m2,
+                                      learners = learners_list_model2,
+                                      resamplings = rsmp("cv", folds = 2)),
+                       store_models = TRUE)
+
+# step5: validate the accuracy of the model
+#****** Measure to compare true observed 
+#****** labels with predicted labels in 
+#****** multiclass classification tasks.
+bm_model2$aggregate(msr("classif.acc"))
+
+# step6: extract the coefficients of the trained instances
+coef_info_m2 <- mlr3misc::map(as.data.table(bm_model2)$learner, "model")
+
+# step7: save bm_model as rds
+saveRDS(bm_model2, './SyntheticData/Yue/syn3_bag/bm_bag_model2.rds')
+saveRDS(coef_info_m2, './SyntheticData/Yue/syn3_bag/coef_bag_model2.rds')
+# score_multinom_m1_ods <- sum(data.frame(bm_model1$score(msr("classif.acc"))[learner_id == 'classif.multinom', ][task_id == "tsk_ods_m1", ])["classif.acc"])/3
+# score_multinom_m1_ods <- sum(data.frame(bm_model1$score(msr("classif.acc"))[learner_id == 'classif.multinom', ][task_id == "tsk_ods_m1", ])["classif.acc"])/3
+
