@@ -15,7 +15,8 @@ library(dbplyr)
 library(here)
 
 # set the working directory
-wd <- "/Users/Echo/Documents/MasterThesisYue/Master-Thesis-DifferentialPrivacy"
+# wd <- "/Users/Echo/Documents/MasterThesisYue/Master-Thesis-DifferentialPrivacy"
+wd <- "Y:/Master-Thesis-DifferentialPrivacy"
 setwd(wd)
 
 # then we load the required preprocessed datasets
@@ -56,22 +57,7 @@ str(cart_norm_sds)
 str(cart_normrank_sds)
 table(cart_norm_sds$E6)
 table(bindori_dataset_threshold_chr$E6)
-# # for cart_sample
-# # also, we can probably subset those columns with constant inputs
-# cols_remove <- c("B13_1", "B13_2", "B13_3", "B13_4",
-#                  "B13_5", "B13_6", "B13_7",
-#                  "B14_1", "B14_2", "B14_3", "B14_4", "B14_5",
-#                  "D6_1", "D6_2", "D6_3", "F3_de")
-# cart_sample_sds <- cart_sample_sds %>% select(-(cols_remove))
-# cart_norm_sds <- cart_norm_sds %>% select(-(cols_remove))
-# cart_normrank_sds <- cart_normrank_sds %>% select(-(cols_remove))
-# 
-# # also for those B1b_x like vars and D10, we try exclude them from the synthesis
-# cols_rm_bd <- c("B1b_x1", "B1b_x2", "B1b_x3", "B1b_x4", "B1b_x5", "B1b_x6", "B1b_x7",
-#                 "B1b_x8", "B1b_x9", "B1b_x10", "B1b_x11","B1b_x12", "B1b_x13", "D10", "D9")
-# cart_sample_sds <- cart_sample_sds %>% select(-(cols_rm_bd))
-# cart_norm_sds <- cart_norm_sds %>% select(-(cols_rm_bd))
-# cart_normrank_sds <- cart_normrank_sds %>% select(-(cols_rm_bd))
+
 
 ncol(cart_norm_sds)==54  # there are 54 variables in total
 
@@ -310,3 +296,62 @@ write.csv(df_utility_cartnormrank, write_utility_cartnormrank, row.names=FALSE)
 vars2show_cartnormrank <- df_utility_cartnormrank[df_utility_cartnormrank[, "S_pMSE"]<10, ][1]
 
 nrow(vars2show_cartnormrank)  # there are 43 in total for cartnormrank
+
+# -----------------------------------------------------------------------------
+################################# Machine Learning #############################
+# -----------------------------------------------------------------------------
+library(mlr3)
+library(mlr3learners)
+library(mlr3filters)
+library(mlr3pipelines)
+library(mlr3tuning)
+library(mlr3viz)
+library(mlr3verse)
+library(mlr3benchmark)
+
+library(e1071)
+library(MASS)
+
+set.seed(2023) # make sure the results is reproducible
+#*****************************************************
+# Model 1: contact tracing app -- F2_1
+
+# step1: prepare the datasets
+vars_inc_m1 <- c("D1","D2","D3","D4","D5","D7","D8","D9","E2","E3","E4","E7","E5","E6","F2_1")
+ods_m1 <- bindori_dataset_threshold_chr[vars_inc_m1]
+ods_m1$F2_1 = factor(ods_m1$F2_1)
+
+sds_cartsample_m1 <- cart_sample_sds[vars_inc_m1]
+sds_cartsample_m1$F2_1 = factor(sds_cartsample_m1$F2_1)
+
+sds_cartnorm_m1 <- cart_norm_sds[vars_inc_m1]
+sds_cartnorm_m1$F2_1 = factor(sds_cartnorm_m1$F2_1)
+
+sds_cartnormrank_m1 <- cart_normrank_sds[vars_inc_m1]
+sds_cartnormrank_m1$F2_1 = factor(sds_cartnormrank_m1$F2_1)
+
+# Step2: new machine learning tasks for ods and sds
+tsk_ods_m1 <- TaskClassif$new(id="tsk_ods_m1",
+                              backend=ods_m1, target="F2_1")
+
+tsk_cartsample_m1 <- TaskClassif$new(id="tsk_cartsample_m1", 
+                                     backend=sds_cartsample_m1, target="F2_1")
+
+tsk_cartnorm_m1 <- TaskClassif$new(id="tsk_cartnorm_m1", 
+                                   backend=sds_cartnorm_m1, target="F2_1")
+
+tsk_cartnormrank_m1 <- TaskClassif$new(id="tsk_cartnormrank_m1",
+                                       backend=sds_cartnormrank_m1, target="F2_1")
+
+tasks_list_m1 <- list(tsk_ods_m1, tsk_cartsample_m1,tsk_cartnorm_m1, tsk_cartnormrank_m1)
+
+# step3: prepare the required learners
+learners_list_list <- lrns(c("classif.multinom", "classif.lda"))
+
+# step4: benchmark the task and learners with cross-validation
+# benchmark_grid is the design
+bm_model1 <- benchmark(benchmark_grid(tasks = tasks_list_m1,
+                                      learners = learners_list_list,
+                                      resamplings = rsmp("cv", folds = 3)),
+                       store_models = TRUE)
+

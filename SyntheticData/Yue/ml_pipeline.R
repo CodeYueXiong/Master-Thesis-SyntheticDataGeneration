@@ -1,8 +1,9 @@
 # load the required packages
-library(cart)
-library(rpart)
-library(ranger)
-library(xgboost)
+pkg_list <- c("mlr3", "mlr3learners", "mlr3filters", "mlr3pipelines", "mlr3tuning",
+              "mlr3viz", "mlr3verse",
+              "MASS", "e1071")
+install.packages(pkg_list)
+# install.packages("mlr3benchmark")
 
 library(mlr3)
 library(mlr3learners)
@@ -11,16 +12,59 @@ library(mlr3pipelines)
 library(mlr3tuning)
 library(mlr3viz)
 library(mlr3verse)
+library(mlr3benchmark)
+
+library(readr)
+library(vroom)
+library(tidyverse)
+library(arsenal)
+library(reshape2)
+library(synthpop)
+library(ggplot2)
+library(dbplyr)
+library(data.table)
+library(tidyverse)
 
 # set the working directory
 # wd <- "F:/Master-Thesis-DifferentialPrivacy"
-wd <- "C:/Users/ru27req/Master-Thesis-DifferentialPrivacy"
+wd <- "Y:/Master-Thesis-DifferentialPrivacy"
 setwd(wd)
 
-# load the synthetic dataset
-load("syn_default.rda")
+# load the ods dataset
+load("bindori_dataset_preprocessed_factor.rda")
 
-str(syn_default)
+ncol(bindori_dataset_threshold_chr)
+
+# for example
+# now we start with the cart group by looping the saved .rda files
+rda2list <- function(file) {
+  e <- new.env()
+  load(file, envir = e)
+  as.list(e)
+}
+
+folder <- "./SyntheticData/Yue/syn1_cart"
+files <- list.files(folder, pattern = ".rda$")
+
+syn_cart_models <- Map(rda2list, file.path(folder, files))
+names(syn_cart_models) <- tools::file_path_sans_ext(files)
+
+# we dataframe the lists
+cart_sample_sds <- data.frame(syn_cart_models$cart_sample_syn)
+cart_norm_sds <- data.frame(syn_cart_models$cart_norm_syn)
+cart_normrank_sds <- data.frame(syn_cart_models$cart_normrank_syn)
+
+# delete the prefix in variable naming
+names(cart_sample_sds) <- sub('^syn.', '', names(cart_sample_sds))
+names(cart_norm_sds) <- sub('^syn.', '', names(cart_norm_sds))
+names(cart_normrank_sds) <- sub('^syn.', '', names(cart_normrank_sds))
+
+str(cart_sample_sds)
+str(cart_norm_sds)
+str(cart_normrank_sds)
+table(cart_norm_sds$B8)
+table(bindori_dataset_threshold_chr$E6)
+
 
 # new a machine learning task
 tsk_syn_default <- Task$new(id="syn_default", task_type="classif", 
