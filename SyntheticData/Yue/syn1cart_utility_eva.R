@@ -311,6 +311,7 @@ library(mlr3benchmark)
 
 library(e1071)
 library(MASS)
+library(glmnet)
 
 set.seed(2023) # make sure the results is reproducible
 #*****************************************************
@@ -346,12 +347,75 @@ tsk_cartnormrank_m1 <- TaskClassif$new(id="tsk_cartnormrank_m1",
 tasks_list_m1 <- list(tsk_ods_m1, tsk_cartsample_m1,tsk_cartnorm_m1, tsk_cartnormrank_m1)
 
 # step3: prepare the required learners
-learners_list_list <- lrns(c("classif.multinom", "classif.lda"))
+learners_list_list <- lrns(c("classif.naive_bayes", "classif.lda"))
 
 # step4: benchmark the task and learners with cross-validation
 # benchmark_grid is the design
 bm_model1 <- benchmark(benchmark_grid(tasks = tasks_list_m1,
                                       learners = learners_list_list,
-                                      resamplings = rsmp("cv", folds = 3)),
+                                      resamplings = rsmp("cv", folds = 2)),
                        store_models = TRUE)
 
+# step5: validate the accuracy of the model
+#****** Measure to compare true observed 
+#****** labels with predicted labels in 
+#****** multiclass classification tasks.
+bm_model1$aggregate(msr("classif.acc"))
+
+# step6: extract the coefficients of the trained instances
+mlr3misc::map(as.data.table(bm_model1)$learner, "model")
+score_multinom_m1_ods <- sum(data.frame(bm_model1$score(msr("classif.acc"))[learner_id == 'classif.multinom', ][task_id == "tsk_ods_m1", ])["classif.acc"])/3
+score_multinom_m1_ods <- sum(data.frame(bm_model1$score(msr("classif.acc"))[learner_id == 'classif.multinom', ][task_id == "tsk_ods_m1", ])["classif.acc"])/3
+
+#*****************************************************
+# Model 2: covid positive -- D8
+
+# step1: prepare the datasets
+vars_inc_m1 <- c("D1","D2","D3","D4","D5","D7","D8","D9","E2","E3","E4","E7","E5","E6","F2_1")
+ods_m1 <- bindori_dataset_threshold_chr[vars_inc_m1]
+ods_m1$F2_1 = factor(ods_m1$F2_1)
+
+sds_cartsample_m1 <- cart_sample_sds[vars_inc_m1]
+sds_cartsample_m1$F2_1 = factor(sds_cartsample_m1$F2_1)
+
+sds_cartnorm_m1 <- cart_norm_sds[vars_inc_m1]
+sds_cartnorm_m1$F2_1 = factor(sds_cartnorm_m1$F2_1)
+
+sds_cartnormrank_m1 <- cart_normrank_sds[vars_inc_m1]
+sds_cartnormrank_m1$F2_1 = factor(sds_cartnormrank_m1$F2_1)
+
+# Step2: new machine learning tasks for ods and sds
+tsk_ods_m1 <- TaskClassif$new(id="tsk_ods_m1",
+                              backend=ods_m1, target="F2_1")
+
+tsk_cartsample_m1 <- TaskClassif$new(id="tsk_cartsample_m1", 
+                                     backend=sds_cartsample_m1, target="F2_1")
+
+tsk_cartnorm_m1 <- TaskClassif$new(id="tsk_cartnorm_m1", 
+                                   backend=sds_cartnorm_m1, target="F2_1")
+
+tsk_cartnormrank_m1 <- TaskClassif$new(id="tsk_cartnormrank_m1",
+                                       backend=sds_cartnormrank_m1, target="F2_1")
+
+tasks_list_m1 <- list(tsk_ods_m1, tsk_cartsample_m1,tsk_cartnorm_m1, tsk_cartnormrank_m1)
+
+# step3: prepare the required learners
+learners_list_list <- lrns(c("classif.naive_bayes", "classif.lda"))
+
+# step4: benchmark the task and learners with cross-validation
+# benchmark_grid is the design
+bm_model1 <- benchmark(benchmark_grid(tasks = tasks_list_m1,
+                                      learners = learners_list_list,
+                                      resamplings = rsmp("cv", folds = 2)),
+                       store_models = TRUE)
+
+# step5: validate the accuracy of the model
+#****** Measure to compare true observed 
+#****** labels with predicted labels in 
+#****** multiclass classification tasks.
+bm_model1$aggregate(msr("classif.acc"))
+
+# step6: extract the coefficients of the trained instances
+mlr3misc::map(as.data.table(bm_model1)$learner, "model")
+score_multinom_m1_ods <- sum(data.frame(bm_model1$score(msr("classif.acc"))[learner_id == 'classif.multinom', ][task_id == "tsk_ods_m1", ])["classif.acc"])/3
+score_multinom_m1_ods <- sum(data.frame(bm_model1$score(msr("classif.acc"))[learner_id == 'classif.multinom', ][task_id == "tsk_ods_m1", ])["classif.acc"])/3
