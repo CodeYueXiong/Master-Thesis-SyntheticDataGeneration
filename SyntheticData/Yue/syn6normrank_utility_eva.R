@@ -551,7 +551,7 @@ tsk_normranknorm_m2 <- TaskClassif$new(id="tsk_normranknorm_m2",
                                    backend=sds_normranknorm_m2, target="B8")
 
 tsk_normranknormrank_m2 <- TaskClassif$new(id="tsk_normranknormrank_m2",
-                                       backend=sds_normranknormrank_m1, target="B8")
+                                       backend=sds_normranknormrank_m2, target="B8")
 
 tasks_list_m2 <- list(tsk_ods_m2, tsk_normranksample_m2, tsk_normranknorm_m2, tsk_normranknormrank_m2)
 
@@ -575,8 +575,8 @@ bm_model2$aggregate(msr("classif.acc"))
 coef_info_m2 <- mlr3misc::map(as.data.table(bm_model2)$learner, "model")
 
 # step7: save bm_model as rds
-saveRDS(bm_model2, './SyntheticData/Yue/syn5_norm/bm_norm_model2.rds')
-saveRDS(coef_info_m2, './SyntheticData/Yue/syn5_norm/coef_norm_model2.rds')
+saveRDS(bm_model2, './SyntheticData/Yue/syn6_normrank/bm_normrank_model2.rds')
+saveRDS(coef_info_m2, './SyntheticData/Yue/syn6_normrank/coef_normrank_model2.rds')
 # score_multinom_m1_ods <- sum(data.frame(bm_model1$score(msr("classif.acc"))[learner_id == 'classif.multinom', ][task_id == "tsk_ods_m1", ])["classif.acc"])/3
 # score_multinom_m1_ods <- sum(data.frame(bm_model1$score(msr("classif.acc"))[learner_id == 'classif.multinom', ][task_id == "tsk_ods_m1", ])["classif.acc"])/3
 

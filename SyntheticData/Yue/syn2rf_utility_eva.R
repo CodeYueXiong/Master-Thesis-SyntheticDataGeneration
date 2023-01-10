@@ -456,7 +456,7 @@ write.csv(df_utility_rfnormrank, write_utility_rfnormrank, row.names=FALSE)
 
 vars2show_rfnormrank <- df_utility_rfnormrank[df_utility_rfnormrank[, "S_pMSE"]<10, ][1]
 
-nrow(vars2show_rfnormrank)  # there are 27 in total for cartsample
+nrow(vars2show_rfnormrank)  # there are 27 in total for rfnormrank
 
 # -----------------------------------------------------------------------------
 ################################# Machine Learning #############################
