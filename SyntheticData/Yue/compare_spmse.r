@@ -79,3 +79,7 @@ ggplot(utility_compare_df,aes(x=syn_method)) +
   geom_histogram(data=subset(utility_compare_df,syn_method == 'cart'),fill = "red", alpha = 0.2) +
   geom_histogram(data=subset(utility_compare_df,syn_method == 'rf'),fill = "blue", alpha = 0.2) +
   geom_histogram(data=subset(utility_compare_df,syn_method == 'bag'),fill = "green", alpha = 0.2)
+
+
+dat <- data.frame(xx = c(runif(100,20,50),runif(100,40,80),runif(100,0,30)),yy = rep(letters[1:3],each = 100))
+subset(dat,yy == 'a')
