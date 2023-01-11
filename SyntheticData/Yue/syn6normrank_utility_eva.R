@@ -498,28 +498,29 @@ tsk_normranknorm_m1 <- TaskClassif$new(id="tsk_normranknorm_m1",
 tsk_normranknormrank_m1 <- TaskClassif$new(id="tsk_normranknormrank_m1",
                                        backend=sds_normranknormrank_m1, target="F2_1")
 
-tasks_list_m1 <- list(tsk_ods_m1, tsk_normranksample_m1, tsk_normranknorm_m1, tsk_normranknormrank_m1)
+tasks_list_normrank <- list(tsk_ods_m1, tsk_normranksample_m1, tsk_normranknorm_m1, tsk_normranknormrank_m1,
+                            tsk_ods_m2, tsk_normranksample_m2, tsk_normranknorm_m2, tsk_normranknormrank_m2)
 
 # step3: prepare the required learners
-learners_list_model1 <- lrns(c("classif.naive_bayes", "classif.lda"))  # classif.lda
+learners_list_normrank <- lrns(c("classif.multinom", "classif.lda"))  # classif.lda
 
 # step4: benchmark the task and learners with cross-validation
 # benchmark_grid is the design
-bm_model1 <- benchmark(benchmark_grid(tasks = tasks_list_m1,
-                                      learners = learners_list_model1, resamplings = rsmp("cv", folds = 2)),
+bm_models_normrank <- benchmark(benchmark_grid(tasks = tasks_list_normrank,
+                                      learners = learners_list_normrank, resamplings = rsmp("holdout", ratio = 0.8)),
                        store_models = TRUE)
 
 # step5: validate the accuracy of the model
 #****** Measure to compare true observed 
 #****** labels with predicted labels in 
 #****** multiclass classification tasks.
-bm_model1$aggregate(msr("classif.acc"))
+bm_models_normrank$aggregate(msr("classif.acc"))
 
 # step6: extract the coefficients of the trained instances
-coef_info_m1 <- mlr3misc::map(as.data.table(bm_model1)$learner, "model")
+mlr3misc::map(as.data.table(bm_models_normrank)$learner, "model")
 
 # step7: save bm_model as rds
-saveRDS(bm_model1, './SyntheticData/Yue/syn6_normrank/bm_normrank_model1.rds')
+saveRDS(bm_models_normrank, './SyntheticData/Yue/syn6_normrank/bm_normrank_models.rds')
 saveRDS(coef_info_m1, './SyntheticData/Yue/syn6_normrank/coef_normrank_model1.rds')
 
 #*****************************************************

@@ -558,28 +558,29 @@ tsk_normnorm_m1 <- TaskClassif$new(id="tsk_normnorm_m1",
 tsk_normnormrank_m1 <- TaskClassif$new(id="tsk_normnormrank_m1",
                                           backend=sds_normnormrank_m1, target="F2_1")
 
-tasks_list_m1 <- list(tsk_ods_m1, tsk_normsample_m1, tsk_normnorm_m1, tsk_normnormrank_m1)
+tasks_list_norm <- list(tsk_ods_m1, tsk_normsample_m1, tsk_normnorm_m1, tsk_normnormrank_m1,
+                        tsk_ods_m2, tsk_normsample_m2, tsk_normnorm_m2, tsk_normnormrank_m2)
 
 # step3: prepare the required learners
-learners_list_model1 <- lrns(c("classif.naive_bayes"))  # classif.lda
+learners_list_norm <- lrns(c("classif.multinom"))  # classif.lda excluded
 
 # step4: benchmark the task and learners with cross-validation
 # benchmark_grid is the design
-bm_model1 <- benchmark(benchmark_grid(tasks = tasks_list_m1,
-                                      learners = learners_list_model1, resamplings = rsmp("cv", folds = 2)),
+bm_models_norm <- benchmark(benchmark_grid(tasks = tasks_list_norm,
+                                           learners = learners_list_norm, resamplings = rsmp("holdout", ratio = 0.8)),
                        store_models = TRUE)
 
 # step5: validate the accuracy of the model
 #****** Measure to compare true observed 
 #****** labels with predicted labels in 
 #****** multiclass classification tasks.
-bm_model1$aggregate(msr("classif.acc"))
+bm_models_norm$aggregate(msr("classif.acc"))
 
 # step6: extract the coefficients of the trained instances
-coef_info_m1 <- mlr3misc::map(as.data.table(bm_model1)$learner, "model")
+mlr3misc::map(as.data.table(bm_models_norm)$learner, "model")
 
 # step7: save bm_model as rds
-saveRDS(bm_model1, './SyntheticData/Yue/syn5_norm/bm_norm_model1.rds')
+saveRDS(bm_models_norm, './SyntheticData/Yue/syn5_norm/bm_norm_models.rds')
 saveRDS(coef_info_m1, './SyntheticData/Yue/syn5_norm/coef_norm_model1.rds')
 
 #*****************************************************

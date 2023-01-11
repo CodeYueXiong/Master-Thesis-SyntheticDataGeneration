@@ -321,32 +321,32 @@ set.seed(2023) # make sure the results is reproducible
 vars_inc_m1 <- c("D1","D2","D3","D4","D5","D7","D8","D9","E2","E3","E4","E7","E5","E6","F2_1")
 ods_m1 <- bindori_dataset_threshold_chr[vars_inc_m1]
 table(ods_m1$F2_1)
-# also dump these variables with missingness -99
-ods_m1 <- ods_m1[ods_m1$F2_1 == "1" | ods_m1$F2_1 == "2",]
-ods_m1$F2_1 <- factor(ods_m1$F2_1, levels = c('1', '2'))
-table(ods_m1$F2_1)
+# # also dump these variables with missingness -99
+# ods_m1 <- ods_m1[ods_m1$F2_1 == "1" | ods_m1$F2_1 == "2",]
+# ods_m1$F2_1 <- factor(ods_m1$F2_1, levels = c('1', '2'))
+# table(ods_m1$F2_1)
 
 
 sds_cartsample_m1 <- cart_sample_sds[vars_inc_m1]
 table(sds_cartsample_m1$F2_1)
-# also dump these variables with missingness -99
-sds_cartsample_m1 <- sds_cartsample_m1[sds_cartsample_m1$F2_1 == "1" | sds_cartsample_m1$F2_1 == "2",]
-sds_cartsample_m1$F2_1 <- factor(sds_cartsample_m1$F2_1, levels = c('1', '2'))
-table(sds_cartsample_m1$F2_1)
+# # also dump these variables with missingness -99
+# sds_cartsample_m1 <- sds_cartsample_m1[sds_cartsample_m1$F2_1 == "1" | sds_cartsample_m1$F2_1 == "2",]
+# sds_cartsample_m1$F2_1 <- factor(sds_cartsample_m1$F2_1, levels = c('1', '2'))
+# table(sds_cartsample_m1$F2_1)
 
 sds_cartnorm_m1 <- cart_norm_sds[vars_inc_m1]
 table(sds_cartnorm_m1$F2_1)
 # also dump these variables with missingness -99
-sds_cartnorm_m1 <- sds_cartnorm_m1[sds_cartnorm_m1$F2_1 == "1" | sds_cartnorm_m1$F2_1 == "2",]
-sds_cartnorm_m1$F2_1 <- factor(sds_cartnorm_m1$F2_1, levels = c('1', '2'))
-table(sds_cartnorm_m1$F2_1)
+# sds_cartnorm_m1 <- sds_cartnorm_m1[sds_cartnorm_m1$F2_1 == "1" | sds_cartnorm_m1$F2_1 == "2",]
+# sds_cartnorm_m1$F2_1 <- factor(sds_cartnorm_m1$F2_1, levels = c('1', '2'))
+# table(sds_cartnorm_m1$F2_1)
 
 sds_cartnormrank_m1 <- cart_normrank_sds[vars_inc_m1]
 table(sds_cartnormrank_m1$F2_1)
-# also dump these variables with missingness -99
-sds_cartnormrank_m1 <- sds_cartnormrank_m1[sds_cartnormrank_m1$F2_1 == "1" | sds_cartnormrank_m1$F2_1 == "2",]
-sds_cartnormrank_m1$F2_1 <- factor(sds_cartnormrank_m1$F2_1, levels = c('1', '2'))
-table(sds_cartnormrank_m1$F2_1)
+# # also dump these variables with missingness -99
+# sds_cartnormrank_m1 <- sds_cartnormrank_m1[sds_cartnormrank_m1$F2_1 == "1" | sds_cartnormrank_m1$F2_1 == "2",]
+# sds_cartnormrank_m1$F2_1 <- factor(sds_cartnormrank_m1$F2_1, levels = c('1', '2'))
+# table(sds_cartnormrank_m1$F2_1)
 
 # Step2: new machine learning tasks for ods and sds
 tsk_ods_m1 <- TaskClassif$new(id="tsk_ods_m1",
@@ -362,27 +362,31 @@ tsk_cartnormrank_m1 <- TaskClassif$new(id="tsk_cartnormrank_m1",
                                        backend=sds_cartnormrank_m1, target="F2_1")
 
 tasks_list_m1 <- list(tsk_ods_m1, tsk_cartsample_m1,tsk_cartnorm_m1, tsk_cartnormrank_m1)
+autoplot(tsk_ods_m1)
 
 # step3: prepare the required learners
-learners_list_model1 <- lrns(c("classif.naive_bayes", "classif.log_reg"))  # classif.lda
+learners_list_model1 <- lrns(c("classif.lda", "classif.multinom"))  # classif.lda
 
 # step4: benchmark the task and learners with cross-validation
 # benchmark_grid is the design
+# rather than cv, we use holdout as the resampling technique, ratio=0.8
 bm_model1 <- benchmark(benchmark_grid(tasks = tasks_list_m1,
-                                      learners = learners_list_list, resamplings = rsmp("cv", folds = 2)),
+                                      learners = learners_list_model1, resamplings = rsmp("holdout", ratio=0.8)),
                        store_models = TRUE)
 
 # step5: validate the accuracy of the model
 #****** Measure to compare true observed 
 #****** labels with predicted labels in 
 #****** multiclass classification tasks.
-bm_model1$aggregate(msr("classif.acc"))
+bm_model1$aggregate(msr("classif.acc"))[learner_id=="classif.lda",]
+
+autoplot(bm_model1)
 
 # step6: extract the coefficients of the trained instances
-mlr3misc::map(as.data.table(bm_model1)$learner, "model")
+mlr3misc::map(as.data.table(bm_model1)$learner, "model")[[2]]
 
 # step7: save bm_model as rds
-saveRDS(bm_model1, './SyntheticData/Yue/syn1_cart/bm_model1_missingdelete.rds')
+saveRDS(bm_model1, './SyntheticData/Yue/syn1_cart/bm_model1.rds')
 
 #*****************************************************
 # Model 2: covid positive -- B8 (multiclass)
@@ -417,21 +421,26 @@ tsk_cartnormrank_m2 <- TaskClassif$new(id="tsk_cartnormrank_m2",
 
 tasks_list_m2 <- list(tsk_ods_m2, tsk_cartsample_m2,tsk_cartnorm_m2, tsk_cartnormrank_m2)
 
-# step3: prepare the required learners
-learners_list_model2 <- lrns(c("classif.naive_bayes", "classif.lda"))
 
-# step4: benchmark the task and learners with cross-validation
+# step3: prepare the required learners
+learners_list_model2 <- lrns(c("classif.lda", "classif.multinom"))
+
+# step4: benchmark the task and learners with resampling
 # benchmark_grid is the design
 bm_model2 <- benchmark(benchmark_grid(tasks = tasks_list_m2,
                                       learners = learners_list_model2,
-                                      resamplings = rsmp("cv", folds = 2)),
+                                      resamplings = rsmp("holdout", ratio=0.8)),
+
                        store_models = TRUE)
 
 # step5: validate the accuracy of the model
 #****** Measure to compare true observed 
 #****** labels with predicted labels in 
 #****** multiclass classification tasks.
-bm_model2$aggregate(msr("classif.acc"))
+bm_model2$aggregate(msr("classif.acc"))[learner_id == "classif.multinom",]
+
+# step7: save bm_model as rds
+saveRDS(bm_model2, './SyntheticData/Yue/syn1_cart/bm_model2.rds')
 
 # step6: extract the coefficients of the trained instances
 mlr3misc::map(as.data.table(bm_model2)$learner, "model")

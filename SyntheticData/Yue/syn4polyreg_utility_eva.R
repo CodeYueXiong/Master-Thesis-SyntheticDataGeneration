@@ -74,7 +74,9 @@ polyreg_sample_sds[cols_factor] <- lapply(polyreg_sample_sds[cols_factor], facto
 polyreg_norm_sds[cols_factor] <- lapply(polyreg_norm_sds[cols_factor], factor)
 polyreg_normrank_sds[cols_factor] <- lapply(polyreg_normrank_sds[cols_factor], factor)
 
+str(polyreg_sample_sds)
 str(polyreg_norm_sds)
+str(polyreg_normrank_sds)
 
 # polyregsample_select_vars <- subset(polyreg_sample_sds, select = -c(B2, B4, E5, E6))
 # polyregnorm_select_vars <- subset(polyreg_norm_sds, select = -c(B2, B4, E5, E6))
@@ -288,28 +290,29 @@ tsk_polyregnorm_m1 <- TaskClassif$new(id="tsk_polyregnorm_m1",
 tsk_polyregnormrank_m1 <- TaskClassif$new(id="tsk_polyregnormrank_m1",
                                       backend=sds_polyregnormrank_m1, target="F2_1")
 
-tasks_list_m1 <- list(tsk_ods_m1, tsk_polyregsample_m1, tsk_polyregnorm_m1, tsk_polyregnormrank_m1)
+tasks_list_polyreg <- list(tsk_ods_m1, tsk_polyregsample_m1, tsk_polyregnorm_m1, tsk_polyregnormrank_m1,
+                           tsk_ods_m2, tsk_polyregsample_m2, tsk_polyregnorm_m2, tsk_polyregnormrank_m2)
 
 # step3: prepare the required learners
-learners_list_model1 <- lrns(c("classif.naive_bayes", "classif.lda"))  # classif.lda
+learners_list_polyreg <- lrns(c("classif.multinom", "classif.lda"))  # classif.lda
 
 # step4: benchmark the task and learners with cross-validation
 # benchmark_grid is the design
-bm_model1 <- benchmark(benchmark_grid(tasks = tasks_list_m1,
-                                      learners = learners_list_model1, resamplings = rsmp("cv", folds = 2)),
+bm_models_polyreg <- benchmark(benchmark_grid(tasks = tasks_list_polyreg,
+                                              learners = learners_list_polyreg, resamplings = rsmp("holdout", ratio = 0.8)),
                        store_models = TRUE)
 
 # step5: validate the accuracy of the model
 #****** Measure to compare true observed 
 #****** labels with predicted labels in 
 #****** multiclass classification tasks.
-bm_model1$aggregate(msr("classif.acc"))
+bm_models_polyreg$aggregate(msr("classif.acc"))
 
 # step6: extract the coefficients of the trained instances
-coef_info_m1 <- mlr3misc::map(as.data.table(bm_model1)$learner, "model")
+mlr3misc::map(as.data.table(bm_models_polyreg)$learner, "model")
 
 # step7: save bm_model as rds
-saveRDS(bm_model1, './SyntheticData/Yue/syn4_polyreg/bm_polyreg_model1.rds')
+saveRDS(bm_models_polyreg, './SyntheticData/Yue/syn4_polyreg/bm_polyreg_models.rds')
 saveRDS(coef_info_m1, './SyntheticData/Yue/syn4_polyreg/coef_polyreg_model1.rds')
 
 #*****************************************************
