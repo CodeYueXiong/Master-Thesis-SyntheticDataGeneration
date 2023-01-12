@@ -1,5 +1,5 @@
-# Master-Thesis-DifferentialPrivacy
-Master Thesis on Differential Privacy of Global COVID-19 Trends and Impact Survey Microdata and Opendata, especially focusing on the evaluation of different synthetic datasets.
+# Master-Thesis-SyntheticDataGeneration
+Master Thesis on Synthetic Data Generation of Global COVID-19 Trends and Impact Survey Microdata and Opendata, especially focusing on the evaluation of different synthetic datasets.
 
 # Overview
 The COVID-19 Trends and Impact Survey Data project aims to generate synthetic datasets using various synthesizing algorithms, such as linear regression, multinomial logistic regression and random forest, based on the COVID-19 Trends and Impact Survey Data. The goal is to evaluate the data utility and practicability in the context of Machine Learning using Tree based methods.
