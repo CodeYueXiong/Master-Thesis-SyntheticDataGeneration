@@ -17,7 +17,7 @@ The synthetic datasets are generated using the following algorithms:
 These algorithms are used to synthesize the survey data and create new, synthetic datasets that can be used for machine learning and analysis.
 
 # Experiment Design
-![My Image](https://github.com/CodeYueXiong/Master-Thesis-SyntheticDataGeneration/blob/master/workflow-of-design.png)
+![My Image](https://github.com/CodeYueXiong/Master-Thesis-SyntheticDataGeneration/blob/master/workflow-of-design.svg)
 
 
 # Evaluation
