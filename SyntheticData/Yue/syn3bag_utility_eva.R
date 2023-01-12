@@ -457,6 +457,7 @@ library(mlr3benchmark)
 library(e1071)
 library(MASS)
 library(glmnet)
+library(ranger)
 
 set.seed(2023) # make sure the results is reproducible
 #*****************************************************
@@ -493,7 +494,7 @@ tasks_list_bag <- list(tsk_ods_m1, tsk_bagsample_m1, tsk_bagnorm_m1, tsk_bagnorm
                        tsk_ods_m2, tsk_bagsample_m2, tsk_bagnorm_m2, tsk_bagnormrank_m2)
 
 # step3: prepare the required learners
-learners_list_bag <- lrns(c("classif.multinom", "classif.lda"))  # classif.lda
+learners_list_bag <- lrns(c("classif.multinom", "classif.ranger"))  # classif.lda
 
 # step4: benchmark the task and learners with cross-validation
 # benchmark_grid is the design
@@ -505,7 +506,7 @@ bm_models_bag <- benchmark(benchmark_grid(tasks = tasks_list_bag,
 #****** Measure to compare true observed 
 #****** labels with predicted labels in 
 #****** multiclass classification tasks.
-bm_models_bag$aggregate(msr("classif.acc"))[learner_id=="classif.multinom",]
+bm_models_bag$aggregate(msr("classif.acc"))[learner_id=="classif.ranger",]
 
 # step6: extract the coefficients of the trained instances
 mlr3misc::map(as.data.table(bm_models_bag)$learner, "model")

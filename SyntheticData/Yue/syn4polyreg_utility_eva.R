@@ -258,6 +258,7 @@ library(mlr3benchmark)
 library(e1071)
 library(MASS)
 library(glmnet)
+library(ranger)
 
 set.seed(2023) # make sure the results are reproducible
 #*****************************************************
@@ -294,7 +295,7 @@ tasks_list_polyreg <- list(tsk_ods_m1, tsk_polyregsample_m1, tsk_polyregnorm_m1,
                            tsk_ods_m2, tsk_polyregsample_m2, tsk_polyregnorm_m2, tsk_polyregnormrank_m2)
 
 # step3: prepare the required learners
-learners_list_polyreg <- lrns(c("classif.multinom", "classif.lda"))  # classif.lda
+learners_list_polyreg <- lrns(c("classif.multinom", "classif.ranger"))  # classif.lda
 
 # step4: benchmark the task and learners with cross-validation
 # benchmark_grid is the design
@@ -306,7 +307,7 @@ bm_models_polyreg <- benchmark(benchmark_grid(tasks = tasks_list_polyreg,
 #****** Measure to compare true observed 
 #****** labels with predicted labels in 
 #****** multiclass classification tasks.
-bm_models_polyreg$aggregate(msr("classif.acc"))
+bm_models_polyreg$aggregate(msr("classif.acc"))[learner_id=="classif.ranger",]
 
 # step6: extract the coefficients of the trained instances
 mlr3misc::map(as.data.table(bm_models_polyreg)$learner, "model")
