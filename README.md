@@ -16,6 +16,10 @@ The synthetic datasets are generated using the following algorithms:
 
 These algorithms are used to synthesize the survey data and create new, synthetic datasets that can be used for machine learning and analysis.
 
+# Experiment Design
+![My Image](https://github.com/CodeYueXiong/Master-Thesis-SyntheticDataGeneration/blob/master/workflow-of-design.png)
+
+
 # Evaluation
 The utility and practicability of the synthetic datasets are evaluated using Tree based methods. These methods include decision trees, random forests, and gradient boosting. The evaluation aims to assess the quality of the synthetic datasets and their potential usefulness in machine learning and analysis.
 
