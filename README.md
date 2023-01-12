@@ -13,6 +13,7 @@ The synthetic datasets are generated using the following algorithms:
 - Linear Regression
 - Multinomial Logistic Regression
 - Random Forest
+
 These algorithms are used to synthesize the survey data and create new, synthetic datasets that can be used for machine learning and analysis.
 
 # Evaluation
