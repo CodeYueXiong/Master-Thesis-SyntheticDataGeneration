@@ -13,12 +13,15 @@ install.packages(packages_list)
 # load the libraries
 library(readr)
 library(vroom)
-library(tidyverse)
+library(tidyverse, quietly = TRUE)
+# install.packages("tidyverse", dependencies = TRUE, type = "source")
+library(broom)
 library(arsenal)
 library(reshape2)
 library(synthpop)
 library(ggplot2)
 library(dbplyr)
+library(broom)
 
 library(mlr3)
 library(mlr3learners)
@@ -34,7 +37,8 @@ library(MASS)
 library(stats)
 
 # set the working directory
-wd <- "/dss/dsshome1/0C/ru27req2/MA_Experiment_Data/Master-Thesis-DifferentialPrivacy"
+# wd <- "/dss/dsshome1/0C/ru27req2/MA_Experiment_Data/Master-Thesis-DifferentialPrivacy"
+wd <- "/Users/Echo/Documents/MasterThesisYue/Master-Thesis-DifferentialPrivacy"
 setwd(wd)
 
 #*******Step 1: load original and synthetic datasets
@@ -587,13 +591,12 @@ terrance_v2_filepath <- "./SyntheticData/Terrance/version_2/syn_k2_2020-08-02_20
 terrance_v1_sds <- read.csv(file = terrance_v1_filepath, sep = ",")
 terrance_v2_sds <- read.csv(file = terrance_v2_filepath, sep = ",")
 
-colnames(cart_sample_sds)
-
 colnames(terrance_v1_sds)[colnames(terrance_v1_sds)=="sample_weight"] <- "weight"
 colnames(terrance_v2_sds)[colnames(terrance_v2_sds)=="sample_weight"] <- "weight"
 # align the variables
 terrance_v1_sds <- drop_na(terrance_v1_sds[colnames(cart_sample_sds)])
 terrance_v2_sds <- drop_na(terrance_v2_sds[colnames(cart_sample_sds)])
+# ncol(terrance_v1_sds)
 col_names <- names(terrance_v1_sds)[2:54]
 terrance_v1_sds[col_names] <- lapply(terrance_v1_sds[col_names], factor)
 terrance_v2_sds[col_names] <- lapply(terrance_v2_sds[col_names], factor)
@@ -620,10 +623,9 @@ normrank_norm_sds[,2:54] <- sapply(normrank_norm_sds[,2:54],as.integer)
 normrank_normrank_sds[,2:54] <- sapply(normrank_normrank_sds[,2:54],as.integer)
 terrance_v1_sds[,2:54] <- sapply(terrance_v1_sds[,2:54],as.integer)
 terrance_v2_sds[,2:54] <- sapply(terrance_v2_sds[,2:54],as.integer)
-str(terrance_v2_sds)
+str(cart_norm_sds)
 
-table(terrance_v1_sds$F2_1, terrance_v1_sds$B8)
-table(cart_norm_sds$F2_1, cart_norm_sds$B8)
+
 # -----------------------------------------------------------------------------
 ################################# Machine Learning #############################
 # -----------------------------------------------------------------------------
@@ -634,7 +636,7 @@ set.seed(2023) # make sure the results are reproducible
 #*****************************************************
 # Model 1: contact tracing app -- F2_1
 
-# step1: prepare the datasets
+# Step1: prepare the datasets
 vars_inc_m1 <- c("D1","D2","D3","D4","D5","D7","D8","D9","E2","E3","E4","E7","E5","E6","F2_1")
 ods_m1 <- bindori_dataset_threshold_chr[vars_inc_m1]
 sds_cartsample_m1 <- cart_sample_sds[vars_inc_m1]
@@ -646,3 +648,313 @@ sds_rfnormrank_m1 <- rf_normrank_sds[vars_inc_m1]
 sds_bagsample_m1 <- bag_sample_sds[vars_inc_m1]
 sds_bagnorm_m1 <- bag_norm_sds[vars_inc_m1]
 sds_bagnormrank_m1 <- bag_normrank_sds[vars_inc_m1]
+sds_polyregsample_m1 <- polyreg_sample_sds[vars_inc_m1]
+sds_polyregnorm_m1 <- polyreg_norm_sds[vars_inc_m1]
+sds_polyregnormrank_m1 <- polyreg_normrank_sds[vars_inc_m1]
+sds_normsample_m1 <- norm_sample_sds[vars_inc_m1]
+sds_normnorm_m1 <- norm_norm_sds[vars_inc_m1]
+sds_normnormrank_m1 <- norm_normrank_sds[vars_inc_m1]
+sds_normranksample_m1 <- normrank_sample_sds[vars_inc_m1]
+sds_normranknorm_m1 <- normrank_norm_sds[vars_inc_m1]
+sds_normranknormrank_m1 <- normrank_normrank_sds[vars_inc_m1]
+sds_terrance_v1_m1 <- terrance_v1_sds[vars_inc_m1]
+sds_terrance_v2_m1 <- terrance_v2_sds[vars_inc_m1]
+
+# encode F2_1 as numeric
+ods_m1["F2_1"] <- lapply(ods_m1["F2_1"], as.numeric)
+sds_cartsample_m1["F2_1"] <- lapply(sds_cartsample_m1["F2_1"], as.numeric)
+sds_cartnorm_m1["F2_1"] <- lapply(sds_cartnorm_m1["F2_1"], as.numeric)
+sds_cartnormrank_m1["F2_1"] <- lapply(sds_cartnormrank_m1["F2_1"], as.numeric)
+sds_rfsample_m1["F2_1"] <- lapply(sds_rfsample_m1["F2_1"], as.numeric)
+sds_rfnorm_m1["F2_1"] <- lapply(sds_rfnorm_m1["F2_1"], as.numeric)
+sds_rfnormrank_m1["F2_1"] <- lapply(sds_rfnormrank_m1["F2_1"], as.numeric)
+sds_bagsample_m1["F2_1"] <- lapply(sds_bagsample_m1["F2_1"], as.numeric)
+sds_bagnorm_m1["F2_1"] <- lapply(sds_bagnorm_m1["F2_1"], as.numeric)
+sds_bagnormrank_m1["F2_1"] <- lapply(sds_bagnormrank_m1["F2_1"], as.numeric)
+sds_polyregsample_m1["F2_1"] <- lapply(sds_polyregsample_m1["F2_1"], as.numeric)
+sds_polyregnorm_m1["F2_1"] <- lapply(sds_polyregnorm_m1["F2_1"], as.numeric)
+sds_polyregnormrank_m1["F2_1"] <- lapply(sds_polyregnormrank_m1["F2_1"], as.numeric)
+sds_normsample_m1["F2_1"] <- lapply(sds_normsample_m1["F2_1"], as.numeric)
+sds_normnorm_m1["F2_1"] <- lapply(sds_normnorm_m1["F2_1"], as.numeric)
+sds_normnormrank_m1["F2_1"] <- lapply(sds_normnormrank_m1["F2_1"], as.numeric)
+sds_normranksample_m1["F2_1"] <- lapply(sds_normranksample_m1["F2_1"], as.numeric)
+sds_normranknorm_m1["F2_1"] <- lapply(sds_normranknorm_m1["F2_1"], as.numeric)
+sds_normranknormrank_m1["F2_1"] <- lapply(sds_normranknormrank_m1["F2_1"], as.numeric)
+sds_terrance_v1_m1["F2_1"] <- lapply(sds_terrance_v1_m1["F2_1"], as.numeric)
+sds_terrance_v2_m1["F2_1"] <- lapply(sds_terrance_v2_m1["F2_1"], as.numeric)
+# Step2: new machine learning tasks for ods and sds with Model 1
+tsk_ods_m1 <- TaskRegr$new(id="tsk_ods_m1",
+                           backend=ods_m1, target="F2_1")
+
+tsk_cartsample_m1 <- TaskRegr$new(id="tsk_cartsample_m1", 
+                                  backend=sds_cartsample_m1, target="F2_1")
+
+tsk_cartnorm_m1 <- TaskRegr$new(id="tsk_cartnorm_m1", 
+                                backend=sds_cartnorm_m1, target="F2_1")
+
+tsk_cartnormrank_m1 <- TaskRegr$new(id="tsk_cartnormrank_m1",
+                                    backend=sds_cartnormrank_m1, target="F2_1")
+
+tsk_rfsample_m1 <- TaskRegr$new(id="tsk_rfsample_m1", 
+                                  backend=sds_rfsample_m1, target="F2_1")
+
+tsk_rfnorm_m1 <- TaskRegr$new(id="tsk_rfnorm_m1", 
+                                backend=sds_rfnorm_m1, target="F2_1")
+
+tsk_rfnormrank_m1 <- TaskRegr$new(id="tsk_rfnormrank_m1",
+                                    backend=sds_rfnormrank_m1, target="F2_1")
+
+tsk_bagsample_m1 <- TaskRegr$new(id="tsk_bagsample_m1", 
+                                backend=sds_bagsample_m1, target="F2_1")
+
+tsk_bagnorm_m1 <- TaskRegr$new(id="tsk_bagnorm_m1", 
+                              backend=sds_bagnorm_m1, target="F2_1")
+
+tsk_bagnormrank_m1 <- TaskRegr$new(id="tsk_bagnormrank_m1",
+                                  backend=sds_bagnormrank_m1, target="F2_1")
+
+tsk_polyregsample_m1 <- TaskRegr$new(id="tsk_polyregsample_m1", 
+                                 backend=sds_polyregsample_m1, target="F2_1")
+
+tsk_polyregnorm_m1 <- TaskRegr$new(id="tsk_polyregnorm_m1", 
+                               backend=sds_polyregnorm_m1, target="F2_1")
+
+tsk_polyregnormrank_m1 <- TaskRegr$new(id="tsk_polyregnormrank_m1",
+                                   backend=sds_polyregnormrank_m1, target="F2_1")
+
+tsk_normsample_m1 <- TaskRegr$new(id="tsk_normsample_m1", 
+                                 backend=sds_normsample_m1, target="F2_1")
+
+tsk_normnorm_m1 <- TaskRegr$new(id="tsk_normnorm_m1", 
+                               backend=sds_normnorm_m1, target="F2_1")
+
+tsk_normnormrank_m1 <- TaskRegr$new(id="tsk_normnormrank_m1",
+                                   backend=sds_normnormrank_m1, target="F2_1")
+
+tsk_normranksample_m1 <- TaskRegr$new(id="tsk_normranksample_m1", 
+                                  backend=sds_normranksample_m1, target="F2_1")
+
+tsk_normranknorm_m1 <- TaskRegr$new(id="tsk_normranknorm_m1", 
+                                backend=sds_normranknorm_m1, target="F2_1")
+
+tsk_normranknormrank_m1 <- TaskRegr$new(id="tsk_normranknormrank_m1",
+                                    backend=sds_normranknormrank_m1, target="F2_1")
+
+tsk_terranceV1_m1 <- TaskRegr$new(id="tsk_terranceV1_m1",
+                                  backend=sds_terrance_v1_m1, target="F2_1")
+
+tsk_terranceV2_m1 <- TaskRegr$new(id="tsk_terranceV2_m1",
+                                  backend=sds_terrance_v2_m1, target="F2_1")
+
+#*****************************************************
+# Model 2: covid positive -- B8
+vars_inc_m2 <- c("E2","E3","E4","E7","E5","E6","C1_m","C2","C3","C5","C6","C7","C8","B8")
+ods_m2 <- bindori_dataset_threshold_chr[vars_inc_m2]
+sds_cartsample_m2 <- cart_sample_sds[vars_inc_m2]
+sds_cartnorm_m2 <- cart_norm_sds[vars_inc_m2]
+sds_cartnormrank_m2 <- cart_normrank_sds[vars_inc_m2]
+sds_rfsample_m2 <- rf_sample_sds[vars_inc_m2]
+sds_rfnorm_m2 <- rf_norm_sds[vars_inc_m2]
+sds_rfnormrank_m2 <- rf_normrank_sds[vars_inc_m2]
+sds_bagsample_m2 <- bag_sample_sds[vars_inc_m2]
+sds_bagnorm_m2 <- bag_norm_sds[vars_inc_m2]
+sds_bagnormrank_m2 <- bag_normrank_sds[vars_inc_m2]
+sds_polyregsample_m2 <- polyreg_sample_sds[vars_inc_m2]
+sds_polyregnorm_m2 <- polyreg_norm_sds[vars_inc_m2]
+sds_polyregnormrank_m2 <- polyreg_normrank_sds[vars_inc_m2]
+sds_normsample_m2 <- norm_sample_sds[vars_inc_m2]
+sds_normnorm_m2 <- norm_norm_sds[vars_inc_m2]
+sds_normnormrank_m2 <- norm_normrank_sds[vars_inc_m2]
+sds_normranksample_m2 <- normrank_sample_sds[vars_inc_m2]
+sds_normranknorm_m2 <- normrank_norm_sds[vars_inc_m2]
+sds_normranknormrank_m2 <- normrank_normrank_sds[vars_inc_m2]
+sds_terrance_v1_m2 <- terrance_v1_sds[vars_inc_m2]
+sds_terrance_v2_m2 <- terrance_v2_sds[vars_inc_m2]
+
+# encode B8 as numeric
+ods_m2["B8"] <- lapply(ods_m2["B8"], as.numeric)
+sds_cartsample_m2["B8"] <- lapply(sds_cartsample_m2["B8"], as.numeric)
+sds_cartnorm_m2["B8"] <- lapply(sds_cartnorm_m2["B8"], as.numeric)
+sds_cartnormrank_m2["B8"] <- lapply(sds_cartnormrank_m2["B8"], as.numeric)
+sds_rfsample_m2["B8"] <- lapply(sds_rfsample_m2["B8"], as.numeric)
+sds_rfnorm_m2["B8"] <- lapply(sds_rfnorm_m2["B8"], as.numeric)
+sds_rfnormrank_m2["B8"] <- lapply(sds_rfnormrank_m2["B8"], as.numeric)
+sds_bagsample_m2["B8"] <- lapply(sds_bagsample_m2["B8"], as.numeric)
+sds_bagnorm_m2["B8"] <- lapply(sds_bagnorm_m2["B8"], as.numeric)
+sds_bagnormrank_m2["B8"] <- lapply(sds_bagnormrank_m2["B8"], as.numeric)
+sds_polyregsample_m2["B8"] <- lapply(sds_polyregsample_m2["B8"], as.numeric)
+sds_polyregnorm_m2["B8"] <- lapply(sds_polyregnorm_m2["B8"], as.numeric)
+sds_polyregnormrank_m2["B8"] <- lapply(sds_polyregnormrank_m2["B8"], as.numeric)
+sds_normsample_m2["B8"] <- lapply(sds_normsample_m2["B8"], as.numeric)
+sds_normnorm_m2["B8"] <- lapply(sds_normnorm_m2["B8"], as.numeric)
+sds_normnormrank_m2["B8"] <- lapply(sds_normnormrank_m2["B8"], as.numeric)
+sds_normranksample_m2["B8"] <- lapply(sds_normranksample_m2["B8"], as.numeric)
+sds_normranknorm_m2["B8"] <- lapply(sds_normranknorm_m2["B8"], as.numeric)
+sds_normranknormrank_m2["B8"] <- lapply(sds_normranknormrank_m2["B8"], as.numeric)
+sds_terrance_v1_m2["B8"] <- lapply(sds_terrance_v1_m2["B8"], as.numeric)
+sds_terrance_v2_m2["B8"] <- lapply(sds_terrance_v2_m2["B8"], as.numeric)
+
+# Step2: new machine learning tasks for ods and sds
+tsk_ods_m2 <- TaskRegr$new(id="tsk_ods_m2",
+                           backend=ods_m2, target="B8")
+
+tsk_cartsample_m2 <- TaskRegr$new(id="tsk_cartsample_m2", 
+                                  backend=sds_cartsample_m2, target="B8")
+
+tsk_cartnorm_m2 <- TaskRegr$new(id="tsk_cartnorm_m2", 
+                                backend=sds_cartnorm_m2, target="B8")
+
+tsk_cartnormrank_m2 <- TaskRegr$new(id="tsk_cartnormrank_m2",
+                                    backend=sds_cartnormrank_m2, target="B8")
+
+tsk_rfsample_m2 <- TaskRegr$new(id="tsk_rfsample_m2", 
+                                backend=sds_rfsample_m2, target="B8")
+
+tsk_rfnorm_m2 <- TaskRegr$new(id="tsk_rfnorm_m2", 
+                              backend=sds_rfnorm_m2, target="B8")
+
+tsk_rfnormrank_m2 <- TaskRegr$new(id="tsk_rfnormrank_m2",
+                                  backend=sds_rfnormrank_m2, target="B8")
+
+tsk_bagsample_m2 <- TaskRegr$new(id="tsk_bagsample_m2", 
+                                 backend=sds_bagsample_m2, target="B8")
+
+tsk_bagnorm_m2 <- TaskRegr$new(id="tsk_bagnorm_m2", 
+                               backend=sds_bagnorm_m2, target="B8")
+
+tsk_bagnormrank_m2 <- TaskRegr$new(id="tsk_bagnormrank_m2",
+                                   backend=sds_bagnormrank_m2, target="B8")
+
+tsk_polyregsample_m2 <- TaskRegr$new(id="tsk_polyregsample_m2", 
+                                     backend=sds_polyregsample_m2, target="B8")
+
+tsk_polyregnorm_m2 <- TaskRegr$new(id="tsk_polyregnorm_m2", 
+                                   backend=sds_polyregnorm_m2, target="B8")
+
+tsk_polyregnormrank_m2 <- TaskRegr$new(id="tsk_polyregnormrank_m2",
+                                       backend=sds_polyregnormrank_m2, target="B8")
+
+tsk_normsample_m2 <- TaskRegr$new(id="tsk_normsample_m2", 
+                                  backend=sds_normsample_m2, target="B8")
+
+tsk_normnorm_m2 <- TaskRegr$new(id="tsk_normnorm_m2", 
+                                backend=sds_normnorm_m2, target="B8")
+
+tsk_normnormrank_m2 <- TaskRegr$new(id="tsk_normnormrank_m2",
+                                    backend=sds_normnormrank_m2, target="B8")
+
+tsk_normranksample_m2 <- TaskRegr$new(id="tsk_normranksample_m2", 
+                                      backend=sds_normranksample_m2, target="B8")
+
+tsk_normranknorm_m2 <- TaskRegr$new(id="tsk_normranknorm_m2", 
+                                    backend=sds_normranknorm_m2, target="B8")
+
+tsk_normranknormrank_m2 <- TaskRegr$new(id="tsk_normranknormrank_m2",
+                                        backend=sds_normranknormrank_m2, target="B8")
+
+tsk_terranceV1_m2 <- TaskRegr$new(id="tsk_terranceV1_m2",
+                                  backend=sds_terrance_v1_m2, target="B8")
+
+tsk_terranceV2_m2 <- TaskRegr$new(id="tsk_terranceV2_m2",
+                                  backend=sds_terrance_v2_m2, target="B8")
+
+tasks_list <- list(tsk_ods_m1, tsk_cartsample_m1,tsk_cartnorm_m1, tsk_cartnormrank_m1,
+                   tsk_rfsample_m1, tsk_rfnorm_m1, tsk_rfnormrank_m1,
+                   tsk_bagsample_m1, tsk_bagnorm_m1, tsk_bagnormrank_m1,
+                   tsk_polyregsample_m1, tsk_polyregnorm_m1, tsk_polyregnormrank_m1,
+                   tsk_normsample_m1, tsk_normnorm_m1, tsk_normnormrank_m1,
+                   tsk_normranksample_m1, tsk_normranknorm_m1, tsk_normranknormrank_m1,
+                   tsk_terranceV1_m1, tsk_terranceV2_m1,
+                   tsk_ods_m2, tsk_cartsample_m2,tsk_cartnorm_m2, tsk_cartnormrank_m2,
+                   tsk_rfsample_m2, tsk_rfnorm_m2, tsk_rfnormrank_m2,
+                   tsk_bagsample_m2, tsk_bagnorm_m2, tsk_bagnormrank_m2,
+                   tsk_polyregsample_m2, tsk_polyregnorm_m2, tsk_polyregnormrank_m2,
+                   tsk_normsample_m2, tsk_normnorm_m2, tsk_normnormrank_m2,
+                   tsk_normranksample_m2, tsk_normranknorm_m2, tsk_normranknormrank_m2,
+                   tsk_terranceV1_m2, tsk_terranceV2_m2)
+
+# Step3: prepare the required learner
+learner_regr <- lrn("regr.lm")
+
+# Step4: benchmark the tasks and learner with resampling
+# benchmark_grid is the design
+bm_models <- benchmark(benchmark_grid(tasks = tasks_list,
+                                      learners = learner_regr,
+                                      resamplings = rsmp("holdout", ratio=0.8)),
+                       
+                       store_models = TRUE)
+# Step5: validate the accuracy of the model
+#****** Measure to compare true observed 
+#****** labels with predicted labels in 
+#****** multiclass classification tasks.
+bm_models$aggregate(msr("regr.rmse"))[learner_id == "regr.lm",]
+
+# step7: save bm_model as rds
+saveRDS(bm_models, './SyntheticData/Yue/bm_models_lm.rds')
+
+# step6: extract the coefficients of the trained instances
+mlr3misc::map(as.data.table(bm_models)$learner, "model")[[40]][1]$coefficients
+
+as.data.table(bm_models)$learner
+
+# Fit a linear regression model
+model_v2_cartsample <- lm(B8 ~ E2 + E3 + E4 + E7 + E5 + E6 + C1_m + C2 + C3 + C5 + C6 + C7 + C8,
+            data = sds_cartsample_m2)
+model_v2_cartnorm <- lm(B8 ~ E2 + E3 + E4 + E7 + E5 + E6 + C1_m + C2 + C3 + C5 + C6 + C7 + C8,
+                          data = sds_cartnorm_m2)
+model_v2_cartnormrank <- lm(B8 ~ E2 + E3 + E4 + E7 + E5 + E6 + C1_m + C2 + C3 + C5 + C6 + C7 + C8,
+                        data = sds_cartnormrank_m2)
+# Extract the coefficients, standard errors, and confidence intervals from the models
+coefs_v2_cartsample <- tidy(model_v2_cartsample)
+coefs_v2_cartnorm <- tidy(model_v2_cartnorm)
+coefs_v2_cartnormrank <- tidy(model_v2_cartnormrank)
+
+# Calculate the lower and upper bounds of the confidence intervals for each model
+coefs_v2_cartsample$ci_lower <- coefs_v2_cartsample$estimate - 1.96 * coefs_v2_cartsample$std.error
+coefs_v2_cartsample$ci_upper <- coefs_v2_cartsample$estimate + 1.96 * coefs_v2_cartsample$std.error
+coefs_v2_cartnorm$ci_lower <- coefs_v2_cartnorm$estimate - 1.96 * coefs_v2_cartnorm$std.error
+coefs_v2_cartnorm$ci_upper <- coefs_v2_cartnorm$estimate + 1.96 * coefs_v2_cartnorm$std.error
+coefs_v2_cartnormrank$ci_lower <- coefs_v2_cartnormrank$estimate - 1.96 * coefs_v2_cartnormrank$std.error
+coefs_v2_cartnormrank$ci_upper <- coefs_v2_cartnormrank$estimate + 1.96 * coefs_v2_cartnormrank$std.error
+
+# Add a column to each dataframe to indicate the model
+coefs_v2_cartsample$model <- "model_v2_cartsample"
+coefs_v2_cartnorm$model <- "model_v2_cartnorm"
+coefs_v2_cartnormrank$model <- "model_v2_cartnormrank"
+
+# Bind the coefficient data for each model
+coefs_v2 <- bind_rows(coefs_v2_cartsample, coefs_v2_cartnorm, coefs_v2_cartnormrank)
+
+# Create the plot
+ggplot(coefs_v2, aes(x = term, y = estimate, color = model)) +
+  geom_pointrange(aes(ymin = ci_lower, ymax = ci_upper)) +
+  geom_hline(yintercept = 0) +
+  geom_point() +
+  theme_classic() +
+  ggtitle("Coefficients of Linear Regression Model") +
+  xlab("parameter") +
+  ylab("coefficient")
+
+# Create a new column indicating which model the coefficients belong to
+coefs_v2$model <- rep(c("cartsample_m2", "cartnorm_m2", "cartnormrank_m2"), each = nrow(coefs_v2)/3)
+
+# Create the coefficient plot
+ggplot(coefs_v2, aes(x = term, y = estimate, color = model)) +
+  geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), width = 0.6) +
+  geom_hline(yintercept = 0) +
+  geom_point() +
+  theme_classic() +
+  ggtitle("Coefficients of Linear Regression Model with Confidence Interval") +
+  xlab("Parameter") +
+  ylab("Estimate") +
+  theme(legend.title = element_blank(),
+        legend.key.size = unit(0.5, "cm"))
+
+
+
+
+
+
+
+
+
