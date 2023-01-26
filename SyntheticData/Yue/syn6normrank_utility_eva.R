@@ -451,6 +451,7 @@ vars2show_normranknormrank <- df_utility_normranknormrank[df_utility_normranknor
 nrow(vars2show_normranknormrank)  # there are 26 in total for normranknormrank
 
 
+
 # -----------------------------------------------------------------------------
 ################################# Machine Learning #############################
 # -----------------------------------------------------------------------------
@@ -471,7 +472,7 @@ library(ranger)
 set.seed(2023) # make sure the results are reproducible
 #*****************************************************
 # Model 1: contact tracing app -- F2_1
-
+lrn("regr.lm")
 # step1: prepare the datasets
 vars_inc_m1 <- c("D1","D2","D3","D4","D5","D7","D8","D9","E2","E3","E4","E7","E5","E6","F2_1")
 ods_m1 <- bindori_dataset_threshold_chr[vars_inc_m1]
