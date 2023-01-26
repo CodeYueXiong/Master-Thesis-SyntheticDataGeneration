@@ -634,3 +634,15 @@ set.seed(2023) # make sure the results are reproducible
 #*****************************************************
 # Model 1: contact tracing app -- F2_1
 
+# step1: prepare the datasets
+vars_inc_m1 <- c("D1","D2","D3","D4","D5","D7","D8","D9","E2","E3","E4","E7","E5","E6","F2_1")
+ods_m1 <- bindori_dataset_threshold_chr[vars_inc_m1]
+sds_cartsample_m1 <- cart_sample_sds[vars_inc_m1]
+sds_cartnorm_m1 <- cart_norm_sds[vars_inc_m1]
+sds_cartnormrank_m1 <- cart_normrank_sds[vars_inc_m1]
+sds_rfsample_m1 <- rf_sample_sds[vars_inc_m1]
+sds_rfnorm_m1 <- rf_norm_sds[vars_inc_m1]
+sds_rfnormrank_m1 <- rf_normrank_sds[vars_inc_m1]
+sds_bagsample_m1 <- bag_sample_sds[vars_inc_m1]
+sds_bagnorm_m1 <- bag_norm_sds[vars_inc_m1]
+sds_bagnormrank_m1 <- bag_normrank_sds[vars_inc_m1]
