@@ -389,7 +389,7 @@ autoplot(bm_model1)
 mlr3misc::map(as.data.table(bm_models_cart)$learner, "model")[[2]]
 
 # step7: save bm_model as rds
-saveRDS(bm_models_cart, './SyntheticData/Yue/syn1_cart/bm_model1.rds')
+saveRDS(bm_models_cart, './SyntheticData/Yue/syn1_cart/bm_models_cart.rds')
 
 #*****************************************************
 # Model 2: covid positive -- B8 (multiclass)
