@@ -10,9 +10,13 @@ The COVID-19 Trends and Impact Survey Data used in this project was collected th
 # Synthetic Data Generation
 The synthetic datasets are generated using the following algorithms:
 
-- Linear Regression
-- Multinomial Logistic Regression
-- Random Forest
+- Linear Regression (`method="norm"`)
+- Linear Regression which maintains the marginal distribution (`method="normrank"`)
+- Decision Tree (`method="cart"`)
+- Multinomial Logistic Regression (`method="polyreg"`)
+- Random Forest (`method="rf"`)
+- Random Forest based Bagging algorithm (`method="bag"`)
+
 These algorithms are used to synthesize the survey data and create new, synthetic datasets that can be used for machine learning and analysis.
 
 # Experiment Design
