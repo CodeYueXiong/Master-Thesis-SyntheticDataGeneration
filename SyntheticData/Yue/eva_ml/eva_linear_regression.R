@@ -2,7 +2,6 @@
 # ----------------------- MachineLearning Evaluation --------------------------#
 # This script is meant for the comparison of coef plots based on the synthetic #
 # datasets compared to the original dataset                                    #
-
 packages_list <- c("readr", "vroom", "tidyverse", "arsenal", "reshape2",
                    "synthpop", "ggplot2", "dbplyr", "data.table", "caret",
                    "mlr3", "mlr3learners", "mlr3filters", "mlr3pipelines", 
@@ -31,14 +30,13 @@ library(mlr3tuning)
 library(mlr3viz)
 library(mlr3verse)
 library(mlr3benchmark)
-
 library(e1071)
 library(MASS)
 library(stats)
 
 # set the working directory
-# wd <- "/dss/dsshome1/0C/ru27req2/MA_Experiment_Data/Master-Thesis-DifferentialPrivacy"
-wd <- "/Users/Echo/Documents/MasterThesisYue/Master-Thesis-DifferentialPrivacy"
+wd <- "/dss/dsshome1/0C/ru27req2/MA_Experiment_Data/Master-Thesis-DifferentialPrivacy"
+# wd <- "/Users/Echo/Documents/MasterThesisYue/Master-Thesis-DifferentialPrivacy"
 setwd(wd)
 
 #*******Step 1: load original and synthetic datasets
@@ -635,7 +633,6 @@ set.seed(2023) # make sure the results are reproducible
 
 #*****************************************************
 # Model 1: contact tracing app -- F2_1
-
 # Step1: prepare the datasets
 vars_inc_m1 <- c("D1","D2","D3","D4","D5","D7","D8","D9","E2","E3","E4","E7","E5","E6","F2_1")
 ods_m1 <- bindori_dataset_threshold_chr[vars_inc_m1]
@@ -682,69 +679,179 @@ sds_normranknorm_m1["F2_1"] <- lapply(sds_normranknorm_m1["F2_1"], as.numeric)
 sds_normranknormrank_m1["F2_1"] <- lapply(sds_normranknormrank_m1["F2_1"], as.numeric)
 sds_terrance_v1_m1["F2_1"] <- lapply(sds_terrance_v1_m1["F2_1"], as.numeric)
 sds_terrance_v2_m1["F2_1"] <- lapply(sds_terrance_v2_m1["F2_1"], as.numeric)
-# Step2: new machine learning tasks for ods and sds with Model 1
-tsk_ods_m1 <- TaskRegr$new(id="tsk_ods_m1",
-                           backend=ods_m1, target="F2_1")
 
-tsk_cartsample_m1 <- TaskRegr$new(id="tsk_cartsample_m1", 
-                                  backend=sds_cartsample_m1, target="F2_1")
+# Step 2: Fit a linear regression model ("D1","D2","D3","D4","D5","D7","D8","D9","E2","E3","E4","E7","E5","E6","F2_1")
+lm_m1_cartsample <- lm(F2_1 ~ D1 + D2 + D3 + D4 + D5 + D7 + D8 + D9 + E2 + E3 + E4 + E7 + E5 + E6,
+                       data = sds_cartsample_m1)
+lm_m1_cartnorm <- lm(F2_1 ~ D1 + D2 + D3 + D4 + D5 + D7 + D8 + D9 + E2 + E3 + E4 + E7 + E5 + E6,
+                     data = sds_cartnorm_m1)
+lm_m1_cartnormrank <- lm(F2_1 ~ D1 + D2 + D3 + D4 + D5 + D7 + D8 + D9 + E2 + E3 + E4 + E7 + E5 + E6,
+                         data = sds_cartnormrank_m1)
+lm_m1_rfsample <- lm(F2_1 ~ D1 + D2 + D3 + D4 + D5 + D7 + D8 + D9 + E2 + E3 + E4 + E7 + E5 + E6,
+                       data = sds_rfsample_m1)
+lm_m1_rfnorm <- lm(F2_1 ~ D1 + D2 + D3 + D4 + D5 + D7 + D8 + D9 + E2 + E3 + E4 + E7 + E5 + E6,
+                     data = sds_rfnorm_m1)
+lm_m1_rfnormrank <- lm(F2_1 ~ D1 + D2 + D3 + D4 + D5 + D7 + D8 + D9 + E2 + E3 + E4 + E7 + E5 + E6,
+                         data = sds_rfnormrank_m1)
+lm_m1_bagsample <- lm(F2_1 ~ D1 + D2 + D3 + D4 + D5 + D7 + D8 + D9 + E2 + E3 + E4 + E7 + E5 + E6,
+                     data = sds_bagsample_m1)
+lm_m1_bagnorm <- lm(F2_1 ~ D1 + D2 + D3 + D4 + D5 + D7 + D8 + D9 + E2 + E3 + E4 + E7 + E5 + E6,
+                   data = sds_bagnorm_m1)
+lm_m1_bagnormrank <- lm(F2_1 ~ D1 + D2 + D3 + D4 + D5 + D7 + D8 + D9 + E2 + E3 + E4 + E7 + E5 + E6,
+                       data = sds_bagnormrank_m1)
+lm_m1_polyregsample <- lm(F2_1 ~ D1 + D2 + D3 + D4 + D5 + D7 + D8 + D9 + E2 + E3 + E4 + E7 + E5 + E6,
+                      data = sds_polyregsample_m1)
+lm_m1_polyregnorm <- lm(F2_1 ~ D1 + D2 + D3 + D4 + D5 + D7 + D8 + D9 + E2 + E3 + E4 + E7 + E5 + E6,
+                    data = sds_polyregnorm_m1)
+lm_m1_polyregnormrank <- lm(F2_1 ~ D1 + D2 + D3 + D4 + D5 + D7 + D8 + D9 + E2 + E3 + E4 + E7 + E5 + E6,
+                        data = sds_polyregnormrank_m1)
+lm_m1_normsample <- lm(F2_1 ~ D1 + D2 + D3 + D4 + D5 + D7 + D8 + D9 + E2 + E3 + E4 + E7 + E5 + E6,
+                          data = sds_normsample_m1)
+lm_m1_normnorm <- lm(F2_1 ~ D1 + D2 + D3 + D4 + D5 + D7 + D8 + D9 + E2 + E3 + E4 + E7 + E5 + E6,
+                        data = sds_normnorm_m1)
+lm_m1_normnormrank <- lm(F2_1 ~ D1 + D2 + D3 + D4 + D5 + D7 + D8 + D9 + E2 + E3 + E4 + E7 + E5 + E6,
+                            data = sds_normnormrank_m1)
+lm_m1_normranksample <- lm(F2_1 ~ D1 + D2 + D3 + D4 + D5 + D7 + D8 + D9 + E2 + E3 + E4 + E7 + E5 + E6,
+                       data = sds_normranksample_m1)
+lm_m1_normranknorm <- lm(F2_1 ~ D1 + D2 + D3 + D4 + D5 + D7 + D8 + D9 + E2 + E3 + E4 + E7 + E5 + E6,
+                     data = sds_normranknorm_m1)
+lm_m1_normranknormrank <- lm(F2_1 ~ D1 + D2 + D3 + D4 + D5 + D7 + D8 + D9 + E2 + E3 + E4 + E7 + E5 + E6,
+                         data = sds_normranknormrank_m1)
+lm_m1_terranceV1 <- lm(F2_1 ~ D1 + D2 + D3 + D4 + D5 + D7 + D8 + D9 + E2 + E3 + E4 + E7 + E5 + E6,
+                    data = sds_terrance_v1_m1)
+lm_m1_terrnaceV2 <- lm(F2_1 ~ D1 + D2 + D3 + D4 + D5 + D7 + D8 + D9 + E2 + E3 + E4 + E7 + E5 + E6,
+                        data = sds_terrance_v2_m1)
 
-tsk_cartnorm_m1 <- TaskRegr$new(id="tsk_cartnorm_m1", 
-                                backend=sds_cartnorm_m1, target="F2_1")
 
-tsk_cartnormrank_m1 <- TaskRegr$new(id="tsk_cartnormrank_m1",
-                                    backend=sds_cartnormrank_m1, target="F2_1")
+# Step 3: Extract the coefficients, standard errors, and confidence intervals from the fitted models
+coefs_m1_cartsample <- tidy(lm_m1_cartsample)
+coefs_m1_cartnorm <- tidy(lm_m1_cartnorm)
+coefs_m1_cartnormrank <- tidy(lm_m1_cartnormrank)
+coefs_m1_rfsample <- tidy(lm_m1_rfsample)
+coefs_m1_rfnorm <- tidy(lm_m1_rfnorm)
+coefs_m1_rfnormrank <- tidy(lm_m1_rfnormrank)
+coefs_m1_bagsample <- tidy(lm_m1_bagsample)
+coefs_m1_bagnorm <- tidy(lm_m1_bagnorm)
+coefs_m1_bagnormrank <- tidy(lm_m1_bagnormrank)
+coefs_m1_polyregsample <- tidy(lm_m1_polyregsample)
+coefs_m1_polyregnorm <- tidy(lm_m1_polyregnorm)
+coefs_m1_polyregnormrank <- tidy(lm_m1_polyregnormrank)
+coefs_m1_normsample <- tidy(lm_m1_normsample)
+coefs_m1_normnorm <- tidy(lm_m1_normnorm)
+coefs_m1_normnormrank <- tidy(lm_m1_normnormrank)
+coefs_m1_normranksample <- tidy(lm_m1_normranksample)
+coefs_m1_normranknorm <- tidy(lm_m1_normranknorm)
+coefs_m1_normranknormrank <- tidy(lm_m1_normranknormrank)
+coefs_m1_terranceV1 <- tidy(lm_m1_terranceV1)
+coefs_m1_terranceV2 <- tidy(lm_m1_terrnaceV2)
 
-tsk_rfsample_m1 <- TaskRegr$new(id="tsk_rfsample_m1", 
-                                  backend=sds_rfsample_m1, target="F2_1")
+# Step 4: Calculate the lower and upper bounds of the confidence intervals for each model
+coefs_m1_cartsample$ci_lower <- coefs_m1_cartsample$estimate - 1.96 * coefs_m1_cartsample$std.error
+coefs_m1_cartsample$ci_upper <- coefs_m1_cartsample$estimate + 1.96 * coefs_m1_cartsample$std.error
+coefs_m1_cartnorm$ci_lower <- coefs_m1_cartnorm$estimate - 1.96 * coefs_m1_cartnorm$std.error
+coefs_m1_cartnorm$ci_upper <- coefs_m1_cartnorm$estimate + 1.96 * coefs_m1_cartnorm$std.error
+coefs_m1_cartnormrank$ci_lower <- coefs_m1_cartnormrank$estimate - 1.96 * coefs_m1_cartnormrank$std.error
+coefs_m1_cartnormrank$ci_upper <- coefs_m1_cartnormrank$estimate + 1.96 * coefs_m1_cartnormrank$std.error
+coefs_m1_rfsample$ci_lower <- coefs_m1_rfsample$estimate - 1.96 * coefs_m1_rfsample$std.error
+coefs_m1_rfsample$ci_upper <- coefs_m1_rfsample$estimate + 1.96 * coefs_m1_rfsample$std.error
+coefs_m1_rfnorm$ci_lower <- coefs_m1_rfnorm$estimate - 1.96 * coefs_m1_rfnorm$std.error
+coefs_m1_rfnorm$ci_upper <- coefs_m1_rfnorm$estimate + 1.96 * coefs_m1_rfnorm$std.error
+coefs_m1_rfnormrank$ci_lower <- coefs_m1_rfnormrank$estimate - 1.96 * coefs_m1_rfnormrank$std.error
+coefs_m1_rfnormrank$ci_upper <- coefs_m1_rfnormrank$estimate + 1.96 * coefs_m1_rfnormrank$std.error
+coefs_m1_bagsample$ci_lower <- coefs_m1_bagsample$estimate - 1.96 * coefs_m1_bagsample$std.error
+coefs_m1_bagsample$ci_upper <- coefs_m1_bagsample$estimate + 1.96 * coefs_m1_bagsample$std.error
+coefs_m1_bagnorm$ci_lower <- coefs_m1_bagnorm$estimate - 1.96 * coefs_m1_bagnorm$std.error
+coefs_m1_bagnorm$ci_upper <- coefs_m1_bagnorm$estimate + 1.96 * coefs_m1_bagnorm$std.error
+coefs_m1_bagnormrank$ci_lower <- coefs_m1_bagnormrank$estimate - 1.96 * coefs_m1_bagnormrank$std.error
+coefs_m1_bagnormrank$ci_upper <- coefs_m1_bagnormrank$estimate + 1.96 * coefs_m1_bagnormrank$std.error
+coefs_m1_polyregsample$ci_lower <- coefs_m1_polyregsample$estimate - 1.96 * coefs_m1_polyregsample$std.error
+coefs_m1_polyregsample$ci_upper <- coefs_m1_polyregsample$estimate + 1.96 * coefs_m1_polyregsample$std.error
+coefs_m1_polyregnorm$ci_lower <- coefs_m1_polyregnorm$estimate - 1.96 * coefs_m1_polyregnorm$std.error
+coefs_m1_polyregnorm$ci_upper <- coefs_m1_polyregnorm$estimate + 1.96 * coefs_m1_polyregnorm$std.error
+coefs_m1_polyregnormrank$ci_lower <- coefs_m1_polyregnormrank$estimate - 1.96 * coefs_m1_polyregnormrank$std.error
+coefs_m1_polyregnormrank$ci_upper <- coefs_m1_polyregnormrank$estimate + 1.96 * coefs_m1_polyregnormrank$std.error
+coefs_m1_normsample$ci_lower <- coefs_m1_normsample$estimate - 1.96 * coefs_m1_normsample$std.error
+coefs_m1_normsample$ci_upper <- coefs_m1_normsample$estimate + 1.96 * coefs_m1_normsample$std.error
+coefs_m1_normnorm$ci_lower <- coefs_m1_normnorm$estimate - 1.96 * coefs_m1_normnorm$std.error
+coefs_m1_normnorm$ci_upper <- coefs_m1_normnorm$estimate + 1.96 * coefs_m1_normnorm$std.error
+coefs_m1_normnormrank$ci_lower <- coefs_m1_normnormrank$estimate - 1.96 * coefs_m1_normnormrank$std.error
+coefs_m1_normnormrank$ci_upper <- coefs_m1_normnormrank$estimate + 1.96 * coefs_m1_normnormrank$std.error
+coefs_m1_normranksample$ci_lower <- coefs_m1_normranksample$estimate - 1.96 * coefs_m1_normranksample$std.error
+coefs_m1_normranksample$ci_upper <- coefs_m1_normranksample$estimate + 1.96 * coefs_m1_normranksample$std.error
+coefs_m1_normranknorm$ci_lower <- coefs_m1_normranknorm$estimate - 1.96 * coefs_m1_normranknorm$std.error
+coefs_m1_normranknorm$ci_upper <- coefs_m1_normranknorm$estimate + 1.96 * coefs_m1_normranknorm$std.error
+coefs_m1_normranknormrank$ci_lower <- coefs_m1_normranknormrank$estimate - 1.96 * coefs_m1_normranknormrank$std.error
+coefs_m1_normranknormrank$ci_upper <- coefs_m1_normranknormrank$estimate + 1.96 * coefs_m1_normranknormrank$std.error
+coefs_m1_terranceV1$ci_lower <- coefs_m1_terranceV1$estimate - 1.96 * coefs_m1_terranceV1$std.error
+coefs_m1_terranceV1$ci_upper <- coefs_m1_terranceV1$estimate + 1.96 * coefs_m1_terranceV1$std.error
+coefs_m1_terranceV2$ci_lower <- coefs_m1_terranceV2$estimate - 1.96 * coefs_m1_terranceV2$std.error
+coefs_m1_terranceV2$ci_upper <- coefs_m1_terranceV2$estimate + 1.96 * coefs_m1_terranceV2$std.error
 
-tsk_rfnorm_m1 <- TaskRegr$new(id="tsk_rfnorm_m1", 
-                                backend=sds_rfnorm_m1, target="F2_1")
+# Add a column to each dataframe to indicate the model
+coefs_m1_cartsample$model <- "model_m1_cartsample"
+coefs_m1_cartnorm$model <- "model_m1_cartnorm"
+coefs_m1_cartnormrank$model <- "model_m1_cartnormrank"
+coefs_m1_rfsample$model <- "model_m1_rfsample"
+coefs_m1_rfnorm$model <- "model_m1_rfnorm"
+coefs_m1_rfnormrank$model <- "model_m1_rfnormrank"
+coefs_m1_bagsample$model <- "model_m1_bagsample"
+coefs_m1_bagnorm$model <- "model_m1_bagnorm"
+coefs_m1_bagnormrank$model <- "model_m1_bagnormrank"
+coefs_m1_polyregsample$model <- "model_m1_polyregsample"
+coefs_m1_polyregnorm$model <- "model_m1_polyregnorm"
+coefs_m1_polyregnormrank$model <- "model_m1_polyregnormrank"
+coefs_m1_normsample$model <- "model_m1_normsample"
+coefs_m1_normnorm$model <- "model_m1_normnorm"
+coefs_m1_normnormrank$model <- "model_m1_normnormrank"
+coefs_m1_normranksample$model <- "model_m1_normranksample"
+coefs_m1_normranknorm$model <- "model_m1_normranknorm"
+coefs_m1_normranknormrank$model <- "model_m1_normranknormrank"
+coefs_m1_terranceV1$model <- "model_m1_terranceV1"
+coefs_m1_terranceV2$model <- "model_m1_terranceV2"
 
-tsk_rfnormrank_m1 <- TaskRegr$new(id="tsk_rfnormrank_m1",
-                                    backend=sds_rfnormrank_m1, target="F2_1")
+# Bind the coefficient data for each model
+coefs_m1 <- bind_rows(coefs_m1_cartsample, coefs_m1_cartnorm, coefs_m1_cartnormrank,
+                      coefs_m1_rfsample, coefs_m1_rfnorm, coefs_m1_rfnormrank,
+                      coefs_m1_bagsample, coefs_m1_bagnorm, coefs_m1_bagnormrank,
+                      coefs_m1_polyregsample, coefs_m1_polyregnorm, coefs_m1_polyregnormrank,
+                      coefs_m1_normsample, coefs_m1_normnorm, coefs_m1_normnormrank,
+                      coefs_m1_normranksample, coefs_m1_normranknorm, coefs_m1_normranknormrank,
+                      coefs_m1_terranceV1, coefs_m1_terranceV2)
 
-tsk_bagsample_m1 <- TaskRegr$new(id="tsk_bagsample_m1", 
-                                backend=sds_bagsample_m1, target="F2_1")
+# Create a new column indicating which model the coefficients belong to
+coefs_m1$model <- rep(c("cartsample_m1", "cartnorm_m1", "cartnormrank_m1",
+                        "rfsample_m1", "rfnorm_m1", "rfnormrank_m1",
+                        "bagsample_m1", "bagnorm_m1", "bagnormrank_m1",
+                        "polyregsample_m1", "polyregnorm_m1", "polyregnormrank_m1",
+                        "normsample_m1", "normnorm_m1", "normnormrank_m1",
+                        "normranksample_m1", "normranknorm_m1", "normranknormrank_m1",
+                        "terranceV1_m1", "terranceV2_m1"), each = nrow(coefs_m1)/20)
 
-tsk_bagnorm_m1 <- TaskRegr$new(id="tsk_bagnorm_m1", 
-                              backend=sds_bagnorm_m1, target="F2_1")
+# Step 5: Create the coefficient plot
 
-tsk_bagnormrank_m1 <- TaskRegr$new(id="tsk_bagnormrank_m1",
-                                  backend=sds_bagnormrank_m1, target="F2_1")
+# Define shapes for each group
+shapes <- c(1, 2, 3, 4, 5, 6, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 9, 10)
 
-tsk_polyregsample_m1 <- TaskRegr$new(id="tsk_polyregsample_m1", 
-                                 backend=sds_polyregsample_m1, target="F2_1")
+# Plot the coefficients
+ggplot(coefs_m1, aes(x = estimate, y = term, color = model)) +
+  geom_errorbar(aes(xmin = ci_lower, xmax = ci_upper, shape = model), width = 0.6) +
+  geom_point(aes(shape = model), size = 3) +
+  geom_hline(yintercept = 0) +
+  theme_classic() +
+  ggtitle("Coefficients of Linear Regression Models: Contact Tracing App (F2_1)") +
+  scale_shape_manual(values = shapes) +
+  theme(legend.title = element_blank(),
+        legend.text = element_text(size = 8),
+        axis.text.x = element_text(size = 10),
+        legend.position = "bottom",
+        plot.title = element_text(hjust = 0.5))
 
-tsk_polyregnorm_m1 <- TaskRegr$new(id="tsk_polyregnorm_m1", 
-                               backend=sds_polyregnorm_m1, target="F2_1")
-
-tsk_polyregnormrank_m1 <- TaskRegr$new(id="tsk_polyregnormrank_m1",
-                                   backend=sds_polyregnormrank_m1, target="F2_1")
-
-tsk_normsample_m1 <- TaskRegr$new(id="tsk_normsample_m1", 
-                                 backend=sds_normsample_m1, target="F2_1")
-
-tsk_normnorm_m1 <- TaskRegr$new(id="tsk_normnorm_m1", 
-                               backend=sds_normnorm_m1, target="F2_1")
-
-tsk_normnormrank_m1 <- TaskRegr$new(id="tsk_normnormrank_m1",
-                                   backend=sds_normnormrank_m1, target="F2_1")
-
-tsk_normranksample_m1 <- TaskRegr$new(id="tsk_normranksample_m1", 
-                                  backend=sds_normranksample_m1, target="F2_1")
-
-tsk_normranknorm_m1 <- TaskRegr$new(id="tsk_normranknorm_m1", 
-                                backend=sds_normranknorm_m1, target="F2_1")
-
-tsk_normranknormrank_m1 <- TaskRegr$new(id="tsk_normranknormrank_m1",
-                                    backend=sds_normranknormrank_m1, target="F2_1")
-
-tsk_terranceV1_m1 <- TaskRegr$new(id="tsk_terranceV1_m1",
-                                  backend=sds_terrance_v1_m1, target="F2_1")
-
-tsk_terranceV2_m1 <- TaskRegr$new(id="tsk_terranceV2_m1",
-                                  backend=sds_terrance_v2_m1, target="F2_1")
+# # Step2: new machine learning tasks for ods and sds with Model 1
+# tsk_ods_m1 <- TaskRegr$new(id="tsk_ods_m1",
+#                            backend=ods_m1, target="F2_1")
+# 
+# tsk_cartsample_m1 <- TaskRegr$new(id="tsk_cartsample_m1", 
+#                                   backend=sds_cartsample_m1, target="F2_1")
 
 #*****************************************************
 # Model 2: covid positive -- B8
@@ -794,161 +901,171 @@ sds_normranknormrank_m2["B8"] <- lapply(sds_normranknormrank_m2["B8"], as.numeri
 sds_terrance_v1_m2["B8"] <- lapply(sds_terrance_v1_m2["B8"], as.numeric)
 sds_terrance_v2_m2["B8"] <- lapply(sds_terrance_v2_m2["B8"], as.numeric)
 
-# Step2: new machine learning tasks for ods and sds
-tsk_ods_m2 <- TaskRegr$new(id="tsk_ods_m2",
-                           backend=ods_m2, target="B8")
+# Step 2: Fit a linear regression model "E2","E3","E4","E7","E5","E6","C1_m","C2","C3","C5","C6","C7","C8","B8"
+lm_m2_cartsample <- lm(B8 ~ E2 + E3 + E4 + E7 + E5 + E6 + C1_m + C2 + C3 + C5 + C6 + C7 + C8,
+                       data = sds_cartsample_m2)
+lm_m2_cartnorm <- lm(B8 ~ E2 + E3 + E4 + E7 + E5 + E6 + C1_m + C2 + C3 + C5 + C6 + C7 + C8,
+                     data = sds_cartnorm_m2)
+lm_m2_cartnormrank <- lm(B8 ~ E2 + E3 + E4 + E7 + E5 + E6 + C1_m + C2 + C3 + C5 + C6 + C7 + C8,
+                         data = sds_cartnormrank_m2)
+lm_m2_rfsample <- lm(B8 ~ E2 + E3 + E4 + E7 + E5 + E6 + C1_m + C2 + C3 + C5 + C6 + C7 + C8,
+                     data = sds_rfsample_m2)
+lm_m2_rfnorm <- lm(B8 ~ E2 + E3 + E4 + E7 + E5 + E6 + C1_m + C2 + C3 + C5 + C6 + C7 + C8,
+                   data = sds_rfnorm_m2)
+lm_m2_rfnormrank <- lm(B8 ~ E2 + E3 + E4 + E7 + E5 + E6 + C1_m + C2 + C3 + C5 + C6 + C7 + C8,
+                       data = sds_rfnormrank_m2)
+lm_m2_bagsample <- lm(B8 ~ E2 + E3 + E4 + E7 + E5 + E6 + C1_m + C2 + C3 + C5 + C6 + C7 + C8,
+                      data = sds_bagsample_m2)
+lm_m2_bagnorm <- lm(B8 ~ E2 + E3 + E4 + E7 + E5 + E6 + C1_m + C2 + C3 + C5 + C6 + C7 + C8,
+                    data = sds_bagnorm_m2)
+lm_m2_bagnormrank <- lm(B8 ~ E2 + E3 + E4 + E7 + E5 + E6 + C1_m + C2 + C3 + C5 + C6 + C7 + C8,
+                        data = sds_bagnormrank_m2)
+lm_m2_polyregsample <- lm(B8 ~ E2 + E3 + E4 + E7 + E5 + E6 + C1_m + C2 + C3 + C5 + C6 + C7 + C8,
+                          data = sds_polyregsample_m2)
+lm_m2_polyregnorm <- lm(B8 ~ E2 + E3 + E4 + E7 + E5 + E6 + C1_m + C2 + C3 + C5 + C6 + C7 + C8,
+                        data = sds_polyregnorm_m2)
+lm_m2_polyregnormrank <- lm(B8 ~ E2 + E3 + E4 + E7 + E5 + E6 + C1_m + C2 + C3 + C5 + C6 + C7 + C8,
+                            data = sds_polyregnormrank_m2)
+lm_m2_normsample <- lm(B8 ~ E2 + E3 + E4 + E7 + E5 + E6 + C1_m + C2 + C3 + C5 + C6 + C7 + C8,
+                       data = sds_normsample_m2)
+lm_m2_normnorm <- lm(B8 ~ E2 + E3 + E4 + E7 + E5 + E6 + C1_m + C2 + C3 + C5 + C6 + C7 + C8,
+                     data = sds_normnorm_m2)
+lm_m2_normnormrank <- lm(B8 ~ E2 + E3 + E4 + E7 + E5 + E6 + C1_m + C2 + C3 + C5 + C6 + C7 + C8,
+                         data = sds_normnormrank_m2)
+lm_m2_normranksample <- lm(B8 ~ E2 + E3 + E4 + E7 + E5 + E6 + C1_m + C2 + C3 + C5 + C6 + C7 + C8,
+                           data = sds_normranksample_m2)
+lm_m2_normranknorm <- lm(B8 ~ E2 + E3 + E4 + E7 + E5 + E6 + C1_m + C2 + C3 + C5 + C6 + C7 + C8,
+                         data = sds_normranknorm_m2)
+lm_m2_normranknormrank <- lm(B8 ~ E2 + E3 + E4 + E7 + E5 + E6 + C1_m + C2 + C3 + C5 + C6 + C7 + C8,
+                             data = sds_normranknormrank_m2)
+lm_m2_terranceV1 <- lm(B8 ~ E2 + E3 + E4 + E7 + E5 + E6 + C1_m + C2 + C3 + C5 + C6 + C7 + C8,
+                       data = sds_terrance_v1_m2)
+lm_m2_terrnaceV2 <- lm(B8 ~ E2 + E3 + E4 + E7 + E5 + E6 + C1_m + C2 + C3 + C5 + C6 + C7 + C8,
+                       data = sds_terrance_v2_m2)
 
-tsk_cartsample_m2 <- TaskRegr$new(id="tsk_cartsample_m2", 
-                                  backend=sds_cartsample_m2, target="B8")
 
-tsk_cartnorm_m2 <- TaskRegr$new(id="tsk_cartnorm_m2", 
-                                backend=sds_cartnorm_m2, target="B8")
+# Step 3: Extract the coefficients, standard errors, and confidence intervals from the fitted models
+coefs_m2_cartsample <- tidy(lm_m2_cartsample)
+coefs_m2_cartnorm <- tidy(lm_m2_cartnorm)
+coefs_m2_cartnormrank <- tidy(lm_m2_cartnormrank)
+coefs_m2_rfsample <- tidy(lm_m2_rfsample)
+coefs_m2_rfnorm <- tidy(lm_m2_rfnorm)
+coefs_m2_rfnormrank <- tidy(lm_m2_rfnormrank)
+coefs_m2_bagsample <- tidy(lm_m2_bagsample)
+coefs_m2_bagnorm <- tidy(lm_m2_bagnorm)
+coefs_m2_bagnormrank <- tidy(lm_m2_bagnormrank)
+coefs_m2_polyregsample <- tidy(lm_m2_polyregsample)
+coefs_m2_polyregnorm <- tidy(lm_m2_polyregnorm)
+coefs_m2_polyregnormrank <- tidy(lm_m2_polyregnormrank)
+coefs_m2_normsample <- tidy(lm_m2_normsample)
+coefs_m2_normnorm <- tidy(lm_m2_normnorm)
+coefs_m2_normnormrank <- tidy(lm_m2_normnormrank)
+coefs_m2_normranksample <- tidy(lm_m2_normranksample)
+coefs_m2_normranknorm <- tidy(lm_m2_normranknorm)
+coefs_m2_normranknormrank <- tidy(lm_m2_normranknormrank)
+coefs_m2_terranceV1 <- tidy(lm_m2_terranceV1)
+coefs_m2_terranceV2 <- tidy(lm_m2_terrnaceV2)
 
-tsk_cartnormrank_m2 <- TaskRegr$new(id="tsk_cartnormrank_m2",
-                                    backend=sds_cartnormrank_m2, target="B8")
-
-tsk_rfsample_m2 <- TaskRegr$new(id="tsk_rfsample_m2", 
-                                backend=sds_rfsample_m2, target="B8")
-
-tsk_rfnorm_m2 <- TaskRegr$new(id="tsk_rfnorm_m2", 
-                              backend=sds_rfnorm_m2, target="B8")
-
-tsk_rfnormrank_m2 <- TaskRegr$new(id="tsk_rfnormrank_m2",
-                                  backend=sds_rfnormrank_m2, target="B8")
-
-tsk_bagsample_m2 <- TaskRegr$new(id="tsk_bagsample_m2", 
-                                 backend=sds_bagsample_m2, target="B8")
-
-tsk_bagnorm_m2 <- TaskRegr$new(id="tsk_bagnorm_m2", 
-                               backend=sds_bagnorm_m2, target="B8")
-
-tsk_bagnormrank_m2 <- TaskRegr$new(id="tsk_bagnormrank_m2",
-                                   backend=sds_bagnormrank_m2, target="B8")
-
-tsk_polyregsample_m2 <- TaskRegr$new(id="tsk_polyregsample_m2", 
-                                     backend=sds_polyregsample_m2, target="B8")
-
-tsk_polyregnorm_m2 <- TaskRegr$new(id="tsk_polyregnorm_m2", 
-                                   backend=sds_polyregnorm_m2, target="B8")
-
-tsk_polyregnormrank_m2 <- TaskRegr$new(id="tsk_polyregnormrank_m2",
-                                       backend=sds_polyregnormrank_m2, target="B8")
-
-tsk_normsample_m2 <- TaskRegr$new(id="tsk_normsample_m2", 
-                                  backend=sds_normsample_m2, target="B8")
-
-tsk_normnorm_m2 <- TaskRegr$new(id="tsk_normnorm_m2", 
-                                backend=sds_normnorm_m2, target="B8")
-
-tsk_normnormrank_m2 <- TaskRegr$new(id="tsk_normnormrank_m2",
-                                    backend=sds_normnormrank_m2, target="B8")
-
-tsk_normranksample_m2 <- TaskRegr$new(id="tsk_normranksample_m2", 
-                                      backend=sds_normranksample_m2, target="B8")
-
-tsk_normranknorm_m2 <- TaskRegr$new(id="tsk_normranknorm_m2", 
-                                    backend=sds_normranknorm_m2, target="B8")
-
-tsk_normranknormrank_m2 <- TaskRegr$new(id="tsk_normranknormrank_m2",
-                                        backend=sds_normranknormrank_m2, target="B8")
-
-tsk_terranceV1_m2 <- TaskRegr$new(id="tsk_terranceV1_m2",
-                                  backend=sds_terrance_v1_m2, target="B8")
-
-tsk_terranceV2_m2 <- TaskRegr$new(id="tsk_terranceV2_m2",
-                                  backend=sds_terrance_v2_m2, target="B8")
-
-tasks_list <- list(tsk_ods_m1, tsk_cartsample_m1,tsk_cartnorm_m1, tsk_cartnormrank_m1,
-                   tsk_rfsample_m1, tsk_rfnorm_m1, tsk_rfnormrank_m1,
-                   tsk_bagsample_m1, tsk_bagnorm_m1, tsk_bagnormrank_m1,
-                   tsk_polyregsample_m1, tsk_polyregnorm_m1, tsk_polyregnormrank_m1,
-                   tsk_normsample_m1, tsk_normnorm_m1, tsk_normnormrank_m1,
-                   tsk_normranksample_m1, tsk_normranknorm_m1, tsk_normranknormrank_m1,
-                   tsk_terranceV1_m1, tsk_terranceV2_m1,
-                   tsk_ods_m2, tsk_cartsample_m2,tsk_cartnorm_m2, tsk_cartnormrank_m2,
-                   tsk_rfsample_m2, tsk_rfnorm_m2, tsk_rfnormrank_m2,
-                   tsk_bagsample_m2, tsk_bagnorm_m2, tsk_bagnormrank_m2,
-                   tsk_polyregsample_m2, tsk_polyregnorm_m2, tsk_polyregnormrank_m2,
-                   tsk_normsample_m2, tsk_normnorm_m2, tsk_normnormrank_m2,
-                   tsk_normranksample_m2, tsk_normranknorm_m2, tsk_normranknormrank_m2,
-                   tsk_terranceV1_m2, tsk_terranceV2_m2)
-
-# Step3: prepare the required learner
-learner_regr <- lrn("regr.lm")
-
-# Step4: benchmark the tasks and learner with resampling
-# benchmark_grid is the design
-bm_models <- benchmark(benchmark_grid(tasks = tasks_list,
-                                      learners = learner_regr,
-                                      resamplings = rsmp("holdout", ratio=0.8)),
-                       
-                       store_models = TRUE)
-# Step5: validate the accuracy of the model
-#****** Measure to compare true observed 
-#****** labels with predicted labels in 
-#****** multiclass classification tasks.
-bm_models$aggregate(msr("regr.rmse"))[learner_id == "regr.lm",]
-
-# step7: save bm_model as rds
-saveRDS(bm_models, './SyntheticData/Yue/bm_models_lm.rds')
-
-# step6: extract the coefficients of the trained instances
-mlr3misc::map(as.data.table(bm_models)$learner, "model")[[40]][1]$coefficients
-
-as.data.table(bm_models)$learner
-
-# Fit a linear regression model
-model_v2_cartsample <- lm(B8 ~ E2 + E3 + E4 + E7 + E5 + E6 + C1_m + C2 + C3 + C5 + C6 + C7 + C8,
-            data = sds_cartsample_m2)
-model_v2_cartnorm <- lm(B8 ~ E2 + E3 + E4 + E7 + E5 + E6 + C1_m + C2 + C3 + C5 + C6 + C7 + C8,
-                          data = sds_cartnorm_m2)
-model_v2_cartnormrank <- lm(B8 ~ E2 + E3 + E4 + E7 + E5 + E6 + C1_m + C2 + C3 + C5 + C6 + C7 + C8,
-                        data = sds_cartnormrank_m2)
-# Extract the coefficients, standard errors, and confidence intervals from the models
-coefs_v2_cartsample <- tidy(model_v2_cartsample)
-coefs_v2_cartnorm <- tidy(model_v2_cartnorm)
-coefs_v2_cartnormrank <- tidy(model_v2_cartnormrank)
-
-# Calculate the lower and upper bounds of the confidence intervals for each model
-coefs_v2_cartsample$ci_lower <- coefs_v2_cartsample$estimate - 1.96 * coefs_v2_cartsample$std.error
-coefs_v2_cartsample$ci_upper <- coefs_v2_cartsample$estimate + 1.96 * coefs_v2_cartsample$std.error
-coefs_v2_cartnorm$ci_lower <- coefs_v2_cartnorm$estimate - 1.96 * coefs_v2_cartnorm$std.error
-coefs_v2_cartnorm$ci_upper <- coefs_v2_cartnorm$estimate + 1.96 * coefs_v2_cartnorm$std.error
-coefs_v2_cartnormrank$ci_lower <- coefs_v2_cartnormrank$estimate - 1.96 * coefs_v2_cartnormrank$std.error
-coefs_v2_cartnormrank$ci_upper <- coefs_v2_cartnormrank$estimate + 1.96 * coefs_v2_cartnormrank$std.error
+# Step 4: Calculate the lower and upper bounds of the confidence intervals for each model
+coefs_m2_cartsample$ci_lower <- coefs_m2_cartsample$estimate - 1.96 * coefs_m2_cartsample$std.error
+coefs_m2_cartsample$ci_upper <- coefs_m2_cartsample$estimate + 1.96 * coefs_m2_cartsample$std.error
+coefs_m2_cartnorm$ci_lower <- coefs_m2_cartnorm$estimate - 1.96 * coefs_m2_cartnorm$std.error
+coefs_m2_cartnorm$ci_upper <- coefs_m2_cartnorm$estimate + 1.96 * coefs_m2_cartnorm$std.error
+coefs_m2_cartnormrank$ci_lower <- coefs_m2_cartnormrank$estimate - 1.96 * coefs_m2_cartnormrank$std.error
+coefs_m2_cartnormrank$ci_upper <- coefs_m2_cartnormrank$estimate + 1.96 * coefs_m2_cartnormrank$std.error
+coefs_m2_rfsample$ci_lower <- coefs_m2_rfsample$estimate - 1.96 * coefs_m2_rfsample$std.error
+coefs_m2_rfsample$ci_upper <- coefs_m2_rfsample$estimate + 1.96 * coefs_m2_rfsample$std.error
+coefs_m2_rfnorm$ci_lower <- coefs_m2_rfnorm$estimate - 1.96 * coefs_m2_rfnorm$std.error
+coefs_m2_rfnorm$ci_upper <- coefs_m2_rfnorm$estimate + 1.96 * coefs_m2_rfnorm$std.error
+coefs_m2_rfnormrank$ci_lower <- coefs_m2_rfnormrank$estimate - 1.96 * coefs_m2_rfnormrank$std.error
+coefs_m2_rfnormrank$ci_upper <- coefs_m2_rfnormrank$estimate + 1.96 * coefs_m2_rfnormrank$std.error
+coefs_m2_bagsample$ci_lower <- coefs_m2_bagsample$estimate - 1.96 * coefs_m2_bagsample$std.error
+coefs_m2_bagsample$ci_upper <- coefs_m2_bagsample$estimate + 1.96 * coefs_m2_bagsample$std.error
+coefs_m2_bagnorm$ci_lower <- coefs_m2_bagnorm$estimate - 1.96 * coefs_m2_bagnorm$std.error
+coefs_m2_bagnorm$ci_upper <- coefs_m2_bagnorm$estimate + 1.96 * coefs_m2_bagnorm$std.error
+coefs_m2_bagnormrank$ci_lower <- coefs_m2_bagnormrank$estimate - 1.96 * coefs_m2_bagnormrank$std.error
+coefs_m2_bagnormrank$ci_upper <- coefs_m2_bagnormrank$estimate + 1.96 * coefs_m2_bagnormrank$std.error
+coefs_m2_polyregsample$ci_lower <- coefs_m2_polyregsample$estimate - 1.96 * coefs_m2_polyregsample$std.error
+coefs_m2_polyregsample$ci_upper <- coefs_m2_polyregsample$estimate + 1.96 * coefs_m2_polyregsample$std.error
+coefs_m2_polyregnorm$ci_lower <- coefs_m2_polyregnorm$estimate - 1.96 * coefs_m2_polyregnorm$std.error
+coefs_m2_polyregnorm$ci_upper <- coefs_m2_polyregnorm$estimate + 1.96 * coefs_m2_polyregnorm$std.error
+coefs_m2_polyregnormrank$ci_lower <- coefs_m2_polyregnormrank$estimate - 1.96 * coefs_m2_polyregnormrank$std.error
+coefs_m2_polyregnormrank$ci_upper <- coefs_m2_polyregnormrank$estimate + 1.96 * coefs_m2_polyregnormrank$std.error
+coefs_m2_normsample$ci_lower <- coefs_m2_normsample$estimate - 1.96 * coefs_m2_normsample$std.error
+coefs_m2_normsample$ci_upper <- coefs_m2_normsample$estimate + 1.96 * coefs_m2_normsample$std.error
+coefs_m2_normnorm$ci_lower <- coefs_m2_normnorm$estimate - 1.96 * coefs_m2_normnorm$std.error
+coefs_m2_normnorm$ci_upper <- coefs_m2_normnorm$estimate + 1.96 * coefs_m2_normnorm$std.error
+coefs_m2_normnormrank$ci_lower <- coefs_m2_normnormrank$estimate - 1.96 * coefs_m2_normnormrank$std.error
+coefs_m2_normnormrank$ci_upper <- coefs_m2_normnormrank$estimate + 1.96 * coefs_m2_normnormrank$std.error
+coefs_m2_normranksample$ci_lower <- coefs_m2_normranksample$estimate - 1.96 * coefs_m2_normranksample$std.error
+coefs_m2_normranksample$ci_upper <- coefs_m2_normranksample$estimate + 1.96 * coefs_m2_normranksample$std.error
+coefs_m2_normranknorm$ci_lower <- coefs_m2_normranknorm$estimate - 1.96 * coefs_m2_normranknorm$std.error
+coefs_m2_normranknorm$ci_upper <- coefs_m2_normranknorm$estimate + 1.96 * coefs_m2_normranknorm$std.error
+coefs_m2_normranknormrank$ci_lower <- coefs_m2_normranknormrank$estimate - 1.96 * coefs_m2_normranknormrank$std.error
+coefs_m2_normranknormrank$ci_upper <- coefs_m2_normranknormrank$estimate + 1.96 * coefs_m2_normranknormrank$std.error
+coefs_m2_terranceV1$ci_lower <- coefs_m2_terranceV1$estimate - 1.96 * coefs_m2_terranceV1$std.error
+coefs_m2_terranceV1$ci_upper <- coefs_m2_terranceV1$estimate + 1.96 * coefs_m2_terranceV1$std.error
+coefs_m2_terranceV2$ci_lower <- coefs_m2_terranceV2$estimate - 1.96 * coefs_m2_terranceV2$std.error
+coefs_m2_terranceV2$ci_upper <- coefs_m2_terranceV2$estimate + 1.96 * coefs_m2_terranceV2$std.error
 
 # Add a column to each dataframe to indicate the model
-coefs_v2_cartsample$model <- "model_v2_cartsample"
-coefs_v2_cartnorm$model <- "model_v2_cartnorm"
-coefs_v2_cartnormrank$model <- "model_v2_cartnormrank"
+coefs_m2_cartsample$model <- "model_m2_cartsample"
+coefs_m2_cartnorm$model <- "model_m2_cartnorm"
+coefs_m2_cartnormrank$model <- "model_m2_cartnormrank"
+coefs_m2_rfsample$model <- "model_m2_rfsample"
+coefs_m2_rfnorm$model <- "model_m2_rfnorm"
+coefs_m2_rfnormrank$model <- "model_m2_rfnormrank"
+coefs_m2_bagsample$model <- "model_m2_bagsample"
+coefs_m2_bagnorm$model <- "model_m2_bagnorm"
+coefs_m2_bagnormrank$model <- "model_m2_bagnormrank"
+coefs_m2_polyregsample$model <- "model_m2_polyregsample"
+coefs_m2_polyregnorm$model <- "model_m2_polyregnorm"
+coefs_m2_polyregnormrank$model <- "model_m2_polyregnormrank"
+coefs_m2_normsample$model <- "model_m2_normsample"
+coefs_m2_normnorm$model <- "model_m2_normnorm"
+coefs_m2_normnormrank$model <- "model_m2_normnormrank"
+coefs_m2_normranksample$model <- "model_m2_normranksample"
+coefs_m2_normranknorm$model <- "model_m2_normranknorm"
+coefs_m2_normranknormrank$model <- "model_m2_normranknormrank"
+coefs_m2_terranceV1$model <- "model_m2_terranceV1"
+coefs_m2_terranceV2$model <- "model_m2_terranceV2"
 
 # Bind the coefficient data for each model
-coefs_v2 <- bind_rows(coefs_v2_cartsample, coefs_v2_cartnorm, coefs_v2_cartnormrank)
-
-# Create the plot
-ggplot(coefs_v2, aes(x = term, y = estimate, color = model)) +
-  geom_pointrange(aes(ymin = ci_lower, ymax = ci_upper)) +
-  geom_hline(yintercept = 0) +
-  geom_point() +
-  theme_classic() +
-  ggtitle("Coefficients of Linear Regression Model") +
-  xlab("parameter") +
-  ylab("coefficient")
+coefs_m2 <- bind_rows(coefs_m2_cartsample, coefs_m2_cartnorm, coefs_m2_cartnormrank,
+                      coefs_m2_rfsample, coefs_m2_rfnorm, coefs_m2_rfnormrank,
+                      coefs_m2_bagsample, coefs_m2_bagnorm, coefs_m2_bagnormrank,
+                      coefs_m2_polyregsample, coefs_m2_polyregnorm, coefs_m2_polyregnormrank,
+                      coefs_m2_normsample, coefs_m2_normnorm, coefs_m2_normnormrank,
+                      coefs_m2_normranksample, coefs_m2_normranknorm, coefs_m2_normranknormrank,
+                      coefs_m2_terranceV1, coefs_m2_terranceV2)
 
 # Create a new column indicating which model the coefficients belong to
-coefs_v2$model <- rep(c("cartsample_m2", "cartnorm_m2", "cartnormrank_m2"), each = nrow(coefs_v2)/3)
+coefs_m2$model <- rep(c("cartsample_m2", "cartnorm_m2", "cartnormrank_m2",
+                        "rfsample_m2", "rfnorm_m2", "rfnormrank_m2",
+                        "bagsample_m2", "bagnorm_m2", "bagnormrank_m2",
+                        "polyregsample_m2", "polyregnorm_m2", "polyregnormrank_m2",
+                        "normsample_m2", "normnorm_m2", "normnormrank_m2",
+                        "normranksample_m2", "normranknorm_m2", "normranknormrank_m2",
+                        "terranceV1_m2", "terranceV2_m2"), each = nrow(coefs_m2)/20)
 
-# Create the coefficient plot
-ggplot(coefs_v2, aes(x = term, y = estimate, color = model)) +
-  geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), width = 0.6) +
+# Step 5: Create the coefficient plot
+
+# Define shapes for each group
+shapes <- c(1, 2, 3, 4, 5, 6, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 9, 10)
+
+# Plot the coefficients
+ggplot(coefs_m2, aes(x = estimate, y = term, color = model)) +
+  geom_errorbar(aes(xmin = ci_lower, xmax = ci_upper, shape = model), width = 0.6) +
+  geom_point(aes(shape = model), size = 3) +
   geom_hline(yintercept = 0) +
-  geom_point() +
   theme_classic() +
-  ggtitle("Coefficients of Linear Regression Model with Confidence Interval") +
-  xlab("Parameter") +
-  ylab("Estimate") +
+  ggtitle("Coefficients of Linear Regression Models: Covid Positive (B8)") +
+  scale_shape_manual(values = shapes) +
   theme(legend.title = element_blank(),
-        legend.key.size = unit(0.5, "cm"))
+        legend.text = element_text(size = 8),
+        axis.text.x = element_text(size = 10),
+        legend.position = "bottom",
+        plot.title = element_text(hjust = 0.5))
 
 
 
