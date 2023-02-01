@@ -44,7 +44,18 @@ setwd(wd)
 # then we load the original preprocessed datasets
 load("bindori_dataset_preprocessed_factor.rda")
 str(bindori_dataset_threshold_chr)
+# also, we can probably subset those columns with constant inputs
+cols_remove <- c("B13_1", "B13_2", "B13_3", "B13_4",
+                 "B13_5", "B13_6", "B13_7",
+                 "B14_1", "B14_2", "B14_3", "B14_4", "B14_5",
+                 "D6_1", "D6_2", "D6_3", "F3_de")
+bindori_dataset_threshold_chr <- bindori_dataset_threshold_chr %>% select(-all_of(cols_remove))
+# also for those B1b_x like vars and D10, we try exclude them from the synthesis
+cols_rm_bd <- c("B1b_x1", "B1b_x2", "B1b_x3", "B1b_x4", "B1b_x5", "B1b_x6", "B1b_x7",
+                "B1b_x8", "B1b_x9", "B1b_x10", "B1b_x11","B1b_x12", "B1b_x13", "D10",
+                "C0_1", "C0_2", "C0_3", "C0_4", "C0_5", "C0_6")
 
+bindori_dataset_threshold_chr <- bindori_dataset_threshold_chr %>% select(-all_of(cols_rm_bd))
 # load synthetic datasets
 # ------ cart group -------
 rda2list <- function(file) {
@@ -591,6 +602,7 @@ terrance_v2_sds <- read.csv(file = terrance_v2_filepath, sep = ",")
 
 colnames(terrance_v1_sds)[colnames(terrance_v1_sds)=="sample_weight"] <- "weight"
 colnames(terrance_v2_sds)[colnames(terrance_v2_sds)=="sample_weight"] <- "weight"
+names(cart_sample_sds)
 # align the variables
 terrance_v1_sds <- drop_na(terrance_v1_sds[colnames(cart_sample_sds)])
 terrance_v2_sds <- drop_na(terrance_v2_sds[colnames(cart_sample_sds)])
@@ -625,7 +637,7 @@ str(cart_norm_sds)
 
 
 # -----------------------------------------------------------------------------
-################################# Machine Learning #############################
+################################# lm.synds #############################
 # -----------------------------------------------------------------------------
 # ******** Step 2: fit linear regression to ori and syn datasets
 
@@ -634,6 +646,7 @@ set.seed(2023) # make sure the results are reproducible
 #*****************************************************
 # Model 1: contact tracing app -- F2_1
 # Step1: prepare the datasets
+### Linear model
 vars_inc_m1 <- c("D1","D2","D3","D4","D5","D7","D8","D9","E2","E3","E4","E7","E5","E6","F2_1")
 ods_m1 <- bindori_dataset_threshold_chr[vars_inc_m1]
 sds_cartsample_m1 <- cart_sample_sds[vars_inc_m1]
@@ -681,8 +694,19 @@ sds_terrance_v1_m1["F2_1"] <- lapply(sds_terrance_v1_m1["F2_1"], as.numeric)
 sds_terrance_v2_m1["F2_1"] <- lapply(sds_terrance_v2_m1["F2_1"], as.numeric)
 
 # Step 2: Fit a linear regression model ("D1","D2","D3","D4","D5","D7","D8","D9","E2","E3","E4","E7","E5","E6","F2_1")
+# test_syn <- syn(sds_cartsample_m1, m=0)
+# 
+# test_syn$obs.vars
+# lm.synds(F2_1 ~ D1 + D2 + D3 + D4 + D5 + D7 + D8 + D9 + E2 + E3 + E4 + E7 + E5 + E6,
+#          data = test_syn)
+
 lm_m1_cartsample <- lm(F2_1 ~ D1 + D2 + D3 + D4 + D5 + D7 + D8 + D9 + E2 + E3 + E4 + E7 + E5 + E6,
                        data = sds_cartsample_m1)
+# Extract the confidence interval for the regression coefficients
+conf_interval <- confint(lm_m1_cartsample)
+conf_interval
+
+load("./SyntheticData/Yue/syn1_cart/cart_sample_syn.rda")
 lm_m1_cartnorm <- lm(F2_1 ~ D1 + D2 + D3 + D4 + D5 + D7 + D8 + D9 + E2 + E3 + E4 + E7 + E5 + E6,
                      data = sds_cartnorm_m1)
 lm_m1_cartnormrank <- lm(F2_1 ~ D1 + D2 + D3 + D4 + D5 + D7 + D8 + D9 + E2 + E3 + E4 + E7 + E5 + E6,
