@@ -178,6 +178,8 @@ compare_normranksample_model2 <- compare(lm_normranksample_model2, bindori_datas
 saveRDS(lm_normranksample_model2, "./SyntheticData/Yue/lm_normranksample_model2.rds")
 saveRDS(compare_normranksample_model2, "./SyntheticData/Yue/compare_normranksample_model2.rds")
 
+rep_normranksample <- replicated.uniques(sds_normranksample_tryout,bindori_dataset_threshold_chr)
+saveRDS(rep_normranksample, "./SyntheticData/Yue/rep_normranksample.rds")
 # ##########################################################
 # ------------------ normranknorm ----------------------------
 # ##########################################################
@@ -210,6 +212,8 @@ compare_normranknorm_model2 <- compare(lm_normranknorm_model2, bindori_dataset_t
 saveRDS(lm_normranknorm_model2, "./SyntheticData/Yue/lm_normranknorm_model2.rds")
 saveRDS(compare_normranknorm_model2, "./SyntheticData/Yue/compare_normranknorm_model2.rds")
 
+rep_normranknorm <- replicated.uniques(sds_normranknorm_tryout,bindori_dataset_threshold_chr)
+saveRDS(rep_normranknorm, "./SyntheticData/Yue/rep_normranknorm.rds")
 # ##########################################################
 # ------------------ normranknormrank ----------------------------
 # ##########################################################
@@ -241,3 +245,6 @@ compare_normranknormrank_model2 <- compare(lm_normranknormrank_model2, bindori_d
 # Save the normranknormrank object
 saveRDS(lm_normranknormrank_model2, "./SyntheticData/Yue/lm_normranknormrank_model2.rds")
 saveRDS(compare_normranknormrank_model2, "./SyntheticData/Yue/compare_normranknormrank_model2.rds")
+
+rep_normranknormrank <- replicated.uniques(sds_normranknormrank_tryout,bindori_dataset_threshold_chr)
+saveRDS(rep_normranknormrank, "./SyntheticData/Yue/rep_normranknormrank.rds")

@@ -14,13 +14,13 @@ library(readr)
 library(vroom)
 library(tidyverse, quietly = TRUE)
 # install.packages("tidyverse", dependencies = TRUE, type = "source")
+
 library(broom)
 library(arsenal)
 library(reshape2)
 library(synthpop)
 library(ggplot2)
 library(dbplyr)
-library(broom)
 
 # library(mlr3)
 # library(mlr3learners)
@@ -49,13 +49,13 @@ cols_remove <- c("B13_1", "B13_2", "B13_3", "B13_4",
                  "B13_5", "B13_6", "B13_7",
                  "B14_1", "B14_2", "B14_3", "B14_4", "B14_5",
                  "D6_1", "D6_2", "D6_3", "F3_de")
-bindori_dataset_threshold_chr <- bindori_dataset_threshold_chr[-(cols_remove)]
+bindori_dataset_threshold_chr <- bindori_dataset_threshold_chr[, !(names(bindori_dataset_threshold_chr) %in% cols_remove)]
 # also for those B1b_x like vars and D10, we try exclude them from the synthesis
 cols_rm_bd <- c("B1b_x1", "B1b_x2", "B1b_x3", "B1b_x4", "B1b_x5", "B1b_x6", "B1b_x7",
                 "B1b_x8", "B1b_x9", "B1b_x10", "B1b_x11","B1b_x12", "B1b_x13", "D10",
                 "C0_1", "C0_2", "C0_3", "C0_4", "C0_5", "C0_6")
 
-bindori_dataset_threshold_chr <- bindori_dataset_threshold_chr %>% select(-(cols_rm_bd))
+bindori_dataset_threshold_chr <- bindori_dataset_threshold_chr[, !(names(bindori_dataset_threshold_chr) %in% cols_rm_bd)]
 # load synthetic datasets
 # ------ cart group -------
 rda2list <- function(file) {
@@ -702,11 +702,6 @@ sds_terrance_v2_m1["F2_1"] <- lapply(sds_terrance_v2_m1["F2_1"], as.numeric)
 
 lm_m1_cartsample <- lm(F2_1 ~ D1 + D2 + D3 + D4 + D5 + D7 + D8 + D9 + E2 + E3 + E4 + E7 + E5 + E6,
                        data = sds_cartsample_m1)
-# Extract the confidence interval for the regression coefficients
-conf_interval <- confint(lm_m1_cartsample)
-conf_interval
-
-load("./SyntheticData/Yue/syn1_cart/cart_sample_syn.rda")
 lm_m1_cartnorm <- lm(F2_1 ~ D1 + D2 + D3 + D4 + D5 + D7 + D8 + D9 + E2 + E3 + E4 + E7 + E5 + E6,
                      data = sds_cartnorm_m1)
 lm_m1_cartnormrank <- lm(F2_1 ~ D1 + D2 + D3 + D4 + D5 + D7 + D8 + D9 + E2 + E3 + E4 + E7 + E5 + E6,
@@ -746,6 +741,7 @@ lm_m1_terranceV1 <- lm(F2_1 ~ D1 + D2 + D3 + D4 + D5 + D7 + D8 + D9 + E2 + E3 + 
 lm_m1_terrnaceV2 <- lm(F2_1 ~ D1 + D2 + D3 + D4 + D5 + D7 + D8 + D9 + E2 + E3 + E4 + E7 + E5 + E6,
                         data = sds_terrance_v2_m1)
 
+compare_rfsample_model2 <- compare(lm_m1_terrnaceV2, bindori_dataset_threshold_chr, plot.intercept = TRUE, plot = "coef")
 
 # Step 3: Extract the coefficients, standard errors, and confidence intervals from the fitted models
 coefs_m1_cartsample <- tidy(lm_m1_cartsample)

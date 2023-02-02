@@ -211,6 +211,9 @@ compare_bagsample_model1 <- compare(lm_bagsample_model1, bindori_dataset_thresho
 saveRDS(lm_bagsample_model1, "./SyntheticData/Yue/lm_bagsample_model1.rds")
 saveRDS(compare_bagsample_model1, "./SyntheticData/Yue/compare_bagsample_model1.rds")
 
+rep_bagsample <- replicated.uniques(sds_bagsample_tryout,bindori_dataset_threshold_chr)
+saveRDS(rep_bagsample, "./SyntheticData/Yue/rep_bagsample.rds")
+
 #*****************************************************
 # Model 2: covid positive -- B8
 lm_bagsample_model2 <- lm.synds(B8 ~ E2 + E3 + E4 + E7 + E5 + E6 + C1_m + C2 + C3 + C5 + C6 + C7 + C8,
@@ -293,7 +296,8 @@ compare_bagnorm_model2 <- compare(lm_bagnorm_model2, bindori_dataset_threshold_c
 saveRDS(lm_bagnorm_model2, "./SyntheticData/Yue/lm_bagnorm_model2.rds")
 saveRDS(compare_bagnorm_model2, "./SyntheticData/Yue/compare_bagnorm_model2.rds")
 
-
+rep_bagnorm <- replicated.uniques(sds_bagnorm_tryout,bindori_dataset_threshold_chr)
+saveRDS(rep_bagnorm, "./SyntheticData/Yue/rep_bagnorm.rds")
 # ##########################################################
 # ------------------ bagnormrank ----------------------------
 # ##########################################################
@@ -365,3 +369,7 @@ compare_bagnormrank_model2 <- compare(lm_bagnormrank_model2, bindori_dataset_thr
 # Save the bagnormrank object
 saveRDS(lm_bagnormrank_model2, "./SyntheticData/Yue/lm_bagnormrank_model2.rds")
 saveRDS(compare_bagnormrank_model2, "./SyntheticData/Yue/compare_bagnormrank_model2.rds")
+
+rep_bagnormrank <- replicated.uniques(sds_bagnormrank_tryout,bindori_dataset_threshold_chr)
+saveRDS(rep_bagnormrank, "./SyntheticData/Yue/rep_bagnormrank.rds")
+

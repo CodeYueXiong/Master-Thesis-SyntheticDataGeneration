@@ -137,11 +137,14 @@ syn_cart_experiment <- function(para_weight_list, index, bindori_dataset_thresho
 # ##########################################################
 # ------------------ cartsample ----------------------------
 # ##########################################################
-sds_cartsample_tryout <- syn_cart_experiment(para_weight_list, index=1, bindori_dataset_threshold_chr, arg_method, arg_col)
-
-# encode variables as integers for ods and cartsample
+# sds_cartsample_tryout <- syn_cart_experiment(para_weight_list, index=1, bindori_dataset_threshold_chr, arg_method, arg_col)
+sds_cartsample_tryout <- load("../../Master-Thesis-DifferentialPrivacy/synobject_cart_sample_syn.RData")
+sds_cartsample_tryout <- object
+# encode as integer
 bindori_dataset_threshold_chr[,2:54] <- sapply(bindori_dataset_threshold_chr[,2:54],as.integer)
-sds_cartsample_tryout$syn[,2:54] <- sapply(sds_cartsample_tryout$syn[,2:54],as.integer)
+sds_cartsample_tryout$syn[[1]][,2:54] <- sapply(sds_cartsample_tryout$syn[[1]][,2:54],as.integer)
+sds_cartsample_tryout$syn <- sds_cartsample_tryout$syn[[1]]
+
 #*****************************************************
 # Model 1: contact tracing app -- F2_1
 # formula prepared
@@ -162,6 +165,9 @@ compare_cartsample_model2 <- compare(lm_cartsample_model2, bindori_dataset_thres
 # Save the cartsample object
 saveRDS(lm_cartsample_model2, "./SyntheticData/Yue/lm_cartsample_model2.rds")
 saveRDS(compare_cartsample_model2, "./SyntheticData/Yue/compare_cartsample_model2.rds")
+
+rep_cartsample <- replicated.uniques(sds_cartsample_tryout,bindori_dataset_threshold_chr)
+saveRDS(rep_cartsample, "./SyntheticData/Yue/rep_cartsample.rds")
 # ##########################################################
 # ------------------ cartnorm ----------------------------
 # ##########################################################
@@ -194,6 +200,9 @@ compare_cartnorm_model2 <- compare(lm_cartnorm_model2, bindori_dataset_threshold
 saveRDS(lm_cartnorm_model2, "./SyntheticData/Yue/lm_cartnorm_model2.rds")
 saveRDS(compare_cartnorm_model2, "./SyntheticData/Yue/compare_cartnorm_model2.rds")
 
+rep_cartnorm <- replicated.uniques(sds_cartnorm_tryout,bindori_dataset_threshold_chr)
+saveRDS(rep_cartnorm, "./SyntheticData/Yue/rep_cartnorm.rds")
+
 # ##########################################################
 # ------------------ cartnormrank ----------------------------
 # ##########################################################
@@ -225,3 +234,6 @@ compare_cartnormrank_model2 <- compare(lm_cartnormrank_model2, bindori_dataset_t
 # Save the cartnormrank object
 saveRDS(lm_cartnormrank_model2, "./SyntheticData/Yue/lm_cartnormrank_model2.rds")
 saveRDS(compare_cartnormrank_model2, "./SyntheticData/Yue/compare_cartnormrank_model2.rds")
+
+rep_cartnormrank <- replicated.uniques(sds_cartnormrank_tryout,bindori_dataset_threshold_chr)
+saveRDS(rep_cartnormrank, "./SyntheticData/Yue/rep_cartnormrank.rds")

@@ -170,6 +170,9 @@ compare_polyregsample_model2 <- compare(lm_polyregsample_model2, bindori_dataset
 saveRDS(lm_polyregsample_model2, "./SyntheticData/Yue/lm_polyregsample_model2.rds")
 saveRDS(compare_polyregsample_model2, "./SyntheticData/Yue/compare_polyregsample_model2.rds")
 
+rep_polyregsample <- replicated.uniques(sds_polyregsample_tryout,bindori_dataset_threshold_chr)
+saveRDS(rep_polyregsample, "./SyntheticData/Yue/rep_polyregsample.rds")
+
 # ##########################################################
 # ------------------ polyregnorm ----------------------------
 # ##########################################################
@@ -202,6 +205,9 @@ compare_polyregnorm_model2 <- compare(lm_polyregnorm_model2, bindori_dataset_thr
 saveRDS(lm_polyregnorm_model2, "./SyntheticData/Yue/lm_polyregnorm_model2.rds")
 saveRDS(compare_polyregnorm_model2, "./SyntheticData/Yue/compare_polyregnorm_model2.rds")
 
+rep_polyregnorm <- replicated.uniques(sds_polyregnorm_tryout,bindori_dataset_threshold_chr)
+saveRDS(rep_polyregnorm, "./SyntheticData/Yue/rep_polyregnorm.rds")
+
 # ##########################################################
 # ------------------ polyregnormrank ----------------------------
 # ##########################################################
@@ -233,3 +239,6 @@ compare_polyregnormrank_model2 <- compare(lm_polyregnormrank_model2, bindori_dat
 # Save the polyregnormrank object
 saveRDS(lm_polyregnormrank_model2, "./SyntheticData/Yue/lm_polyregnormrank_model2.rds")
 saveRDS(compare_polyregnormrank_model2, "./SyntheticData/Yue/compare_polyregnormrank_model2.rds")
+
+rep_polyregnormrank <- replicated.uniques(sds_polyregnormrank_tryout,bindori_dataset_threshold_chr)
+saveRDS(rep_polyregnormrank, "./SyntheticData/Yue/rep_polyregnormrank.rds")
