@@ -18,6 +18,8 @@ library(here)
 # wd <- "/Users/Echo/Documents/MasterThesisYue/Master-Thesis-DifferentialPrivacy"
 wd = "/dss/dsshome1/0C/ru27req2/MA_Experiment_Data/Master-Thesis-DifferentialPrivacy"
 setwd(wd)
+wd <- "/Users/roxy/Desktop/Master-Thesis-SyntheticDataGeneration"
+setwd(wd)
 
 # then we load the required preprocessed datasets
 load("bindori_dataset_preprocessed_factor.rda")

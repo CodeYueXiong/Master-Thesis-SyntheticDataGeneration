@@ -15,7 +15,7 @@ library(dbplyr)
 library(here)
 
 # set the working directory
-wd <- "/Users/Echo/Documents/MasterThesisYue/Master-Thesis-DifferentialPrivacy"
+wd <- "/Users/roxy/Desktop/Master-Thesis-SyntheticDataGeneration"
 setwd(wd)
 
 # then we load the required preprocessed datasets
