@@ -14,18 +14,22 @@ library(synthpop)
 library(ggplot2)
 library(dbplyr)
 library(data.table)
-library(here)
 
 
 # set the working directory
-# wd <- "F:/Master-Thesis-DifferentialPrivacy"
-wd <- "/dss/dsshome1/0C/ru27req2/MA_Experiment_Data/Master-Thesis-DifferentialPrivacy"
-# wd <- "/Volumes/ru27req/MasterThesisRoxy/Master-Thesis-DifferentialPrivacy"
+wd <- "/Users/roxy/Desktop/Master-Thesis-SyntheticDataGeneration"
 setwd(wd)
 
 # load the preprocessed original data
+load("bindori_dataset_preprocessed_normal.rda")
+bindori_dataset_threshold_normal <- bindori_dataset_threshold_chr
 load("bindori_dataset_preprocessed_factor.rda")
-str(bindori_dataset_threshold_chr)
+bindori_dataset_threshold_chr <- bindori_dataset_threshold_chr
+# check the occurrences of open response variables
+table(bindori_dataset_threshold_normal$B2, bindori_dataset_threshold_chr$B2)
+table(bindori_dataset_threshold_normal$B4, bindori_dataset_threshold_chr$B4)
+table(bindori_dataset_threshold_normal$E5, bindori_dataset_threshold_chr$E5)
+table(bindori_dataset_threshold_normal$E6, bindori_dataset_threshold_chr$E6)
 # we have the dataframe here named as "bindori_dataset_threshold_chr"
 # Encoding, var B2, not needed for cart
 # -1    -99 [0, 1) [1, 3) 
