@@ -17,10 +17,15 @@ library(tidyverse)
 library(here)
 
 # set the working directory
-wd <- "/Users/roxy/Desktop/Master-Thesis-SyntheticDataGeneration"
+# wd <- "F:/Master-Thesis-DifferentialPrivacy" # used for thinkpad
+
+# wd <- "C:/Users/ru27req/Master-Thesis-DifferentialPrivacy"
+# setwd(here())
+
+wd <- "/dss/dsshome1/0C/ru27req2"
 setwd(wd)
 
-file_path <- "./SyntheticData/Terrance/version_1/syn_k2_2020-08-02_2020-08-08.csv"
+file_path <- "./Master-Thesis-DifferentialPrivacy/SyntheticData/Terrance/version_1/syn_k2_2020-08-02_2020-08-08.csv"
 # gpdr_file_path <- "F:/Master-Thesis-DifferentialPrivacy/gpdr.csv" # used for tp
 
 # gpdr_file_path <- "C:/Users/ru27req/Master-Thesis-DifferentialPrivacy/gpdr.csv"
@@ -68,23 +73,20 @@ gpdr_region_preprocess <- function(file_path, gpdr_file_path) {
 # read in the original dataset and syn data by Terrance
 gpdr_dataset_list <- gpdr_region_preprocess(file_path, gpdr_file_path)
 class(gpdr_dataset_list$ori_dataset_list[[7]]) # No. = 7
-
 ods_gpdr_0802 <- data.frame(gpdr_dataset_list$ori_dataset_list[[1]])
-str(ods_gpdr_0802)
 ods_gpdr_0803 <- data.frame(gpdr_dataset_list$ori_dataset_list[[2]])
 ods_gpdr_0804 <- data.frame(gpdr_dataset_list$ori_dataset_list[[3]])
 ods_gpdr_0805 <- data.frame(gpdr_dataset_list$ori_dataset_list[[4]])
 ods_gpdr_0806 <- data.frame(gpdr_dataset_list$ori_dataset_list[[5]])
 ods_gpdr_0807 <- data.frame(gpdr_dataset_list$ori_dataset_list[[6]])
 ods_gpdr_0808 <- data.frame(gpdr_dataset_list$ori_dataset_list[[7]])
-
+# ncol(ods_gpdr_0802)
 gpdr_countries_data <- NA
 gpdr_countries_data <- read.csv(file = gpdr_file_path, sep = ",")
 country_name <- unique(as.character(gpdr_countries_data$Country_GID))
 
 ods_gpdr_0802 <- ods_gpdr_0802 %>%
                  filter(GID_0 %in% country_name)
-str(ods_gpdr_0802)
 ods_gpdr_0803 <- ods_gpdr_0803 %>%
                  filter(GID_0 %in% country_name)
 ods_gpdr_0804 <- ods_gpdr_0804 %>%
@@ -100,7 +102,16 @@ ods_gpdr_0808 <- ods_gpdr_0808 %>%
 
 bindori_dataset_gpdr <- data.frame(gpdr_dataset_list$bindori_dataset_gpdr)
 syn_dataset_gpdr <- data.frame(gpdr_dataset_list$syn_dataset_gpdr)
+ncol(bindori_dataset_gpdr)
+
+
 str(bindori_dataset_gpdr)
+
+# bindori_dataset_gpdr$D6_1
+
+
+str(bindori_dataset_gpdr)
+
 
 # step 2: threshold with only gdpr countries included
 threshold_preprocess <- function(bindori_dataset_gpdr) {
@@ -175,15 +186,15 @@ ods_threshold_0805[colnames_ods_datewise] <- lapply(ods_threshold_0805[colnames_
 ods_threshold_0806[colnames_ods_datewise] <- lapply(ods_threshold_0806[colnames_ods_datewise] , factor)
 ods_threshold_0807[colnames_ods_datewise] <- lapply(ods_threshold_0807[colnames_ods_datewise] , factor)
 ods_threshold_0808[colnames_ods_datewise] <- lapply(ods_threshold_0808[colnames_ods_datewise] , factor)
-str(ods_threshold_0805)
+
 
 col_names <- names(bindori_dataset_threshold_chr)[2:90]
 bindori_dataset_threshold_chr[col_names] <- lapply(bindori_dataset_threshold_chr[col_names] , factor)
 
 # preprocessed original data import and export
 #-----------------------------------------------
-export_path <- "/Users/roxy/Desktop/Master-Thesis-SyntheticDataGeneration"
-# bindori_data_name <- "bindori_dataset_preprocessed_factor.rda"
+export_path <- "/dss/dsshome1/0C/ru27req2/Master-Thesis-DifferentialPrivacy"
+bindori_data_name <- "bindori_dataset_preprocessed_factor.rda"
 ods_0802 <- "ods_preprocess_0802.rda"
 ods_0803 <- "ods_preprocess_0803.rda"
 ods_0804 <- "ods_preprocess_0804.rda"
@@ -208,3 +219,12 @@ save(ods_threshold_0808, file=paste(c(export_path, ods_0808),
 
 save(bindori_dataset_threshold_chr, file=paste(c(export_path, bindori_data_name), 
                                                collapse="/"))
+# we have the dataframe here named as "bindori_dataset_threshold_chr"
+
+# # load("sdssdc1.rda")
+# test_df <- read.csv(file = "C:/Users/ru27req/Master-Thesis-DifferentialPrivacy/2020-08-01_full.csv", sep = ",")
+# ori_dataset_list <- list.files(pattern = "*_full.csv$") %>%
+#                     map_df(~read_csv(.))
+
+bindori_dataset <- as.data.frame(bind_rows(ori_dataset))
+print("binding dataset is successful!")
