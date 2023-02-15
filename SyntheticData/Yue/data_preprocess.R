@@ -25,7 +25,6 @@ library(here)
 wd <- "/dss/dsshome1/0C/ru27req2"
 setwd(wd)
 
-
 file_path <- "./Master-Thesis-DifferentialPrivacy/SyntheticData/Terrance/version_1/syn_k2_2020-08-02_2020-08-08.csv"
 # gpdr_file_path <- "F:/Master-Thesis-DifferentialPrivacy/gpdr.csv" # used for tp
 
@@ -148,8 +147,8 @@ threshold_preprocess <- function(bindori_dataset_gpdr) {
     bindori_dataset_threshold$E5[bindori_dataset_threshold$E5 >= 1000] <- "1000"
     bindori_dataset_threshold$E5[bindori_dataset_threshold$E5 >= 0 & bindori_dataset_threshold$E5 < 1] <- "[0, 1)"
     bindori_dataset_threshold$E5[bindori_dataset_threshold$E5 >= 1 & bindori_dataset_threshold$E5 < 2] <- "[1, 2)"
-    bindori_dataset_threshold$B4[bindori_dataset_threshold$B4 >= 2 & bindori_dataset_threshold$B4 < 4] <- "[2, 4)"
-    bindori_dataset_threshold$B4[bindori_dataset_threshold$B4 >= 4 & bindori_dataset_threshold$B4 < 6] <- "[4, 6)"
+    bindori_dataset_threshold$E5[bindori_dataset_threshold$E5 >= 2 & bindori_dataset_threshold$E5 < 4] <- "[2, 4)"
+    bindori_dataset_threshold$E5[bindori_dataset_threshold$E5 >= 4 & bindori_dataset_threshold$E5 < 6] <- "[4, 6)"
     bindori_dataset_threshold$E5[bindori_dataset_threshold$E5 >= 6 & bindori_dataset_threshold$E5 < 1000] <- "[6, 1000)"
     print("Var E5 thresholding succeed")
     # for E6

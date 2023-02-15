@@ -65,6 +65,7 @@ cols_rm_bd <- c("B1b_x1", "B1b_x2", "B1b_x3", "B1b_x4", "B1b_x5", "B1b_x6", "B1b
 
 bindori_dataset_threshold_chr <- bindori_dataset_threshold_chr %>% select(-all_of(cols_rm_bd))
 ncol(bindori_dataset_threshold_chr)==54
+str(bindori_dataset_threshold_chr)
 # nrow(bindori_dataset_threshold_chr)
 
 ##########################################################################
@@ -186,6 +187,8 @@ lm_cartnorm_model1 <- lm.synds(F2_1 ~ D1 + D2 + D3 + D4 + D5 + D7 + D8 + D9 + E2
                                  data = sds_cartnorm_tryout)
 summary(lm_cartnorm_model1)
 compare_cartnorm_model1 <- compare(lm_cartnorm_model1, bindori_dataset_threshold_chr, plot.intercept = TRUE, plot = "coef")
+compare(lm_cartsample_model1, lm_bagsample_model1, plot.intercept = TRUE, plot = "coef")
+
 # Save the cartnorm object
 saveRDS(lm_cartnorm_model1, "./SyntheticData/Yue/lm_cartnorm_model1.rds")
 saveRDS(compare_cartnorm_model1, "./SyntheticData/Yue/compare_cartnorm_model1.rds")
