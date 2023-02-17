@@ -1,1 +1,275 @@
-\citet{Bishop2006} introduced this and that. Another statement that needs a reference, but the authors are not named directly \citep{Bishop2006}. Another statement where the reference is just one possible source \citep[see, e.g.,][]{Bishop2006}. 
+Following an overview of the evolvement of data privacy preservation in synthetic data, and a discussion of computer science-based and statistics-based approaches, this chapter now examines synthetic data from a formal mathematical perspective. Therefore, firstly, based on the sequential modelling strategy introduced in section \ref{chapter2:relatedwork}, the mathematical formulation of synthetic data with sequential modelling is given with intuitive understanding. Then, implications on how to obtain valid inference of synthetic data is presented, where the combining rules is mainly discussed. Subsequently, some detailed data synthesis algorithms are depicted with a focus on parametric and non-parametric methods. At the end of chapter \ref{chapter3:syn}, concluding remarks are provided based on the comparison between parametric and non-parametric synthetic data approaches.
+
+\subsection{Synthetic Data with Sequential Modelling}
+\label{subsec:syntheticData}
+As mentioned in chapter \ref{chapter1:intro}, tremendous amounts of data are collected about individuals by a variety of parties, especially during the outbreak of the COVID-19 Pandemic, to advance decision making and damage control scenarios. Even though this data collection allows to analyze data to bring lots of benefits to the society, the major concern about privacy preservation is growing exponentially. The idea of Synthetic Data has managed to offer an intuitive way to resolve this issue by imputing these sensitive data entries with synthesized data instances where the level of privacy protection differentiates the research branches into fully synthetic data and partially synthetic data.
+
+Among all statistical approaches given in section \ref{subsubsec:statsapproach}, a brief introduction to the sequential modelling technique is given, for which every variable is sequentially generated using models predicated on variables that have previously been generated or have remained constant. The sequential modelling technique, also known as Fully conditional specification (FCS), replaces the challenge of drawing from a $k-$variate distribution with a simpler task of drawing from univariate distributions. Each variable in the dataset is considered individually and imputed using a regression model appropriate for that specific variable. More specifically, continuous variables can be imputed through a normal model, binary variables can be imputed using a logit model, and multivariate variables can be imputed with multiclass classification model such as CART. With this approach, the conditional probability $P(\theta|Y_{obs})$ can be specified directly, eliminating the need for iterations. This is due to the fact that drawing from potentially complex multivariate distributions is not required in this case. For instance, consider the case where values for a continuous variable $Y$ are to be imputed. The conditional distribution $Y|X$ can be modeled as $N(\mu ,\sigma^2)$, where $X$ represents all variables that serve as explanatory variables for the imputation process. The two-step imputation procedure can then be executed as follows: Let $n$ be the number of observations in the dataset, $k$ be the number of regressor variables included in the regression, $\sigma^2$ be the variance estimate obtained from ordinary least squares regression, and $\hat{\beta}$ be the beta-coefficient estimate acquired from the same regression. Moreover, in the context of missing data, it is assumed that plausible starting values for the missing portion of $Y$ have been filled in or generated in prior imputation rounds. These starting values can be collected, for instance, through the use of predicted values from a linear regression of $Y$ on $X$. The imputed values for $Y_{new}$ can be produced through the application of the following algorithm:
+\begin{algorithm}[H]
+    \caption{Data imputation for $Y_{new}$, see \cite{drechsler2011synthetic}}
+    \begin{algorithmic}[1]
+        \State Step 1: Draw new values for $\theta=(\sigma^2, \beta)$ from $P(\theta|Y)$; i.e.,
+        \State \hskip1.0em draw $\sigma^2|X \sim (Y-X\hat{\beta})^{'}(Y-X\hat{\beta})\chi_{n-k}^{-2},$
+        \State \hskip1.0em draw $\beta|\sigma^2, X \sim N(\hat{\beta},(X^'X)^{-1}\sigma^2).$
+        \State Step 2: Draw new values for $Y_{new}$ from $P(Y_{new}|Y,\theta)$; i.e.,
+        \State \hskip1.0em draw $Y_{new}|B, \sigma^2,X \sim N(X\beta,\sigma^2).$
+    \end{algorithmic}
+\end{algorithm}
+
+It is important to mention that new values for the parameters are being drawn directly from the posterior distributions of the observed data. This eliminates the need for Markov Chain Monte Carlo methods to derive new values from the complete-data posterior distribution of the parameters. However, in scenarios where there are multiple variables with missing data, values for Ynew are generated by sampling from $P(Y_{new} | \beta, \sigma^2, X)$, where $X$ may contain imputed values from a previous iteration. These values must be updated based on the new information obtained from the recently imputed variable $Y$. As a result, a Gibbs sampler must be applied iteratively to every variable in the dataset in order to sample from the fully conditional distribution. Assuming the corresponding joint distribution exists, this iterative procedure effectively converges to draws from the joint distribution.
+
+
+With a more elaborate indication, for multivariate $Y$, consider $Y_{j}|Y_{−j}$ to represent the conditional distribution of $Y_{j}$ given the columns of $Y$ excluding $Y_{j}$, and $\theta_{j}$ as the parameter defining the distribution of $Y_{j}|Y_{-j}$. Thinking of a scenario where the multivariate $Y$ is comprised of $p$ columns, and each column, $Y_j$, is univariate. The $t-$th iteration of the specified method involves successive draws, executed in the following manner, as proved by \citet{drechsler2011synthetic}:
+
+\begin{align}
+\label{eqn:eqlabel}
+\begin{split}
+    \theta_{1}^{(t)} &\sim P(\theta_{1}|Y_{1}^{(t-1)},...,Y_{p}^{(t-1)})\\
+    Y_{1}^{(t)} &\sim P(Y_{1}^{new}|Y_{2}^{(t-1)},...,Y_{p}^{(t-1)}, \theta_{1}^{(t)})\\
+    &\cdots \\
+    \theta_{p}^{(t)} &\sim P(\theta_{p}|Y_{p}^{(t-1)},Y_{1}^{(t)},Y_{2}^{(t)},...,Y_{p-1}^{(t)})\\
+    Y_{p}^{(t)} &\sim P(Y_{p}^{new}|Y_{1}^{(t)},...,Y_{p-1}^{(t)}, \theta_{p}^{(t)}).
+\end{split}
+\end{align}
+Due to the fact that these data imputations are synthesized in a sequential manner, this technique is also termed as sequential regression multivariate imputation (SRMI; refer to \cite{raghu2001information}). It is worth mentioning that the attainment of the desired joint distribution of $(Y_{new}|Y_{obs})$ by the sampler is contingent upon the actual existence of such a joint distribution. In practical applications, verification of the existence of the joint distribution of $(Y_{new}|Y_{obs})$ is often infeasible. However, this poses a challenge as it is always possible to sample from the conditional distributions, potentially obscuring the fact that the Gibbs sampler may not have actually converged.
+
+
+An effective approach to identifying issues with the iterative imputation procedure is to record the mean of each imputed variable during each iteration of the Gibbs sampler. Plotting the means of the imputed variables over the course of the iterations allows for the determination of whether there is the expected random fluctuation or if there is a discernible pattern, which would indicate problems with the model. Furthermore, it is important to note that the absence of a noticeable trend over the iterations does not necessarily guarantee convergence, as the monitored estimates may remain stable for numerous iterations before diverging to infinity. Despite this, the method of tracking the means of the imputed variables is a simple approach to detect faulty imputation models. To further monitor convergence, one can compute the variance of a specified estimate of interest $\Psi$, such as the mean and standard deviation of each variable, both within and across multiple imputation chains if different chains are utilized to generate the multiple imputations. Let $\Psi_{ij}$ represent the estimate obtained at iteration $i$ (ranging from 1 to $T$) in chain $j$ (ranging from 1 to $m$). The variance between sequences, $B$, and the average variance within sequences, $W$, can be computed as follows:
+\begin{align*}
+  B = \frac{T}{m-1}\sum_{j=1}^{m}(\Psi_{.j}-\Psi_{..})^{2},\;&\text{where}\; \Psi_{.j}=\frac{1}{T}\sum_{i=1}^{T}\Psi_{ij}, \Psi_{..}=\frac{1}{m}\sum _{j=1}^{m}\Psi_{.j},\\
+  W = \frac{1}{m}\sum_{j=1}^{m}s_{j}^{2},\;&\text{where}\; s_{j}^{2} = \frac{1}{T-1}\sum_{i=1}^{T}(\Psi_{ij}-\Psi_{.j})^2.
+\end{align*}
+
+The convergence of Gibbs sampler is assumed, according to \citet{gelman2004parameterization}, when 
+\begin{align}
+\label{eqn:converge}
+    \hat{R}=\sqrt{\frac{(1-1/T)W+B/T}{W}}<1.1
+\end{align}
+
+In addition, it should be mentioned that the iteration process between imputations is not always required. If the data can be rearranged in a way that ensures $Y_j$ is completely observed whenever $Y_{j+1}$ is observed, a modified sequential regression algorithm can be employed that eliminates the need for iteration between imputations. In this scenario, $X$ represents all the variables in the dataset that have full observations, and $Y_1,...,Y_p$ represents the variables with missing values, ordered based on the extent of missingness. 
+% \begin{table}[H]
+%     \centering
+%     \caption{A non-floating table with \texttt{H} option}
+%     \begin{tabular}{cc}
+%         \toprule
+%          Ducks & Lions \\
+%          \midrule
+%          1 & 2 \\
+%          \bottomrule
+%     \end{tabular}
+% \end{table}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.8\linewidth]{graphics/Fig-1-missingness-pattern.png}    
+    \caption{Two missing data patterns.}
+    \label{fig:missingpatterns}
+\end{figure}
+
+% Just to show the also the lists works:
+% \listoftables
+% \listoffigures
+As shown in Figure \ref{fig:missingpatterns}, the illustration presents two distinctive patterns of missing data. The pattern on the left is characterized as having a monotonic missingness pattern, as the number of missing observations increases in a monotonic fashion from $Y_1$ to $Y_p$. The pattern on the right, however, is non-monotonic, as there are instances where values are available for $Y_{j+1}$ but not for $Y_j$.
+
+Given that the joint probability of a dataset can be always expressed as the product of conditional probabilities:
+\begin{align}
+\label{equ:jointdis}
+  P(Y_1,...,Y_p|X)=P(Y_1|X)\times P(Y_2|Y_1,X)\times ... \times P(Y_p|Y_1,...,Y_{p-1},X).
+\end{align}
+
+In the presence of a monotone missingness pattern, as $Y_j$ is observed, so will $Y_1,...,Y_{j−1}$, meaning that the conditional distributions are unchanged through the imputation of the missing values in $Y_1,...,Y_{j−1}$. Thus, the parameters do not have to be updated with each iteration. Each draw will be made directly from the posterior distribution, eliminating the need for convergence.
+
+However, in most real-world data collections, the missingness pattern is not monotone unless it was intentionally designed that way, for example, by conducting a follow-up study only with a subset of original survey participants. On the other hand, when generating synthetic datasets through multiple imputation, it is common to replace the same number of records for each sensitive variable, meaning that the decision of whether a value is missing is based on the combined attributes of the record, not just the variable. This implies that when generating synthetic datasets, the simplified algorithm can often be used, reducing the time needed to generate the datasets and eliminating the need to monitor convergence.
+
+As noted in section \ref{subsubsec:statsapproach}, besides sequential modelling, we also have the joint modelling technique, which directly specifies or assumes the joint distribution of the original dataset and later utilizes this distribution to synthesize new data instances. Generally, data in practice will not follow a standard multivariate distribution, especially if it includes a mixture of numerical and categorical variables. The sequential modelling technique provides a flexible tool to accommodate for bounds, interactions, skip patterns, or restrictions between variables. In contrast, it can be challenging to handle these restrictions with joint modeling. Often, imputation is centralized in the methodological department of a statistical agency, and imputation experts will perform imputation for all the surveys conducted by the agency. If the imputed datasets do not adhere to simple restrictions such as non-negativity or logical constraints, they will not be accepted by subject matter analysts from other departments. Hence, maintaining these restrictions is crucial in the imputation task, making the sequential modelling technique a preferred method for most applications of multiple imputation.
+
+In summary, joint modeling is preferred for imputation tasks involving a limited number of variables with no restrictions and well-approximated joint distributions with a standard multivariate distribution. However, for complex imputation tasks, data synthesis with sequential modelling is necessary to maintain the constraints inherent in the data. It is important to monitor the convergence of the Gibbs sampler in such cases.
+
+
+
+
+% Regardless of which functions $f_i$ are utilized for imputing the original data instances, it is also important to ensure the validity of inferences from the altered data. As for the next section, we will discuss how to obtain valid inferences for the Multiple Imputation inspired synthesizing approaches \citep{rubin1993statistical} based on a broader application scenario with a general imputation methodology. 
+
+
+
+\subsection{Obtaining Valid Statistical Inferences}
+\label{subsec:inference}
+As stated in section \ref{subsec:datasynthesis}, the inception of Rubin's proposal for synthesizing data was driven by his previous research on multiple imputation to handle nonresponse. Given the close association with those related concepts, it is widely accepted to utilize straightforward combination techniques derived from previous research on multiple imputation (Rubin's combining rules) when seeking to gain valid point and variance estimates through the use of synthesized data. However, the methodologies of synthetic data generation deviate from the framework established by Rubin in two significant aspects, depending on the level of protection required. In the context of full synthesis, as initially proposed by \citet{rubin1993statistical}, fully synthetic data is only produced for a randomly selected subset of the population, necessitating careful consideration of the additional sampling step. In contrast, during partial synthesis, the synthesis models are estimated using the complete data, not solely the available subset, as is typically done in the context of nonresponse. As a result of these deviations, the combining procedures must also be adapted accordingly.
+
+To analyze multiply imputed synthetic datasets, consider a scenario in which an analyst is interested in an unknown scalar parameter $Q$. This parameter could be a mean of a variable, a correlation coefficient between two variables, or a regression coefficient in a linear regression. Assuming there are no missing data in the observed dataset, inferences for $Q$ are usually based on a point estimate ($q$), an estimate of the variance of $q$ ($u$), and a normal or Student's $t$ reference distribution. For analysis of the synthetic datasets, let $q^{(i)}$ and $u^{(i)}$ be the point and variance estimates for each of the m synthetic datasets, where $i = 1, ..., m$. To make inferences for scalar $Q$, the following quantities are necessary:
+\begin{align}
+\label{equ:qm}
+\bar{q}_{m} &= \sum_{i=1}^{m}q^{(i)}/m,\\
+\label{equ:bm}
+b_m &= \sum_{i=1}^{m}(q^{(i)}-\bar{q}_{m})^2/(m-1),\\
+\label{equ:um}
+\bar{u}_{m} &= \sum_{i=1}^{m}u^{(i)}/m.
+\end{align}
+which are provided by \citet{drechsler2011synthetic}. In the subsequent sections, we are going to introduce the combining rules for fully synthetic data and partially synthetic data, respectively, based on the mentioned quantities \eqref{equ:qm}, \eqref{equ:bm}, and \eqref{equ:um}.
+
+\subsubsection{Combining Rules for Full Data Synthesis}
+\label{subsubsec:fullSyn}
+An unbiased point estimate of $Q$ can be obtained by employing the $\bar{q}_m$ estimator, and its variance can be estimated through the use of the equation provided as follows:
+\begin{align}
+    \label{equ:tf-fully}
+    T_{f}=(1+m^{-1})b_m-\bar{u}_m.
+\end{align}
+
+When the sample size $n$ is large, the scalar parameter $Q$ can be estimated using a $t-$distribution with degrees of freedom calculated as $v_p = (m - 1)(1 + \bar{u}_m/((1+m^{-1})b_m))^2$. However, the variance estimate $T_f$ can sometimes be negative, so a modified variance estimator is suggested by \citet{reiter2002satisfying} that always produces a positive value. The modified variance estimator, $T_{f}^{*} = \text{max}(0,T_{f}) + \delta(\frac{n_{syn}}{n}\bar{u}_m)$, adds a constant value ($\delta$) to the original estimate to ensure positivity, where $\delta$ is equal to 1 if $T_f$ is negative and 0 otherwise. $n_{syn}$ represents the number of observations in the synthetic datasets used for analysis. Note that this modified variance estimator has a tendency to overestimate the true variance of $T_f$.
+
+
+
+\subsubsection{Combining Rules for Partial Data Synthesis}
+\label{subsubsec:partialSyn}
+In like manner, when it comes to the combining rules for partially synthetic data, one can estimate $Q$ by utilizing  $\bar{q}_m$. The variance of $\bar{q}_m$ for this type of synthetic data can then be computed utilizing an appropriate method:
+\begin{align}
+    \label{equ:tf-part}
+    T_{p}=b_m/m + \bar{u}_m.
+\end{align}
+
+Especially for large sample sizes $n$, the estimation of the scalar parameter $Q$ can be based on $t-$distributions with degrees of freedom $v_p$, which is calculated as $v_p = (m - 1)(1 + \bar{u}_m/(b_m/m))^2$. Additionally, it is important to note that the variance estimate $T_p$ cannot be negative, so there is no need for adjustments in case of partially synthetic datasets.
+
+\subsubsection{An Alternative Variance Estimate for Full Data Synthesis}
+\label{subsubsec:alt-var-est}
+In fully synthetic data generation, the practice followed by most researchers deviates from the original protocol proposed by \citet{rubin1993discussion}. Rubin's assumption was that in addition to the survey variables $Y$, additional variables $X$ representing the design variables from the sampling frame would be available in the full population. Based on this assumption, the generation of fully synthetic data for $Y$ would involve the fitting of a conditional model for $f(Y | X)$ using the survey data, and using this model to generate synthetic values for $Y$ with a new sample of design variables $X^{new}$ drawn from $f(Y | X^{new})$. Note that only the synthetic $Y$ values would be afterwards made available to the public.
+
+Nevertheless, most researchers in practice only utilize the information in $Y$ for synthetic data generation. This method of generating fully synthetic data can be considered an extreme form of partial data synthesis with an empty set of unsynthesized records. As noted by \citet{drechsler2011improved}, the combining rules for partial synthesis remain valid in this context. Building on these concepts, \citet{raab2016practical} has introduced an alternative estimator for the variance to be used in this scenario:
+\begin{align*}
+    T_{s}=\left ( \frac{n_{syn}}{n_{org}}+\frac{1}{m} \right )\bar{u}_m,
+\end{align*}
+in which $n_{org}$ indicates the number of instances in the original dataset and $n_{syn}$ refers to the number of synthesized records. Based on the extension provided by \citet{raab2016practical}, it is important to mention that the proposed variance estimator, $T_s$, does not rely on the estimate of the between imputation variance, $b_m$. Due to this, it has actually offered several benefits compared to the variance estimator, $T_f$, discussed previously for fully synthetic data. Firstly, the estimator $T_f$ can never be negative. Secondly, it demonstrates less variability than $T_f$, as $b_m$ is only an estimate of the true variability between datasets and its estimation based on a limited number of synthetic datasets results in high uncertainty. Thirdly, a valid variance estimate can be obtained from a single synthetic dataset. This is particularly relevant because previous research has indicated that the risk of disclosure increases with the number of synthetic datasets released \citep{drechsler2009disclosure,reiter2010releasing}. However, releasing only a single synthetic dataset results in increased uncertainty. Assuming that $n_{syn} = n_{org}$, the variance can be reduced by 25\% when two datasets are released instead of one. However, these accuracy gains are rapidly diminishing with increasing m, and the relative reduction in variance is limited to 0.5 as m approaches infinity. For further discussion of the advantages and disadvantages of different synthesis strategies and appropriate variance estimator selection based on the scenario, please refer to \citet{drechsler2018some}.
+
+
+
+
+\subsection{Introduction to Selected Data Synthesis Algorithms}
+\label{subsec:detailsynmethods}
+In previous section \ref{subsec:inference}, we have introduced the combining rules for fully and partially synthetic data to obtain valid statistical inference. Now, we begin to illustrate on specific synthesizing algorithms that can be employed to carry out data synthesis tasks. Before giving detailed explanations on different algorithms, it is worth noting that we can categorize them into broader groups where the splitting rule lies mostly in the corresponding synthesizing mechanism, and they all rely on the sequential modelling technique specified in section \ref{subsec:syntheticData}. More specifically, the categorization of data synthesis algorithms can be split into three groups: parametric data synthesis algorithms, non-parametric data synthesis algorithms, and other methods.
+
+\paragraph{Parametric data synthesis algorithms}rely on the assumption of a specific probability distribution to model the data. This type of synthesis is suitable when the underlying distribution of the data can be accurately estimated and modeled through parametric methods. In general, the benefit of this method is that the data synthesis process is efficient and the synthesized data can be generated quickly.
+
+\paragraph{Non-parametric data synthesis algorithms}do not rely on any assumptions about the underlying distribution of the original data, on the contrary. Instead, they turn to the actual data to generate synthetic data by using estimators based on non-parametric methods, such as CART. This type of synthesis is often applied when the underlying distribution of the data is complex and cannot be accurately estimated through parametric methods. Accordingly, the advantage of this algorithm is that the structure of this type of synthesizer is more flexible, and can additionally offer the inclusion of variables' interactions to study the relationship among the data variables.
+
+\paragraph{Other methods of data synthesis}refer to a variety of techniques that do not fall into the two aforementioned categories. This can include methods such as random sampling from the observed data or data imputation methods. Due to the fact that other methods based data synthesis algorithms are not the focus of our research, and therefore they will be ignored for further discussion.
+
+\subsubsection{Parametric Data Synthesis Algorithms}
+\label{subsubsec:para}
+Parametric data synthesis algorithms are a class of data synthesis techniques that rely on the assumption of a specific distributional form for the variables in the target population. In this category, we are going to introduce detailed algorithms for normal linear regression and normal linear regression preserving the marginal distribution.
+
+\paragraph{Normal linear regression}
+Normal linear regression \citep{su2012linear} is one such parametric data synthesis algorithm that is widely used in the literature. The algorithm is based on the premise that the target population's variables follow a multivariate normal distribution and that the relationships between the variables can be modeled using linear regression.
+
+Let $Y$ be a $p-$dimensional response variable and $X$ be a $q-$dimensional design matrix of covariates. The model can be represented as:
+\begin{align}
+    \label{equ:lm-org}
+    Y=X\beta+\xi,
+\end{align}
+where $\beta$ is the $p-$dimensional vector of coefficients and $\xi$ is the $p-$dimensional vector of bias that are normally distributed with mean $0$ and covariance matrix $\sigma^2I$. Here, $I$ represents the $p-$dimensional identity matrix. Accordingly, the covariance matrix can be estimated from the sample data, and the coefficients can be estimated using ordinary least squares regression. As a matter of fact, this procedure generates a synthetic dataset that has the same statistical properties as the original dataset, as specified by the normal linear regression model.
+
+In the scenario of using linear regression as data synthesizer, given a new set of design variables $X_{new}$, the synthetic values for $Y_{new}$ can be generated as follows:
+\begin{align}
+    \label{equ:lm-syn}
+    Y_{new}=X_{new}\hat{\beta}+\xi_{new},
+\end{align}
+with $\hat{\beta}$ indicating the estimate of the coefficients obtained from the sample data and $\xi_{new}$ is a $p-$dimensional vector of errors that is drawn from a multivariate normal distribution with mean $0$ and covariance matrix $\sigma_{new}^2I_{new}$. Note that $I_{new}$ represents the identity matrix used for synthesis.
+
+\paragraph{Normal linear regression preserving the marginal distribution}
+Similar to normal linear regression, the algorithm of normal linear regression preserving the marginal distribution is based on the linear regression technique but maintains the marginal distribution of the original dataset. In detailed manner, the algorithm can be summarized as follows:
+\begin{itemize}
+    \item Step 1 (Data Preparation): Obtain the original survey data $Y_{org}$ and its corresponding design variables $X_{org}$,
+    \item Step 2 (Fit the Regression Model): Establish a linear regression model between $Y_{org}$ and $X_{org}$, denoted as $Y_{org} = \beta_{org}X_{org} + \xi_{org}$, where $\beta_{org}$ is the regression coefficient and $\xi_{org}$ is the residual error. The regression coefficients can be estimated using the maximum likelihood method (MLE),
+    \item Step 3 (Determine the Synthetic $X_{syn}$ values): Draw a random sample of synthetic $X_{syn}$ values from the marginal distribution of the design variables $X_{org}$,
+    \item Step 4 (Generate Synthetic $Y_{syn}$ values): Use the regression coefficients obtained from Step 2 and the synthetic $X_{syn}$ values generated from Step 3, generate synthetic $Y_{syn}$ values by computing $Y_{syn} = \hat{\beta}_{syn}X_{syn} + \xi_{syn}$, where $\xi_{syn}$ is drawn from the residual error distribution estimated in Step 2.
+\end{itemize}
+Also note that the regression coefficients $\hat{\beta}_{syn}$ can be estimated by maximizing the likelihood function $L(\beta)$ given by:
+\begin{align}
+    \label{equ:mle}
+    L(\beta)=\prod_{i=1}^{n}(\frac{1}{\sqrt{2\pi \sigma^2}}\text{exp}(-\frac{(Y_{i}-\beta X_{i})^2}{2\sigma^2})),
+\end{align}
+where $n$ is the sample size, $\sigma^2$ is the residual error variance, and $Y_i$ and $X_i$ are the observed values of $Y_{org}$ and $X_{org}$, respectively. Specifically, the residual error distribution can be estimated as $N(0, \sigma^2)$. By obtaining the marginal distribution of observed $X$, the synthetic $X_{syn}$ can be drawn from this, and the corresponding $Y_{syn}$ of synthetic values can be generated using $Y_{syn}=\hat{\beta}_{syn}X_{syn}+\xi_{syn}$, with $\xi_{syn}$ drawn from the residual error distribution.
+
+In conclusion, both the normal linear regression data synthesizer and the normal linear regression data synthesizer preserving the marginal distribution are parametric data synthesis algorithms that can be utilized to generate synthetic data. The normal linear regression synthesizer generates synthetic data by fitting a regression model using the original data and using the model to predict the values of the synthetic data. On the other hand, the normal linear regression synthesizer preserving the marginal distribution generates synthetic data by first estimating the marginal distribution of the original data and then fitting a regression model using the estimated marginal distribution as a constraint.
+
+The choice of which algorithm to use depends on the specific requirements of the data synthesis task. If preserving the marginal distribution of the original data is important, then the normal linear regression synthesizer preserving the marginal distribution may be the more appropriate choice. However, if the focus is on the relationship between the variables in the data and not the marginal distribution, then the normal linear regression synthesizer may be the better option.
+
+
+\subsubsection{Non-parametric Data Synthesis Algorithms}
+\label{subsubsec:non-para}
+In contrast to parametric data synthesizers, non-parametric data synthesizers do not rely on a priori assumptions about the underlying population distribution. Rather, they use flexible, data-driven models to generate synthetic data. Non-parametric data synthesizers offer several advantages, including their ability to adapt to complex, non-linear relationships between variables and their insensitivity to outliers and other anomalies in the data. They are also capable of modeling complex relationships between variables that are difficult to capture with parametric methods. However, non-parametric methods also have their limitations, such as the need for large amounts of data to avoid overfitting and the potential for slower computation times compared to parametric methods. Despite these limitations, non-parametric data synthesizers are an important tool for producing synthetic data and are widely used in applications where the underlying population distribution is unknown or difficult to model using parametric methods.
+
+In the following section, we will delve into the intricacies of non-parametric data synthesis algorithms. In particular, we will examine the methods of polytomous logistic regression, classification and regression trees, random forest, and random forest-based bagging algorithms. These algorithms provide valuable alternatives to parametric data synthesis and have been widely used in various applications due to their flexibility and ability to handle complex relationships between variables. Furthermore, we will study their advantages, limitations, and implementation techniques to provide a comprehensive understanding of non-parametric data synthesis.
+
+\paragraph{Polytomous logistic regression} The polytomous logistic regression (PLR) method is a popular approach in non-parametric data synthesis. This method is used to model the relationship between a categorical response variable and a set of predictor variables. Unlike the traditional logistic regression, which models binary responses, PLR is used to model multi-class response variables with more than two categories.
+
+Given a dataset $D_{org}$ with $n_{org}$ observations and $p$ predictor variables, the goal of PLR is to generate a synthetic dataset $D_{syn}$ with the same statistical properties as the original dataset. To do this, PLR models the conditional probability of each category of the response variable given the predictor variables, using the following formula:
+\begin{align}
+    \label{equ:multilogit}
+    P(y=k|x_1,x_2,\dots,x_p)=\frac{\exp(\beta_{0k}+\beta_{1k}x_1+\beta_{2k}x_2+\dots + \beta_{pk}x_p)}{\sum_{j=1}^K\exp(\beta_{0j}+\beta_{1j}x_1+\beta_{2j}x_2+\dots + \beta_{pj}x_p)},
+\end{align}
+where $y$ is the response variable, $x_i$ are the predictor variables, $\beta_{ik}$ are the coefficients of the logistic regression model, and $K$ is the number of categories of the response variable.
+
+To generate the synthetic data, the PLR model is first trained using the original data. Then, the model is used to generate synthetic values for each observation in the synthetic dataset. For each observation, the values of the predictor variables are kept constant, and the value of the response variable is sampled from the conditional probability distribution given by the PLR model. The process of fitting the logistic regression models and sampling new response values can be repeated to generate a desired number of synthetic records. Also, it is worth mentioning that the synthetic records generated using PLR will have the same marginal distribution as the original data, but will have a different joint distribution.
+
+
+\paragraph{Classification and regression trees}
+Having discussed the PLR data synthesizer, we now turn our attention to the Classification and Regression Trees (CART) data synthesizer. CART is a popular non-parametric machine learning method that has been widely used in various data synthesis tasks. In the next section, we will provide a comprehensive explanation of how CART can be employed to generate synthetic records and the formulas involved in this process.
+
+The key idea behind CART is to recursively partition the feature space into smaller and smaller regions, such that the target variable is relatively homogeneous within each region. This partitioning process is repeated until a stopping criterion is met, which can be based on the size of the partition, the amount of improvement in the target variable's homogeneity, or the complexity of the tree model. The final tree structure consists of internal nodes, which are used to make decisions about which partition to follow, and terminal nodes, which correspond to the synthetic records.
+
+Let us denote the original dataset as $D = { (x_1,y_1),(x_2,y_2),\dots,(x_n,y_n)}$, where $x_i$ represents the feature vector and $y_i$ represents the target variable, $i=1,...,n$. The goal of CART is to synthesize a new data set $D' = { (x'_1,y'_1),(x'_2,y'_2),\dots,(x'_m,y'_m)}$ that has the same statistical properties as $D$. To generate synthetic records using CART, we first fit the tree model to the original data set $D$. For each terminal node in the tree model, we can obtain the distribution of the target variable by calculating the mean and standard deviation of the target variable in that node. We can then sample synthetic records from this distribution to obtain $(x'_i,y'_i)$. The mean and standard deviation of the target variable in terminal node $t$ can then be formally denoted as $\mu_t$ and $\sigma_t$, respectively. Subsequently, the synthetic records in terminal node $t$ can be generated using the following formula:
+\begin{align}
+    \label{equ:cart}
+    y'i = \sum_{j=1}^{K} w_{ij} y_{j},
+\end{align}
+where $K$ is the number of terminal nodes in the tree, $y_j$ is the response value in the $j^{th}$ terminal node, and $w_{ij}$ is the weight assigned to the $j^{th}$ terminal node for the $i^{th}$ synthetic record, indicating the probability that the $i^{th}$ synthetic record belongs to the $j^{th}$ terminal node. Note that an illustration with a simple workflow of the CART data synthesizer can be found in Figure \ref{fig:cartsyn}.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.5\linewidth]{graphics/Fig-2-cart-synthesizer.png}    
+    \caption{A simple workflow of the CART data synthesizer.}
+    \label{fig:cartsyn}
+\end{figure}
+
+It is worth noting that CART is a flexible algorithm and can handle both categorical and numerical variables, as well as handle non-linear relationships between the features and target variables. However, the tree structure can become complex and difficult to interpret, especially when the number of features is large or the relationship between the features and target variables is complicated.
+
+\paragraph{Random forest}
+In contrast to CART, random forest \citep{rigatti2017random} is an ensemble learning method that generates multiple decision trees and combines their results to produce a final prediction. It is a powerful machine learning algorithm that has been widely used in various data synthesis tasks. In the next section, we will provide an overview of how random forest can be employed to generate synthetic records and the key concepts involved in this process.
+
+Let us denote the original dataset as $D = { (x_1,y_1),(x_2,y_2),\dots,(x_n,y_n)}$, where $x_i$ represents the feature vector and $y_i$ represents the target variable, $i=1,...,n$. The goal of the random forest is to synthesize a new dataset $D' = { (x'_1,y'_1),(x'_2,y'_2),\dots,(x'_m,y'_m)}$ that has the same statistical properties as $D$.
+
+To generate synthetic records using random forest, we first fit the random forest model to the original data set $D$. The random forest model will then generate multiple decision trees from bootstrapped samples of $D$ and random subsets of the features. For each record in the original dataset, the random forest model will generate a synthetic record by combining the prediction from all the trees in the forest, where the combination lies in a pre-chosen criteria such as majority voting or averaging.
+
+Assuming averaging is used for the final result combination, we now denote the prediction of the $i^{th}$ tree in the forest for the $j^{th}$ record in the original dataset as $y_{ij}$. The synthetic record for the $j^{th}$ record can then be obtained using the following formula:
+\begin{align}
+\label{equ:rf}
+y'j = \frac{1}{B} \sum_{i=1}^{B} y_{ij},
+\end{align}
+where $B$ is the number of decision trees in the random forest.
+
+In general, random forest is a powerful algorithm that can handle both categorical and numerical variables and can also handle non-linear relationships between the features and target variables. By combining the predictions from multiple decision trees, it provides a robust way to generate synthetic records that are representative of the original dataset.
+
+
+
+\paragraph{Bagging}
+Bagging (Bootstrapped Aggregation) is a simple ensemble learning technique that involves fitting multiple models on different samples of the data and combining their predictions. Based on this understanding, we can also think of random forest as a type of bagging, which generates multiple decision trees from bootstrapped samples of the original data and random subsets of features, and combines the results of these trees to make a final prediction. With a focus on random forest based bagging data synthesis, we now would like to present a detailed illustration of how this data synthesizer works to output synthetic records.
+
+Let us denote the original dataset as $D = { (x_1,y_1),(x_2,y_2),\dots,(x_n,y_n)}$, where $x_i$ represents the feature vector and $y_i$ represents the target variable, $i=1,...,n$. The goal of the random forest based bagging data synthesizer is to synthesize a new dataset $D' = { (x'_1,y'_1),(x'_2,y'_2),\dots,(x'_m,y'_m)}$ preserving the same properties as $D$.
+
+Specifically, we firstly fit the random forest model to the original data set $D$. The random forest model generates multiple decision trees from bootstrapped samples of $D$ and random subsets of the features. Seeing each random forest model as a single training unit, we then utilize multiple random forest models to fit for different random sets of the original dataset. Finally, the prediction is summarized with a combination rule. By sampling records from the output prediction's distribution, we will get the corresponding synthetic dataset. Note that using random forest as a single fitting unit can further reduce the correlation between trees and therefore increase diversity in the ensemble.
+
+To conclude, both parametric and non-parametric data synthesizers have their own pros and cons in terms of model complexity, efficiency and training cost, ability to study interaction or complex relationships between variables, and ability to overcome collinearity issues.
+
+Parametric data synthesizers, such as regression-based methods, have the advantage of being simple and efficient to implement. They have a low model complexity and generally require less computational resources to train, making them suitable for large datasets. However, these methods are based on a set of assumptions about the underlying distribution of the data, which may not always hold in practice. As a result, parametric data synthesizers may not accurately capture complex relationships between variables, such as interactions and non-linearities.
+
+On the other hand, non-parametric data synthesizers, such as decision tree-based methods, offer greater flexibility and the ability to handle complex relationships between variables. These methods are able to overcome collinearity issues by partitioning the data into subsets and considering the relationships between variables within each subset. However, non-parametric data synthesizers can be computationally expensive and have a higher model complexity, making them less suitable for large datasets.
+
+In terms of random forest-based bagging data synthesizer, it has the advantages of both parametric and non-parametric data synthesizers. The use of multiple decision trees in the random forest model provides a robust way to capture complex relationships between variables, while the bagging technique helps to reduce the variance in the model and overcome collinearity issues. However, the cost of training a random forest-based bagging synthesizer can be high, and its implementation may be more complex than that of parametric data synthesizers.
+
+In summary, the choice of data synthesizer will depend on the specific requirements of the data and the goals of the analysis. While parametric data synthesizers are simpler and more efficient, non-parametric data synthesizers offer greater flexibility and the ability to handle complex relationships between variables. The random forest-based bagging data synthesizer offers a trade-off between these two approaches, making it applicable in a lot of data synthesis tasks.
+
+
+\subsubsection{\textcolor{red}{Synthetic Datasets Generated by Terrance Liu}}
+\label{subsubsec:terrance}
+xxxx
+By using the GEM method he proposes in his work \citep{liu2021iterative}, Terrance provided us with two versions of synthetic dataset, with the first version only takes account of those "completely finished" variables and the second one focuses on the whole dataset. ???
+
+
+

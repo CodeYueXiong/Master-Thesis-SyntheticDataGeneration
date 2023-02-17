@@ -45,7 +45,7 @@ The field of employing synthetic data to avoid data statistical disclosure has b
 and \citet{little1993statistical} in the context of learning multiple imputation (MI) for nonresponse \citep{little2019statistical}.
 In their work, they showed the possibility to get these sentitive values replaced with "imputed" values
 rather than impute data for those missing records in the original dataset. With the application of this multiple
-imputation framework, random draws sampled from these imputed populations can then be circulated to the public. In more
+imputation framework, ramdom draws sampled from these imputed populations can then be circulated to the public. In more
 extreme cases, when it is necessary to avoid the release of original data completely, those instances from
 the original sample can also be displaced by samples from the imputation model.
 
@@ -69,10 +69,7 @@ standards in the following context.
 \paragraph{$k-$Anonymity, $l-$Diversity and $t-$Closeness}
 In 1998, \citet{sweeney2002k} has proposed the term of $k-$anonymity. When the information for every individual included in the data
 cannot be discriminated from at least $k-1$ other individuals, the release of the database is considered to fulfill the
-$k-$anonymity requirement. The works of \citet{machanavajjhala2007diversity}, \citet{truta2006privacy} and \citet{xiao2006personalized}
-have exhibited that $k-$anonymity can successfully prevent identity disclosure and in this case it is impossible to identify
-his exact data in the database. However, it does not guarantee attribute disclosure which indicates the revealing of a person's
-sensitive attribute information even if we cannot access the exact record of instance from him/her. 
+$k-$anonymity requirement. The works of \citet{machanavajjhala2007diversity}, \citet{truta2006privacy} and \citet{xiao2006personalized} have exhibited that $k-$anonymity can successfully prevent identity disclosure and in this case it is impossible to identify his exact data in the database. However, it does not guarantee attribute disclosure which indicates the revealing of a person's sensitive attribute information even if we cannot access the exact record of instance from him/her. 
 
 In order to overcome the limitations brought by $k-$anonymity, \citet{machanavajjhala2007diversity} introduced the definition of $l-$diversity in 2006 and the
 essential idea lies in the prevention of homogeneity which often occurs in the equivalence classes with sensitive attributes.
@@ -91,8 +88,7 @@ in the complete table by a given threshold $t$ at most. The distance function us
 calculates the minimal amount of endeavor required to transform one distribution to another by moving the mass distribution between those two.
 
 
-However, the definition of synthetic data does not really fit into the requirement of the above examplified privacy standards. For example, a fully
-synthetic dataset can still offer a high level of privacy protection but breaches the requirement of $k-$anonymity for any $k>1$.
+However, the definition of synthetic data does not really fit into the requirement of the above examplified privacy standards. For example, a fully synthetic dataset can still offer a high level of privacy protection but breaches the requirement of $k-$anonymity for any $k>1$. Imagine a dataset containing information about individuals' age and salary. A fully synthetic dataset of this information could be generated using a synthetic data generation method, which replaces all of the original data. However, if the generated synthetic data does not sufficiently diversify the age and salary combinations, it may still allow for re-identification of individual records. To be more specific, if the synthetic data only contains a small number of unique age and salary combinations, it may still allow for re-identification of individuals even if the original identifying information is removed. In this case, the fully synthetic dataset would not fulfill the $k$-anonymity requirement ($k$ > 1), as it would still be possible to link an individual's record to their age and salary information.
 
 \paragraph{Differential Privacy based Approaches}
 The idea of Differential Privacy (DP) is introduced by \citet{dwork2008differential} in 2008, which has facilitated the application of

@@ -12,7 +12,29 @@
 bindingoffset = 0mm]{geometry}
 \usepackage[utf8]{inputenc}
 \usepackage{ragged2e}
+\usepackage{amsmath}
+\usepackage{stackengine}
+\usepackage{longtable}
+\usepackage{lipsum} % just for dummy text- not needed for a longtable
+\usepackage{tabularray}
+\usepackage{multirow}
+\usepackage[capposition=top]{floatrow}
+\usepackage{algorithm,algpseudocode}
+\usepackage{caption}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{float}
+\captionsetup[table]{position=above}
+\usepackage{nccmath}
 \usepackage{xcolor}
+\usepackage[flushleft]{threeparttable}
+\definecolor{mintbg}{rgb}{.63,.79,.95}
+\definecolor{lightblue}{RGB}{222,235,247}
+
+\colorlet{lightmintbg}{mintbg!40}
+\usepackage[table]{xcolor}
+\usepackage{colortbl}
+\usepackage{nicematrix}
 \usepackage[round, comma]{natbib}
 \usepackage{fancyhdr}
 \newcommand{\changefont}{%
@@ -124,7 +146,7 @@ To be completed...
 \input{chapters/ch3_syn}
 \newpage
 
-\section{utility Evaluation and Risk Assessment}
+\section{Utility Evaluation and Risk Assessment}
 \label{chapter4:eva}
 \input{chapters/ch4_eva}
 \newpage
@@ -134,13 +156,13 @@ To be completed...
 \input{chapters/ch5_ctis}
 \newpage
 
-\section{General Discussion}
-\label{chapter6:discussion}
-\input{chapters/ch6_discussion}
+% \section{General Discussion}
+% \label{chapter6:discussion}
+% \input{chapters/ch6_discussion}
 
 \section{Conclusion}
-\label{chapter7:conclusion}
-\input{chapters/ch7_conclusion}
+\label{chapter6:conclusion}
+\input{chapters/ch6_conclusion}
 
 \newpage
 
