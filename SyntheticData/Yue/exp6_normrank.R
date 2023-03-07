@@ -14,7 +14,6 @@ library(synthpop)
 library(ggplot2)
 library(dbplyr)
 library(data.table)
-library(here)
 
 
 # set the working directory
@@ -152,7 +151,7 @@ sds_normranknormrank_tryout <- syn_normrank_experiment(para_weight_list, index=3
 # ##########################################################
 # ------------------ normranksample ----------------------------
 # ##########################################################
-sds_normranksample_tryout <- load("../../Master-Thesis-DifferentialPrivacy/synobject_normrank_sample_syn.RData")
+sds_normranksample_tryout <- load("./SyntheticData/Yue/synobject_normrank_sample_syn.RData")
 sds_normranksample_tryout <- object
 # encode variables as integers for ods and normranksample
 bindori_dataset_threshold_chr[,2:54] <- sapply(bindori_dataset_threshold_chr[,2:54],as.integer)
@@ -162,20 +161,33 @@ sds_normranksample_tryout$syn <- sds_normranksample_tryout$syn[[1]]
 #*****************************************************
 # Model 1: contact tracing app -- F2_1
 # formula prepared
-lm_normranksample_model1 <- lm.synds(F2_1 ~ D1 + D2 + D3 + D4 + D5 + D7 + D8 + D9 + E2 + E3 + E4 + E7 + E5 + E6,
+lm_normranksample_model1 <- lm.synds(F2_1 ~ B1_1 + B1_2 + B1_3 + B1_4 + B1_5 + B1_6 + 
+                                       B1_7 + B1_8 + B1_9 + B1_10 + B1_11 + B1_12 + B1_13 +
+                                       B2 + B3 + B4 + B5 + B6 + B7 + B8 + B9 + B10 + B11 + #
+                                       B12_1 + B12_2 + B12_3 + B12_4 + B12_5 + B12_6 +
+                                       C1_m + C2 + C3 + C5 + C6 + C7 + C8 + 
+                                       D1 + D2 + D3 + D4 + D5 + 
+                                       E2 + E3 + E4 + E7 + E5 + E6,
                                     data = sds_normranksample_tryout)
 summary(lm_normranksample_model1)
 compare_normranksample_model1 <- compare(lm_normranksample_model1, bindori_dataset_threshold_chr, plot.intercept = TRUE, plot = "coef")
+compare_normranksample_model1
 # Save the normranksample object
 saveRDS(lm_normranksample_model1, "./SyntheticData/Yue/lm_normranksample_model1.rds")
 saveRDS(compare_normranksample_model1, "./SyntheticData/Yue/compare_normranksample_model1.rds")
 
 #*****************************************************
 # Model 2: covid positive -- B8
-lm_normranksample_model2 <- lm.synds(B8 ~ E2 + E3 + E4 + E7 + E5 + E6 + C1_m + C2 + C3 + C5 + C6 + C7 + C8,
+lm_normranksample_model2 <- lm.synds(B8 ~ B1_1 + B1_2 + B1_3 + B1_4 + B1_5 + B1_6 + 
+                                       B1_7 + B1_8 + B1_9 + B1_10 + B1_11 + B1_12 + B1_13 +
+                                       B2 + B3 + B4 + B5 + B6 + B7 + B9 + B10 + B11 + #
+                                       B12_1 + B12_2 + B12_3 + B12_4 + B12_5 + B12_6 +
+                                       C1_m + C2 + C3 + C5 + C6 + C7 + C8 + 
+                                       E2 + E3 + E4 + E7 + E5 + E6,
                                     data = sds_normranksample_tryout)
 summary(lm_normranksample_model2)
 compare_normranksample_model2 <- compare(lm_normranksample_model2, bindori_dataset_threshold_chr, plot.intercept = TRUE, plot = "coef")
+compare_normranksample_model2
 # Save the normranksample object
 saveRDS(lm_normranksample_model2, "./SyntheticData/Yue/lm_normranksample_model2.rds")
 saveRDS(compare_normranksample_model2, "./SyntheticData/Yue/compare_normranksample_model2.rds")
@@ -187,7 +199,7 @@ saveRDS(rep_normranksample, "./SyntheticData/Yue/rep_normranksample.rds")
 # ##########################################################
 
 # load the syn object for normrank norm
-sds_normranknorm_tryout <- load("../../Master-Thesis-DifferentialPrivacy/synobject_normrank_norm_syn.RData")
+sds_normranknorm_tryout <- load("./SyntheticData/Yue/synobject_normrank_norm_syn.RData")
 sds_normranknorm_tryout <- object
 # encode as integer
 sds_normranknorm_tryout$syn[[1]][,2:54] <- sapply(sds_normranknorm_tryout$syn[[1]][,2:54],as.integer)
@@ -196,20 +208,33 @@ sds_normranknorm_tryout$syn <- sds_normranknorm_tryout$syn[[1]]
 #*****************************************************
 # Model 1: contact tracing app -- F2_1
 # formula prepared
-lm_normranknorm_model1 <- lm.synds(F2_1 ~ D1 + D2 + D3 + D4 + D5 + D7 + D8 + D9 + E2 + E3 + E4 + E7 + E5 + E6,
+lm_normranknorm_model1 <- lm.synds(F2_1 ~ B1_1 + B1_2 + B1_3 + B1_4 + B1_5 + B1_6 + 
+                                     B1_7 + B1_8 + B1_9 + B1_10 + B1_11 + B1_12 + B1_13 +
+                                     B2 + B3 + B4 + B5 + B6 + B7 + B8 + B9 + B10 + B11 + #
+                                     B12_1 + B12_2 + B12_3 + B12_4 + B12_5 + B12_6 +
+                                     C1_m + C2 + C3 + C5 + C6 + C7 + C8 + 
+                                     D1 + D2 + D3 + D4 + D5 + 
+                                     E2 + E3 + E4 + E7 + E5 + E6,
                                   data = sds_normranknorm_tryout)
 summary(lm_normranknorm_model1)
 compare_normranknorm_model1 <- compare(lm_normranknorm_model1, bindori_dataset_threshold_chr, plot.intercept = TRUE, plot = "coef")
+compare_normranknorm_model1
 # Save the normranknorm object
 saveRDS(lm_normranknorm_model1, "./SyntheticData/Yue/lm_normranknorm_model1.rds")
 saveRDS(compare_normranknorm_model1, "./SyntheticData/Yue/compare_normranknorm_model1.rds")
 
 #*****************************************************
 # Model 2: covid positive -- B8
-lm_normranknorm_model2 <- lm.synds(B8 ~ E2 + E3 + E4 + E7 + E5 + E6 + C1_m + C2 + C3 + C5 + C6 + C7 + C8,
+lm_normranknorm_model2 <- lm.synds(B8 ~ B1_1 + B1_2 + B1_3 + B1_4 + B1_5 + B1_6 + 
+                                     B1_7 + B1_8 + B1_9 + B1_10 + B1_11 + B1_12 + B1_13 +
+                                     B2 + B3 + B4 + B5 + B6 + B7 + B9 + B10 + B11 + #
+                                     B12_1 + B12_2 + B12_3 + B12_4 + B12_5 + B12_6 +
+                                     C1_m + C2 + C3 + C5 + C6 + C7 + C8 + 
+                                     E2 + E3 + E4 + E7 + E5 + E6,
                                   data = sds_normranknorm_tryout)
 summary(lm_normranknorm_model2)
 compare_normranknorm_model2 <- compare(lm_normranknorm_model2, bindori_dataset_threshold_chr, plot.intercept = TRUE, plot = "coef")
+compare_normranknorm_model2
 # Save the normranknorm object
 saveRDS(lm_normranknorm_model2, "./SyntheticData/Yue/lm_normranknorm_model2.rds")
 saveRDS(compare_normranknorm_model2, "./SyntheticData/Yue/compare_normranknorm_model2.rds")
@@ -221,7 +246,7 @@ saveRDS(rep_normranknorm, "./SyntheticData/Yue/rep_normranknorm.rds")
 # ##########################################################
 # sds_normranknormrank_tryout <- syn_normrank_experiment(para_weight_list, index=3, bindori_dataset_threshold_chr, arg_method, arg_col)
 # load the syn object for normrank normrank
-sds_normranknormrank_tryout <- load("../../Master-Thesis-DifferentialPrivacy/synobject_normrank_normrank_syn.RData")
+sds_normranknormrank_tryout <- load("./SyntheticData/Yue/synobject_normrank_normrank_syn.RData")
 sds_normranknormrank_tryout <- object
 # encode as integer
 sds_normranknormrank_tryout$syn[[1]][,2:54] <- sapply(sds_normranknormrank_tryout$syn[[1]][,2:54],as.integer)
@@ -230,20 +255,33 @@ sds_normranknormrank_tryout$syn <- sds_normranknormrank_tryout$syn[[1]]
 #*****************************************************
 # Model 1: contact tracing app -- F2_1
 # formula prepared
-lm_normranknormrank_model1 <- lm.synds(F2_1 ~ D1 + D2 + D3 + D4 + D5 + D7 + D8 + D9 + E2 + E3 + E4 + E7 + E5 + E6,
+lm_normranknormrank_model1 <- lm.synds(F2_1 ~ B1_1 + B1_2 + B1_3 + B1_4 + B1_5 + B1_6 + 
+                                         B1_7 + B1_8 + B1_9 + B1_10 + B1_11 + B1_12 + B1_13 +
+                                         B2 + B3 + B4 + B5 + B6 + B7 + B8 + B9 + B10 + B11 + #
+                                         B12_1 + B12_2 + B12_3 + B12_4 + B12_5 + B12_6 +
+                                         C1_m + C2 + C3 + C5 + C6 + C7 + C8 + 
+                                         D1 + D2 + D3 + D4 + D5 + 
+                                         E2 + E3 + E4 + E7 + E5 + E6,
                                       data = sds_normranknormrank_tryout)
 summary(lm_normranknormrank_model1)
 compare_normranknormrank_model1 <- compare(lm_normranknormrank_model1, bindori_dataset_threshold_chr, plot.intercept = TRUE, plot = "coef")
+compare_normranknormrank_model1
 # Save the normranknormrank object
 saveRDS(lm_normranknormrank_model1, "./SyntheticData/Yue/lm_normranknormrank_model1.rds")
 saveRDS(compare_normranknormrank_model1, "./SyntheticData/Yue/compare_normranknormrank_model1.rds")
 
 #*****************************************************
 # Model 2: covid positive -- B8
-lm_normranknormrank_model2 <- lm.synds(B8 ~ E2 + E3 + E4 + E7 + E5 + E6 + C1_m + C2 + C3 + C5 + C6 + C7 + C8,
+lm_normranknormrank_model2 <- lm.synds(B8 ~ B1_1 + B1_2 + B1_3 + B1_4 + B1_5 + B1_6 + 
+                                         B1_7 + B1_8 + B1_9 + B1_10 + B1_11 + B1_12 + B1_13 +
+                                         B2 + B3 + B4 + B5 + B6 + B7 + B9 + B10 + B11 + #
+                                         B12_1 + B12_2 + B12_3 + B12_4 + B12_5 + B12_6 +
+                                         C1_m + C2 + C3 + C5 + C6 + C7 + C8 + 
+                                         E2 + E3 + E4 + E7 + E5 + E6,
                                       data = sds_normranknormrank_tryout)
 summary(lm_normranknormrank_model2)
 compare_normranknormrank_model2 <- compare(lm_normranknormrank_model2, bindori_dataset_threshold_chr, plot.intercept = TRUE, plot = "coef")
+compare_normranknormrank_model2
 # Save the normranknormrank object
 saveRDS(lm_normranknormrank_model2, "./SyntheticData/Yue/lm_normranknormrank_model2.rds")
 saveRDS(compare_normranknormrank_model2, "./SyntheticData/Yue/compare_normranknormrank_model2.rds")

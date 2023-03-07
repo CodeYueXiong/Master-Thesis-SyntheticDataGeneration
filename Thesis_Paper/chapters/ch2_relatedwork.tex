@@ -1,10 +1,6 @@
-In this chapter, general definition of data privacy and the necessity to maintain data privacy are described. 
-Furthermore, in order to keep data privacy, this chapter also presents an overview of methods to achieve the 
-goal of privacy preserving data analysis and publication, which have been adopted in several domains. 
-Here, we want to emphasize the use of synthetic data and one of its most popular applications, 
-i.e., synthetic data with joint modelling, that are able to maintain data utility and prevent disclosure in the process of synthetic data generation.
+This chapter discusses the significance of maintaining data privacy in light of growing fears around the inappropriate use of data. In addition, this chapter gives an overview of approaches that have been employed in a variety of fields in order to meet the goal of privacy preserving data analysis and dissemination. This is done in order to maintain the confidentiality of the data. In this context, we want to place an emphasis on the utilization of synthetic data and one of its most common applications, namely, synthetic data with sequential modeling, which are able to protect the confidentiality of the data while preserving its utility during the process of generating synthetic data.
 
-\subsection{Data Privacy}
+\subsection{Background}
 \label{subsec:dataprivacy}
 It is well-acknowledged that we have entered a data-driven world and data are 
 often regarded as significant constituents for our society. At the same time, 
@@ -43,9 +39,9 @@ the original values in the previous information.
 \label{subsec:datasynthesis}
 The field of employing synthetic data to avoid data statistical disclosure has been introduced by \citet{rubin1993statistical}
 and \citet{little1993statistical} in the context of learning multiple imputation (MI) for nonresponse \citep{little2019statistical}.
-In their work, they showed the possibility to get these sentitive values replaced with "imputed" values
+In their work, they showed the possibility to get these sensitive values replaced with "imputed" values
 rather than impute data for those missing records in the original dataset. With the application of this multiple
-imputation framework, ramdom draws sampled from these imputed populations can then be circulated to the public. In more
+imputation framework, random draws sampled from these imputed populations can then be circulated to the public. In more
 extreme cases, when it is necessary to avoid the release of original data completely, those instances from
 the original sample can also be displaced by samples from the imputation model.
 
@@ -88,7 +84,7 @@ in the complete table by a given threshold $t$ at most. The distance function us
 calculates the minimal amount of endeavor required to transform one distribution to another by moving the mass distribution between those two.
 
 
-However, the definition of synthetic data does not really fit into the requirement of the above examplified privacy standards. For example, a fully synthetic dataset can still offer a high level of privacy protection but breaches the requirement of $k-$anonymity for any $k>1$. Imagine a dataset containing information about individuals' age and salary. A fully synthetic dataset of this information could be generated using a synthetic data generation method, which replaces all of the original data. However, if the generated synthetic data does not sufficiently diversify the age and salary combinations, it may still allow for re-identification of individual records. To be more specific, if the synthetic data only contains a small number of unique age and salary combinations, it may still allow for re-identification of individuals even if the original identifying information is removed. In this case, the fully synthetic dataset would not fulfill the $k$-anonymity requirement ($k$ > 1), as it would still be possible to link an individual's record to their age and salary information.
+However, the definition of synthetic data does not really fit into the requirement of the above examplified privacy standards. For example, a fully synthetic dataset can still offer a high level of privacy protection but breaches the requirement of $k-$anonymity for any $k>1$. Imagine a dataset containing information about individuals' age and salary. A fully synthetic dataset of this information could be generated using a synthetic data generation method, which replaces all of the original data. However, if the generated synthetic data does not sufficiently diversify the age and salary combinations, it may still allow for re-identification of individual records. To be more specific, if the synthetic data only contains a small number of unique age and salary combinations, it may still allow for re-identification of individuals even if the original identifying information is removed. In this case, the fully synthetic dataset would not fulfill the $k$-anonymity requirement ($k>1$), as it would still be possible to link an individual's record to their age and salary information.
 
 \paragraph{Differential Privacy based Approaches}
 The idea of Differential Privacy (DP) is introduced by \citet{dwork2008differential} in 2008, which has facilitated the application of
@@ -203,7 +199,4 @@ Researchers have proposed various ideas to generate differentially private synth
 as specified by \citet{mckenna2019graphical}. Another inspiration comes from the adoption of Bayesian Networks \citep{bao2021synthetic}, within which the use of PrivBayes \citet{zhang2017privbayes} are more prominent. However, it can be difficult to 
 represent all important correlations in PrivBayes. To overcome this, \citet{cai2021data} utilized a defined Markov random field (MRF) to model the correlations among variables and later the MRF for synthesizing data (PrivMRF).
 
-A final type of work on differentially private data synthesis lies in incorporating DP into GANs. This area of research has grown exponentially in the last few years. 
-In this learning context, the generator network is commonly made to not directly access the actual data and simply the discriminator network is required to be adjusted
-to ensure DP. Based on WGANs, \citet{xie2018differentially} and \citet{beaulieu2019privacy} built the private optimization by addin Gaussian noise to the 
-gradient of the Wasserstein distance in the WGANs algorithm. Also, \citet{frigerio2019differentially} later proposed a private extension based on WGANs.
+A final type of work on differentially private data synthesis lies in incorporating DP into GANs. This area of research has grown exponentially in the last few years. In this learning context, the generator network is commonly made to not directly access the actual data and simply the discriminator network is required to be adjusted to ensure DP. Based on WGANs, \citet{xie2018differentially} and \citet{beaulieu2019privacy} built the private optimization by addin Gaussian noise to the gradient of the Wasserstein distance in the WGANs algorithm. Also, \citet{frigerio2019differentially} later proposed a private extension based on WGANs.

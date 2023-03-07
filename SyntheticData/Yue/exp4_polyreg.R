@@ -14,7 +14,6 @@ library(synthpop)
 library(ggplot2)
 library(dbplyr)
 library(data.table)
-library(here)
 
 
 # set the working directory
@@ -67,6 +66,34 @@ cols_rm_bd <- c("B1b_x1", "B1b_x2", "B1b_x3", "B1b_x4", "B1b_x5", "B1b_x6", "B1b
 
 bindori_dataset_threshold_chr <- bindori_dataset_threshold_chr %>% select(-all_of(cols_rm_bd))
 ncol(bindori_dataset_threshold_chr)==54
+
+# Calculate the percentage of -99 across all variables in the dataframe
+missing_percent <- as.vector(apply(bindori_dataset_threshold_chr == -99, 2, function(x) sum(x)/length(x) * 100))
+# Create empty vectors to store the variable names and values
+var_names <- names(bindori_dataset_threshold_chr)
+length(var_names)
+var_values <- round(missing_percent, 2)
+length(var_values)
+
+# Create a dataframe to store the results
+df <- data.frame(variable = var_names, value = var_values)
+write.csv(df, "./SyntheticData/missingPercent.csv", row.names=FALSE)
+# Loop through each element of the list
+for (i in seq_along(mylist)) {
+  
+  # Check if the element is a numeric value
+  if (is.numeric(mylist[[i]])) {
+    # If it is, add the value to the var_values vector
+    var_values <- c(var_values, mylist[[i]])
+    
+    # Add the corresponding variable name to the var_names vector
+    var_names <- c(var_names, names(mylist)[i])
+  } else {
+    # If it is not, skip to the next element
+    next
+  }
+}
+
 
 
 ##########################################################################
@@ -139,35 +166,162 @@ sds_polyregsample_tryout <- syn_polyreg_experiment(para_weight_list, index=1, bi
 sds_polyregnorm_tryout <- syn_polyreg_experiment(para_weight_list, index=2, bindori_dataset_threshold_chr, arg_method, arg_col)
 # tryout for polyreg_normrank
 sds_polyregnormrank_tryout <- syn_polyreg_experiment(para_weight_list, index=3, bindori_dataset_threshold_chr, arg_method, arg_col)
-
-
 # ##########################################################
-# ------------------ polyregsample ----------------------------
+# ------------------ terrancev1 ----------------------------
 # ##########################################################
-sds_polyregsample_tryout <- load("../../Master-Thesis-DifferentialPrivacy/synobject_polyreg_sample_syn.RData")
-sds_polyregsample_tryout <- object
+# load in Terrance's version1 and version2
+terrance_v1_filepath <- "./SyntheticData/Terrance/version_1/syn_k2_2020-08-02_2020-08-08-version1.csv"
+terrance_v2_filepath <- "./SyntheticData/Terrance/version_2/syn_k2_2020-08-02_2020-08-08-version2.csv"
+terrance_v1_sds <- read.csv(file = terrance_v1_filepath, sep = ",")
+terrance_v2_sds <- read.csv(file = terrance_v2_filepath, sep = ",")
+
+colnames(terrance_v1_sds)[colnames(terrance_v1_sds)=="sample_weight"] <- "weight"
+colnames(terrance_v2_sds)[colnames(terrance_v2_sds)=="sample_weight"] <- "weight"
+nrow(terrance_v1_sds)
+nrow(terrance_v2_sds)
+# align the variables
+terrance_v1_sds <- drop_na(terrance_v1_sds[colnames(bindori_dataset_threshold_chr)])
+terrance_v2_sds <- drop_na(terrance_v2_sds[colnames(bindori_dataset_threshold_chr)])
+# ncol(terrance_v1_sds)
+col_names <- names(terrance_v1_sds)[2:54]
+terrance_v1_sds[col_names] <- lapply(terrance_v1_sds[col_names], factor)
+terrance_v2_sds[col_names] <- lapply(terrance_v2_sds[col_names], factor)
+str(terrance_v1_sds)
+str(terrance_v2_sds)
 # encode variables as integers for ods and polyregsample
 bindori_dataset_threshold_chr[,2:54] <- sapply(bindori_dataset_threshold_chr[,2:54],as.integer)
-sds_polyregsample_tryout$syn[[1]][,2:54] <- sapply(sds_polyregsample_tryout$syn[[1]][,2:54],as.integer)
+terrance_v1_sds[,2:54] <- sapply(terrance_v1_sds[,2:54],as.integer)
+terrance_v2_sds[,2:54] <- sapply(terrance_v2_sds[,2:54],as.integer)
 
-sds_polyregsample_tryout$syn <- sds_polyregsample_tryout$syn[[1]]
+utility.gen.tv1 <- utility.gen(terrance_v1_sds, bindori_dataset_threshold_chr, 
+                               not.synthesised = NULL, cont.na = NULL, 
+                               print.stats = c("pMSE"))
+utility.gen.tv2 <- utility.gen(terrance_v2_sds, bindori_dataset_threshold_chr, 
+                               not.synthesised = NULL, cont.na = NULL, 
+                               print.stats = c("pMSE"))
+
+sds_terrancev1_tryout <- sds_polyregsample_tryout
+sds_terrancev1_tryout$syn <- terrance_v1_sds
+sds_terrancev2_tryout <- sds_polyregsample_tryout
+sds_terrancev2_tryout$syn <- terrance_v2_sds
 #*****************************************************
 # Model 1: contact tracing app -- F2_1
 # formula prepared
-lm_polyregsample_model1 <- lm.synds(F2_1 ~ D1 + D2 + D3 + D4 + D5 + D7 + D8 + D9 + E2 + E3 + E4 + E7 + E5 + E6,
-                                 data = sds_polyregsample_tryout)
-summary(lm_polyregsample_model1)
-compare_polyregsample_model1 <- compare(lm_polyregsample_model1, bindori_dataset_threshold_chr, plot.intercept = TRUE, plot = "coef")
+lm_terrancev1_model1 <- lm.synds(F2_1 ~ B1_1 + B1_2 + B1_3 + B1_4 + B1_5 + B1_6 + 
+                                   B1_7 + B1_8 + B1_9 + B1_10 + B1_11 + B1_12 + B1_13 +
+                                   B2 + B3 + B4 + B5 + B6 + B7 + B8 + B9 + B10 + B11 + #
+                                   B12_1 + B12_2 + B12_3 + B12_4 + B12_5 + B12_6 +
+                                   C1_m + C2 + C3 + C5 + C6 + C7 + C8 + 
+                                   D1 + D2 + D3 + D4 + D5 + 
+                                   E2 + E3 + E4 + E7 + E5 + E6,
+                                    data = sds_terrancev1_tryout)
+summary(lm_terrancev1_model1)
+compare_terrancev1_model1 <- compare(lm_terrancev1_model1, bindori_dataset_threshold_chr, plot.intercept = TRUE, plot = "coef")
+compare_terrancev1_model1
 # Save the polyregsample object
 saveRDS(lm_polyregsample_model1, "./SyntheticData/Yue/lm_polyregsample_model1.rds")
 saveRDS(compare_polyregsample_model1, "./SyntheticData/Yue/compare_polyregsample_model1.rds")
 
 #*****************************************************
 # Model 2: covid positive -- B8
-lm_polyregsample_model2 <- lm.synds(B8 ~ E2 + E3 + E4 + E7 + E5 + E6 + C1_m + C2 + C3 + C5 + C6 + C7 + C8,
+lm_terrancev1_model2 <- lm.synds(B8 ~ B1_1 + B1_2 + B1_3 + B1_4 + B1_5 + B1_6 + 
+                                   B1_7 + B1_8 + B1_9 + B1_10 + B1_11 + B1_12 + B1_13 +
+                                   B2 + B3 + B4 + B5 + B6 + B7 + B9 + B10 + B11 + #
+                                   B12_1 + B12_2 + B12_3 + B12_4 + B12_5 + B12_6 +
+                                   C1_m + C2 + C3 + C5 + C6 + C7 + C8 + 
+                                   E2 + E3 + E4 + E7 + E5 + E6,
+                                    data = sds_terrancev1_tryout)
+summary(lm_terrancev1_model2)
+compare_terrancev1_model2 <- compare(lm_terrancev1_model2, bindori_dataset_threshold_chr, plot.intercept = TRUE, plot = "coef")
+compare_terrancev1_model2
+# Save the polyregsample object
+saveRDS(lm_polyregsample_model2, "./SyntheticData/Yue/lm_polyregsample_model2.rds")
+saveRDS(compare_polyregsample_model2, "./SyntheticData/Yue/compare_polyregsample_model2.rds")
+
+rep_polyregsample <- replicated.uniques(sds_polyregsample_tryout,bindori_dataset_threshold_chr)
+saveRDS(rep_polyregsample, "./SyntheticData/Yue/rep_polyregsample.rds")
+
+# ##########################################################
+# ------------------ terrancev2 ----------------------------
+# ##########################################################
+#*****************************************************
+# Model 1: contact tracing app -- F2_1
+# formula prepared
+lm_terrancev2_model1 <- lm.synds(F2_1 ~ B1_1 + B1_2 + B1_3 + B1_4 + B1_5 + B1_6 + 
+                                   B1_7 + B1_8 + B1_9 + B1_10 + B1_11 + B1_12 + B1_13 +
+                                   B2 + B3 + B4 + B5 + B6 + B7 + B8 + B9 + B10 + B11 + #
+                                   B12_1 + B12_2 + B12_3 + B12_4 + B12_5 + B12_6 +
+                                   C1_m + C2 + C3 + C5 + C6 + C7 + C8 + 
+                                   D1 + D2 + D3 + D4 + D5 + 
+                                   E2 + E3 + E4 + E7 + E5 + E6,
+                                 data = sds_terrancev2_tryout)
+summary(lm_terrancev2_model1)
+compare_terrancev2_model1 <- compare(lm_terrancev2_model1, bindori_dataset_threshold_chr, plot.intercept = TRUE, plot = "coef")
+compare_terrancev2_model1
+# Save the polyregsample object
+saveRDS(lm_polyregsample_model1, "./SyntheticData/Yue/lm_polyregsample_model1.rds")
+saveRDS(compare_polyregsample_model1, "./SyntheticData/Yue/compare_polyregsample_model1.rds")
+
+#*****************************************************
+# Model 2: covid positive -- B8
+lm_terrancev2_model2 <- lm.synds(B8 ~ B1_1 + B1_2 + B1_3 + B1_4 + B1_5 + B1_6 + 
+                                   B1_7 + B1_8 + B1_9 + B1_10 + B1_11 + B1_12 + B1_13 +
+                                   B2 + B3 + B4 + B5 + B6 + B7 + B9 + B10 + B11 + #
+                                   B12_1 + B12_2 + B12_3 + B12_4 + B12_5 + B12_6 +
+                                   C1_m + C2 + C3 + C5 + C6 + C7 + C8 + 
+                                   E2 + E3 + E4 + E7 + E5 + E6,
+                                 data = sds_terrancev2_tryout)
+summary(lm_terrancev2_model2)
+compare_terrancev2_model2 <- compare(lm_terrancev2_model2, bindori_dataset_threshold_chr, plot.intercept = TRUE, plot = "coef")
+compare_terrancev2_model2
+# Save the polyregsample object
+saveRDS(lm_polyregsample_model2, "./SyntheticData/Yue/lm_polyregsample_model2.rds")
+saveRDS(compare_polyregsample_model2, "./SyntheticData/Yue/compare_polyregsample_model2.rds")
+
+rep_polyregsample <- replicated.uniques(sds_polyregsample_tryout,bindori_dataset_threshold_chr)
+saveRDS(rep_polyregsample, "./SyntheticData/Yue/rep_polyregsample.rds")
+# ##########################################################
+# ------------------ polyregsample ----------------------------
+# ##########################################################
+sds_polyregsample_tryout <- load("./SyntheticData/Yue/synobject_polyreg_sample_syn.RData")
+sds_polyregsample_tryout <- object
+# encode variables as integers for ods and polyregsample
+bindori_dataset_threshold_chr[,2:54] <- sapply(bindori_dataset_threshold_chr[,2:54],as.integer)
+sds_polyregsample_tryout$syn[[1]][,2:54] <- sapply(sds_polyregsample_tryout$syn[[1]][,2:54],as.integer)
+
+sds_polyregsample_tryout$syn <- sds_polyregsample_tryout$syn[[1]]
+
+u1 <- utility.gen(sds_polyregsample_tryout, bindori_dataset_threshold_chr, print.stats = c("pMSE"))
+#*****************************************************
+# Model 1: contact tracing app -- F2_1
+# formula prepared
+lm_polyregsample_model1 <- lm.synds(F2_1 ~ B1_1 + B1_2 + B1_3 + B1_4 + B1_5 + B1_6 + 
+                                      B1_7 + B1_8 + B1_9 + B1_10 + B1_11 + B1_12 + B1_13 +
+                                      B2 + B3 + B4 + B5 + B6 + B7 + B8 + B9 + B10 + B11 + #
+                                      B12_1 + B12_2 + B12_3 + B12_4 + B12_5 + B12_6 +
+                                      C1_m + C2 + C3 + C5 + C6 + C7 + C8 + 
+                                      D1 + D2 + D3 + D4 + D5 + 
+                                      E2 + E3 + E4 + E7 + E5 + E6,
+                                 data = sds_polyregsample_tryout)
+summary(lm_polyregsample_model1)
+compare_polyregsample_model1 <- compare(lm_polyregsample_model1, bindori_dataset_threshold_chr, plot.intercept = TRUE, plot = "coef")
+compare_polyregsample_model1
+18.# Save the polyregsample object
+saveRDS(lm_polyregsample_model1, "./SyntheticData/Yue/lm_polyregsample_model1.rds")
+saveRDS(compare_polyregsample_model1, "./SyntheticData/Yue/compare_polyregsample_model1.rds")
+
+#*****************************************************
+# Model 2: covid positive -- B8
+lm_polyregsample_model2 <- lm.synds(B8 ~ B1_1 + B1_2 + B1_3 + B1_4 + B1_5 + B1_6 + 
+                                      B1_7 + B1_8 + B1_9 + B1_10 + B1_11 + B1_12 + B1_13 +
+                                      B2 + B3 + B4 + B5 + B6 + B7 + B9 + B10 + B11 + #
+                                      B12_1 + B12_2 + B12_3 + B12_4 + B12_5 + B12_6 +
+                                      C1_m + C2 + C3 + C5 + C6 + C7 + C8 + 
+                                      E2 + E3 + E4 + E7 + E5 + E6,
                                  data = sds_polyregsample_tryout)
 summary(lm_polyregsample_model2)
 compare_polyregsample_model2 <- compare(lm_polyregsample_model2, bindori_dataset_threshold_chr, plot.intercept = TRUE, plot = "coef")
+compare_polyregsample_model2
 # Save the polyregsample object
 saveRDS(lm_polyregsample_model2, "./SyntheticData/Yue/lm_polyregsample_model2.rds")
 saveRDS(compare_polyregsample_model2, "./SyntheticData/Yue/compare_polyregsample_model2.rds")
@@ -180,7 +334,7 @@ saveRDS(rep_polyregsample, "./SyntheticData/Yue/rep_polyregsample.rds")
 # ##########################################################
 
 # load the syn object for polyreg norm
-sds_polyregnorm_tryout <- load("../../Master-Thesis-DifferentialPrivacy/synobject_polyreg_norm_syn.RData")
+sds_polyregnorm_tryout <- load("./SyntheticData/Yue/synobject_polyreg_norm_syn.RData")
 sds_polyregnorm_tryout <- object
 # encode as integer
 sds_polyregnorm_tryout$syn[[1]][,2:54] <- sapply(sds_polyregnorm_tryout$syn[[1]][,2:54],as.integer)
@@ -189,20 +343,33 @@ sds_polyregnorm_tryout$syn <- sds_polyregnorm_tryout$syn[[1]]
 #*****************************************************
 # Model 1: contact tracing app -- F2_1
 # formula prepared
-lm_polyregnorm_model1 <- lm.synds(F2_1 ~ D1 + D2 + D3 + D4 + D5 + D7 + D8 + D9 + E2 + E3 + E4 + E7 + E5 + E6,
+lm_polyregnorm_model1 <- lm.synds(F2_1 ~ B1_1 + B1_2 + B1_3 + B1_4 + B1_5 + B1_6 + 
+                                    B1_7 + B1_8 + B1_9 + B1_10 + B1_11 + B1_12 + B1_13 +
+                                    B2 + B3 + B4 + B5 + B6 + B7 + B8 + B9 + B10 + B11 + #
+                                    B12_1 + B12_2 + B12_3 + B12_4 + B12_5 + B12_6 +
+                                    C1_m + C2 + C3 + C5 + C6 + C7 + C8 + 
+                                    D1 + D2 + D3 + D4 + D5 + 
+                                    E2 + E3 + E4 + E7 + E5 + E6,
                                data = sds_polyregnorm_tryout)
 summary(lm_polyregnorm_model1)
 compare_polyregnorm_model1 <- compare(lm_polyregnorm_model1, bindori_dataset_threshold_chr, plot.intercept = TRUE, plot = "coef")
+compare_polyregnorm_model1
 # Save the polyregnorm object
 saveRDS(lm_polyregnorm_model1, "./SyntheticData/Yue/lm_polyregnorm_model1.rds")
 saveRDS(compare_polyregnorm_model1, "./SyntheticData/Yue/compare_polyregnorm_model1.rds")
 
 #*****************************************************
 # Model 2: covid positive -- B8
-lm_polyregnorm_model2 <- lm.synds(B8 ~ E2 + E3 + E4 + E7 + E5 + E6 + C1_m + C2 + C3 + C5 + C6 + C7 + C8,
+lm_polyregnorm_model2 <- lm.synds(B8 ~ B1_1 + B1_2 + B1_3 + B1_4 + B1_5 + B1_6 + 
+                                    B1_7 + B1_8 + B1_9 + B1_10 + B1_11 + B1_12 + B1_13 +
+                                    B2 + B3 + B4 + B5 + B6 + B7 + B9 + B10 + B11 + #
+                                    B12_1 + B12_2 + B12_3 + B12_4 + B12_5 + B12_6 +
+                                    C1_m + C2 + C3 + C5 + C6 + C7 + C8 + 
+                                    E2 + E3 + E4 + E7 + E5 + E6,
                                data = sds_polyregnorm_tryout)
 summary(lm_polyregnorm_model2)
 compare_polyregnorm_model2 <- compare(lm_polyregnorm_model2, bindori_dataset_threshold_chr, plot.intercept = TRUE, plot = "coef")
+compare_polyregnorm_model2
 # Save the polyregnorm object
 saveRDS(lm_polyregnorm_model2, "./SyntheticData/Yue/lm_polyregnorm_model2.rds")
 saveRDS(compare_polyregnorm_model2, "./SyntheticData/Yue/compare_polyregnorm_model2.rds")
@@ -215,7 +382,7 @@ saveRDS(rep_polyregnorm, "./SyntheticData/Yue/rep_polyregnorm.rds")
 # ##########################################################
 # sds_polyregnormrank_tryout <- syn_polyreg_experiment(para_weight_list, index=3, bindori_dataset_threshold_chr, arg_method, arg_col)
 # load the syn object for polyreg normrank
-sds_polyregnormrank_tryout <- load("../../Master-Thesis-DifferentialPrivacy/synobject_polyreg_normrank_syn.RData")
+sds_polyregnormrank_tryout <- load("./SyntheticData/Yue/synobject_polyreg_normrank_syn.RData")
 sds_polyregnormrank_tryout <- object
 # encode as integer
 sds_polyregnormrank_tryout$syn[[1]][,2:54] <- sapply(sds_polyregnormrank_tryout$syn[[1]][,2:54],as.integer)
@@ -224,20 +391,33 @@ sds_polyregnormrank_tryout$syn <- sds_polyregnormrank_tryout$syn[[1]]
 #*****************************************************
 # Model 1: contact tracing app -- F2_1
 # formula prepared
-lm_polyregnormrank_model1 <- lm.synds(F2_1 ~ D1 + D2 + D3 + D4 + D5 + D7 + D8 + D9 + E2 + E3 + E4 + E7 + E5 + E6,
+lm_polyregnormrank_model1 <- lm.synds(F2_1 ~ B1_1 + B1_2 + B1_3 + B1_4 + B1_5 + B1_6 + 
+                                        B1_7 + B1_8 + B1_9 + B1_10 + B1_11 + B1_12 + B1_13 +
+                                        B2 + B3 + B4 + B5 + B6 + B7 + B8 + B9 + B10 + B11 + #
+                                        B12_1 + B12_2 + B12_3 + B12_4 + B12_5 + B12_6 +
+                                        C1_m + C2 + C3 + C5 + C6 + C7 + C8 + 
+                                        D1 + D2 + D3 + D4 + D5 + 
+                                        E2 + E3 + E4 + E7 + E5 + E6,
                                    data = sds_polyregnormrank_tryout)
 summary(lm_polyregnormrank_model1)
 compare_polyregnormrank_model1 <- compare(lm_polyregnormrank_model1, bindori_dataset_threshold_chr, plot.intercept = TRUE, plot = "coef")
+compare_polyregnormrank_model1
 # Save the polyregnormrank object
 saveRDS(lm_polyregnormrank_model1, "./SyntheticData/Yue/lm_polyregnormrank_model1.rds")
 saveRDS(compare_polyregnormrank_model1, "./SyntheticData/Yue/compare_polyregnormrank_model1.rds")
 
 #*****************************************************
 # Model 2: covid positive -- B8
-lm_polyregnormrank_model2 <- lm.synds(B8 ~ E2 + E3 + E4 + E7 + E5 + E6 + C1_m + C2 + C3 + C5 + C6 + C7 + C8,
+lm_polyregnormrank_model2 <- lm.synds(B8 ~ B1_1 + B1_2 + B1_3 + B1_4 + B1_5 + B1_6 + 
+                                        B1_7 + B1_8 + B1_9 + B1_10 + B1_11 + B1_12 + B1_13 +
+                                        B2 + B3 + B4 + B5 + B6 + B7 + B9 + B10 + B11 + #
+                                        B12_1 + B12_2 + B12_3 + B12_4 + B12_5 + B12_6 +
+                                        C1_m + C2 + C3 + C5 + C6 + C7 + C8 + 
+                                        E2 + E3 + E4 + E7 + E5 + E6,
                                    data = sds_polyregnormrank_tryout)
 summary(lm_polyregnormrank_model2)
 compare_polyregnormrank_model2 <- compare(lm_polyregnormrank_model2, bindori_dataset_threshold_chr, plot.intercept = TRUE, plot = "coef")
+compare_polyregnormrank_model2
 # Save the polyregnormrank object
 saveRDS(lm_polyregnormrank_model2, "./SyntheticData/Yue/lm_polyregnormrank_model2.rds")
 saveRDS(compare_polyregnormrank_model2, "./SyntheticData/Yue/compare_polyregnormrank_model2.rds")

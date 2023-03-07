@@ -23,3 +23,5 @@
 *.RData
 *.txt
 *.rds
+thesis.lof
+thesis.lot

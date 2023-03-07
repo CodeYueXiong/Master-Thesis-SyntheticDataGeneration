@@ -1,5 +1,14 @@
 \documentclass[12pt]{article}
 
+% \usepackage[showframe]{geometry}
+\usepackage{graphicx}
+\usepackage{rotating}
+\usepackage{booktabs}
+\usepackage{ltablex}
+\usepackage{ragged2e}
+\usepackage{float}
+\usepackage{makecell}
+\renewcommand{\theadfont}{\normalsize}
 \usepackage[]{graphicx}
 \usepackage[]{color}
 \usepackage{alltt}
@@ -13,17 +22,24 @@ bindingoffset = 0mm]{geometry}
 \usepackage[utf8]{inputenc}
 \usepackage{ragged2e}
 \usepackage{amsmath}
+\usepackage{kantlipsum}
+\usepackage{multirow}
 \usepackage{stackengine}
-\usepackage{longtable}
 \usepackage{lipsum} % just for dummy text- not needed for a longtable
 \usepackage{tabularray}
 \usepackage{multirow}
-\usepackage[capposition=top]{floatrow}
+% \usepackage[capposition=top]{floatrow}
 \usepackage{algorithm,algpseudocode}
 \usepackage{caption}
 \usepackage{graphicx}
 \usepackage{booktabs}
+% \usepackage{subfigure}
 \usepackage{float}
+\usepackage{amssymb}
+\usepackage{bbm}
+\usepackage{ragged2e}
+\usepackage{babel,blindtext}
+\usepackage{afterpage}
 \captionsetup[table]{position=above}
 \usepackage{nccmath}
 \usepackage{xcolor}
@@ -32,9 +48,10 @@ bindingoffset = 0mm]{geometry}
 \definecolor{lightblue}{RGB}{222,235,247}
 
 \colorlet{lightmintbg}{mintbg!40}
-\usepackage[table]{xcolor}
-\usepackage{colortbl}
+% \usepackage[table]{xcolor}
+% \usepackage[capposition=below]{floatrow}
 \usepackage{nicematrix}
+\usepackage{subcaption}
 \usepackage[round, comma]{natbib}
 \usepackage{fancyhdr}
 \newcommand{\changefont}{%
@@ -90,7 +107,7 @@ Ludwig-Maximilians-Universität München
 \vfill
 
 \large
-Munich, Month Day\textsuperscript{th}, 2022
+Munich, February 27\textsuperscript{th}, 2023
       
 \vfill
 \includegraphics[width = 0.4\textwidth]{sigillum.png}
@@ -111,8 +128,11 @@ Supervised by \mysupervisor
 \newpage
 
 \begin{abstract}
+{\sloppy In the wake of the COVID-19 pandemic, the utilization of disease transmission and contact-related data to predict infection, facilitate quarantine planning, and promote vaccination has been widely acknowledged. However, the sensitive nature of such data demands careful handling to ensure privacy and prevent disclosure of confidential information. In this regard, privacy protection methods offer a solution to extract valuable patterns while safeguarding individuals' privacy. Over the past decade, researchers have actively proposed and developed stronger definitions and methodologies to achieve data privacy while preserving data utility. In the statistics field, synthetic data creation has become one of the most prevalent options for establishing data privacy, and numerous strategies continue to be presented based on this concept. The generation of synthetic data mimics the statistical patterns and characteristics of a confidential data source in a privacy-preserving manner, preserving the original data format and utility in the synthetic versions that can be analyzed safely, without risking privacy violation. Despite its promising potential, this privacy approach has found limited applications in "mimicking" coronavirus related data sources beyond academic research. To investigate the feasibility of private synthetic data generation in real-world scenarios, we explore the potential of this approach based on the COVID-19 Trends and Impact Surveys (CTIS) dataset. We proposed a four-stage data synthesis and utility evaluation framework that provides a unified approach for assessing and comparing various data synthesizers. By examining real-world use cases with this framework, we have incorporated a user-oriented perspective to generate synthetic datasets while examining their performances using the CTIS dataset. Finally, we implemented multiple data synthesis algorithms and evaluate their output synthetic data based on our framework to discuss and compare the quality of private synthetic data generation in terms of data utility and risk assessment.}
 
-To be completed...
+
+
+% This framework has extended academic evaluation methods by incorporating a user-oriented perspective to provide data synthesis based on different types of variables while examining performance on real-world use cases using the CTIS dataset. 
 
 \end{abstract}
 
@@ -121,11 +141,18 @@ To be completed...
 
 %%%% if you would want to include material overview
 %%%% use one of the following in addition
+\clearpage
+\addcontentsline{toc}{section}{List of Figures}
+\listoffigures \newpage
+\addcontentsline{toc}{section}{List of Tables}
+\listoftables \newpage
 % \newpage
 % \listoffigures
 % \newpage
 % \listoftables
-\newpage
+% \newpage
+% \listofalgorithms
+% \newpage
 
 % CHAPTERS ---------------------------------------------------------------------
 
@@ -151,7 +178,7 @@ To be completed...
 \input{chapters/ch4_eva}
 \newpage
 
-\section{Empirical Evaluation of Synthetic Datasets generated from CTIS}
+\section{Empirical Evaluation of Synthetic Data generated from CTIS}
 \label{chapter5:ctis}
 \input{chapters/ch5_ctis}
 \newpage

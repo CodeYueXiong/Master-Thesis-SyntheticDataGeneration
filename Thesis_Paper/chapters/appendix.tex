@@ -1,10 +1,78 @@
-Additional material goes here
-
-\subsection{A Detailed List of Variable Meanings}
-\label{subsec:listofvars}
-
 \subsection{The GEM Algorithm}
 \label{subsec:gem}
+We show the exact implementation details of GEM and GEM-UPDATE in Algorithms \ref{alg:gem} and \ref{alg:gem-update}, respectively.
+\begin{algorithm}[H]
+\caption{GEM, \citet{liu2021iterative}}
+\label{alg:gem}
+\begin{algorithmic}[1]
+\State \textbf{Input}: Private dataset $P$, set of differentiable queries $Q$
+\State \textbf{Parameters}: privacy parameter $\rho$, number of iterations $T$, privacy weighting
+parameter $\alpha$, batch size $B$, stopping threshold $\gamma$
+\State Initialize generator network $G_{0}$
+\State Let $\varepsilon_0=\sqrt{\frac{2\rho}{T(\alpha^2+(1-\alpha)^2)}}$
+\State \textbf{for} $t=1\cdots T$ \textbf{do}
+\State \hskip1.0em \textbf{Sample}: Sample $\textbf{z}=<z_1\cdots z_B>\sim \mathcal{N}(0,I_B)$
+\State \hskip1.0em Choose $\tilde{q}_t$ using the \textit{exponential mechanism} with score
+$$\text{Pr}[q_t=q]\propto \text{exp}\left ( \frac{\alpha \varepsilon_0 n}{2}|q(P)-q(G_{t-1}(\textbf{z}))| \right )$$
+\State \hskip1.0em \textbf{Measure}: Let $\tilde{a}_t=\tilde{q}_t(P)+\mathcal{N}(0,(\frac{1}{n(1-\alpha)\varepsilon_0})^2)$
+\State \hskip1.0em \textbf{Update}: $G_t=\text{GEM-UPDATE}(G_{t-1},Q_t,\tilde{\textbf{a}_t}, \gamma)$ where $Q_t=<\tilde{q}_1,\cdots,\tilde{q}_t>$ and $\tilde{\textbf{a}_t}=<\tilde{a}_1,\cdots,\tilde{a}_t>$
+\State \textbf{end}
+\State Let $\theta_{out}=\text{EMA}\left ( \left \{ \theta_j \right \}^T_{j=T/2} \right )$ where $\theta_{j}$ parameterizes $G_{j}$
+\State Let $G_{out}$ be the generator parameterized by $\theta_{out}$
+\State Output $G_{out}(\textbf{z})$
+\end{algorithmic}
+\end{algorithm}
 
+\begin{algorithm}[ht!]
+\caption{GEM-UPDATE, \citet{liu2021iterative}}
+\label{alg:gem-update}
+\begin{algorithmic}[1]
+\State \textbf{Input}: Generator $G$ parameterized by $\theta$, queries $Q$, noisy measurements $\tilde{\textbf{a}}$, stopping
+threshold $\gamma$
+\State \textbf{Parameters}: max iterations $T_{max}$, batch size $B$
+parameter $\alpha$, batch size $B$, stopping threshold $\gamma$
+\State Sample $\textbf{z}=<z_1\cdots z_B>\sim \mathcal{N}(0,I_B)$
+\State Let $\textbf{c}=\tilde{\textbf{a}}-\frac{1}{B}\sum_{j=1}^{B}f_Q(G(z_j))$ be errors over queries $Q$
+\State Let $i=0$
+\State \textbf{while} $i<T_{max}$ and $||c||_{\infty }\geq \gamma$ \textbf{do}
+\State \hskip1.0em Let $J=\left \{ j||c_j|\geq \gamma \right \}$
+\State \hskip1.0em Update $G$ to minimize the loss function with the stochastic gradient $\nabla_\theta\frac{1}{|J|}\sum_{j\in J}|c_{ij}|$
+\State \hskip1.0em Sample $\textbf{z}=<z_1\cdots z_B>\sim \mathcal{N}(0,I_B)$
+\State \hskip1.0em Let $\textbf{c}=\tilde{\textbf{a}}-\frac{1}{B}\sum_{j=1}^{B}f_Q(G(z_j))$
+\State \hskip1.0em Let $i=i+1$
+\State \textbf{end}
+\State Output $G$
+\end{algorithmic}
+\end{algorithm}
+
+\newpage
 \subsection{The Encoding Scheme Prepared for Variables}
 \label{subsec:encodescheme}
+
+\newpage
+\subsection{Data Utility Evaluation Results}
+\label{subsec:utilityresults}
+Detailed utility evaluation results in terms of standardized propensity score mean square error, i.e. $Sp_{MSE}$, is shown in Table \ref{tbl:spmse-table} with regard to 20 synthetic datasets.
+\begin{table}[H]
+\centering
+  \caption{Evaluation results with 20 synthetic datasets.}
+  \label{tbl:spmse-table}
+  \includegraphics[width=1\textwidth]{graphics/appendix-tbl-spmse-1.png}
+  \caption*{\centerline{Continued on next page}}
+\end{table}
+\begin{table}[H]
+\ContinuedFloat
+\centering
+\caption{Evaluation results with 20 synthetic datasets (continued).}
+\includegraphics[width=1\textwidth]{graphics/appendix-tbl-spmse-2.png}
+\caption*{\centerline{Continued on next page}}
+\end{table}
+
+\begin{table}[H]
+\ContinuedFloat
+\centering
+\caption{Evaluation results with 20 synthetic datasets (continued).}
+\includegraphics[width=1\textwidth]{graphics/appendix-tbl-spmse-3.png}
+\end{table}
+
+

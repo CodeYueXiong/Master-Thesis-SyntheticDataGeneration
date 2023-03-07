@@ -12,7 +12,6 @@ library(reshape2)
 library(synthpop)
 library(ggplot2)
 library(dbplyr)
-library(here)
 
 # set the working directory
 # wd <- "/Users/Echo/Documents/MasterThesisYue/Master-Thesis-DifferentialPrivacy"

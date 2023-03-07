@@ -143,7 +143,7 @@ syn_cart_experiment <- function(para_weight_list, index, bindori_dataset_thresho
 # ------------------ cartsample ----------------------------
 # ##########################################################
 # sds_cartsample_tryout <- syn_cart_experiment(para_weight_list, index=1, bindori_dataset_threshold_chr, arg_method, arg_col)
-sds_cartsample_tryout <- load("../../Master-Thesis-DifferentialPrivacy/synobject_cart_sample_syn.RData")
+sds_cartsample_tryout <- load("./SyntheticData/Yue/synobject_cart_sample_syn.RData")
 sds_cartsample_tryout <- object
 # encode as integer
 bindori_dataset_threshold_chr[,2:54] <- sapply(bindori_dataset_threshold_chr[,2:54],as.integer)
@@ -153,32 +153,48 @@ sds_cartsample_tryout$syn <- sds_cartsample_tryout$syn[[1]]
 #*****************************************************
 # Model 1: contact tracing app -- F2_1
 # formula prepared
-lm_cartsample_model1 <- lm.synds(F2_1 ~ D1 + D2 + D3 + D4 + D5 + D7 + D8 + D9 + E2 + E3 + E4 + E7 + E5 + E6,
+lm_cartsample_model1 <- lm.synds(F2_1 ~ B1_1 + B1_2 + B1_3 + B1_4 + B1_5 + B1_6 + 
+                                        B1_7 + B1_8 + B1_9 + B1_10 + B1_11 + B1_12 + B1_13 +
+                                        B2 + B3 + B4 + B5 + B6 + B7 + B8 + B9 + B10 + B11 + #
+                                        B12_1 + B12_2 + B12_3 + B12_4 + B12_5 + B12_6 +
+                                        C1_m + C2 + C3 + C5 + C6 + C7 + C8 + 
+                                        D1 + D2 + D3 + D4 + D5 + 
+                                        E2 + E3 + E4 + E7 + E5 + E6,
                           data = sds_cartsample_tryout)
 summary(lm_cartsample_model1)
 compare_cartsample_model1 <- compare(lm_cartsample_model1, bindori_dataset_threshold_chr, plot.intercept = TRUE, plot = "coef")
+compare_cartsample_model1
 # Save the cartsample object
 saveRDS(lm_cartsample_model1, "./SyntheticData/Yue/lm_cartsample_model1.rds")
 saveRDS(compare_cartsample_model1, "./SyntheticData/Yue/compare_cartsample_model1.rds")
 
 #*****************************************************
 # Model 2: covid positive -- B8
-lm_cartsample_model2 <- lm.synds(B8 ~ E2 + E3 + E4 + E7 + E5 + E6 + C1_m + C2 + C3 + C5 + C6 + C7 + C8,
+lm_cartsample_model2 <- lm.synds(B8 ~ B1_1 + B1_2 + B1_3 + B1_4 + B1_5 + B1_6 + 
+                                      B1_7 + B1_8 + B1_9 + B1_10 + B1_11 + B1_12 + B1_13 +
+                                      B2 + B3 + B4 + B5 + B6 + B7 + B9 + B10 + B11 + #
+                                      B12_1 + B12_2 + B12_3 + B12_4 + B12_5 + B12_6 +
+                                      C1_m + C2 + C3 + C5 + C6 + C7 + C8 + 
+                                      E2 + E3 + E4 + E7 + E5 + E6,
                                  data = sds_cartsample_tryout)
 summary(lm_cartsample_model2)
 compare_cartsample_model2 <- compare(lm_cartsample_model2, bindori_dataset_threshold_chr, plot.intercept = TRUE, plot = "coef")
+compare_cartsample_model2
 # Save the cartsample object
 saveRDS(lm_cartsample_model2, "./SyntheticData/Yue/lm_cartsample_model2.rds")
 saveRDS(compare_cartsample_model2, "./SyntheticData/Yue/compare_cartsample_model2.rds")
 
 rep_cartsample <- replicated.uniques(sds_cartsample_tryout,bindori_dataset_threshold_chr)
+
+readRDS("./SyntheticData/Yue/rep_cartsample.rds")
+readRDS("./SyntheticData/Yue/rep_cartnorm.rds")
 saveRDS(rep_cartsample, "./SyntheticData/Yue/rep_cartsample.rds")
 # ##########################################################
 # ------------------ cartnorm ----------------------------
 # ##########################################################
 
 # load the syn object for cart norm
-sds_cartnorm_tryout <- load("../../Master-Thesis-DifferentialPrivacy/synobject_cart_norm_syn.RData")
+sds_cartnorm_tryout <- load("./SyntheticData/Yue/synobject_cart_norm_syn.RData")
 sds_cartnorm_tryout <- object
 # encode as integer
 sds_cartnorm_tryout$syn[[1]][,2:54] <- sapply(sds_cartnorm_tryout$syn[[1]][,2:54],as.integer)
@@ -187,11 +203,17 @@ sds_cartnorm_tryout$syn <- sds_cartnorm_tryout$syn[[1]]
 #*****************************************************
 # Model 1: contact tracing app -- F2_1
 # formula prepared
-lm_cartnorm_model1 <- lm.synds(F2_1 ~ D1 + D2 + D3 + D4 + D5 + D7 + D8 + D9 + E2 + E3 + E4 + E7 + E5 + E6,
+lm_cartnorm_model1 <- lm.synds(F2_1 ~ B1_1 + B1_2 + B1_3 + B1_4 + B1_5 + B1_6 + 
+                                      B1_7 + B1_8 + B1_9 + B1_10 + B1_11 + B1_12 + B1_13 +
+                                      B2 + B3 + B4 + B5 + B6 + B7 + B8 + B9 + B10 + B11 + #
+                                      B12_1 + B12_2 + B12_3 + B12_4 + B12_5 + B12_6 +
+                                      C1_m + C2 + C3 + C5 + C6 + C7 + C8 + 
+                                      D1 + D2 + D3 + D4 + D5 + 
+                                      E2 + E3 + E4 + E7 + E5 + E6,
                                  data = sds_cartnorm_tryout)
 summary(lm_cartnorm_model1)
 compare_cartnorm_model1 <- compare(lm_cartnorm_model1, bindori_dataset_threshold_chr, plot.intercept = TRUE, plot = "coef")
-compare(lm_cartsample_model1, lm_bagsample_model1, plot.intercept = TRUE, plot = "coef")
+compare_cartnorm_model1
 
 # Save the cartnorm object
 saveRDS(lm_cartnorm_model1, "./SyntheticData/Yue/lm_cartnorm_model1.rds")
@@ -199,10 +221,16 @@ saveRDS(compare_cartnorm_model1, "./SyntheticData/Yue/compare_cartnorm_model1.rd
 
 #*****************************************************
 # Model 2: covid positive -- B8
-lm_cartnorm_model2 <- lm.synds(B8 ~ E2 + E3 + E4 + E7 + E5 + E6 + C1_m + C2 + C3 + C5 + C6 + C7 + C8,
+lm_cartnorm_model2 <- lm.synds(B8 ~ B1_1 + B1_2 + B1_3 + B1_4 + B1_5 + B1_6 + 
+                                 B1_7 + B1_8 + B1_9 + B1_10 + B1_11 + B1_12 + B1_13 +
+                                 B2 + B3 + B4 + B5 + B6 + B7 + B9 + B10 + B11 + #
+                                 B12_1 + B12_2 + B12_3 + B12_4 + B12_5 + B12_6 +
+                                 C1_m + C2 + C3 + C5 + C6 + C7 + C8 + 
+                                 E2 + E3 + E4 + E7 + E5 + E6,
                                  data = sds_cartnorm_tryout)
 summary(lm_cartnorm_model2)
 compare_cartnorm_model2 <- compare(lm_cartnorm_model2, bindori_dataset_threshold_chr, plot.intercept = TRUE, plot = "coef")
+compare_cartnorm_model2
 # Save the cartnorm object
 saveRDS(lm_cartnorm_model2, "./SyntheticData/Yue/lm_cartnorm_model2.rds")
 saveRDS(compare_cartnorm_model2, "./SyntheticData/Yue/compare_cartnorm_model2.rds")
@@ -215,7 +243,7 @@ saveRDS(rep_cartnorm, "./SyntheticData/Yue/rep_cartnorm.rds")
 # ##########################################################
 # sds_cartnormrank_tryout <- syn_cart_experiment(para_weight_list, index=3, bindori_dataset_threshold_chr, arg_method, arg_col)
 # load the syn object for cart normrank
-sds_cartnormrank_tryout <- load("../../Master-Thesis-DifferentialPrivacy/synobject_cart_normrank_syn.RData")
+sds_cartnormrank_tryout <- load("./SyntheticData/Yue/synobject_cart_normrank_syn.RData")
 sds_cartnormrank_tryout <- object
 # encode as integer
 sds_cartnormrank_tryout$syn[[1]][,2:54] <- sapply(sds_cartnormrank_tryout$syn[[1]][,2:54],as.integer)
@@ -224,20 +252,33 @@ sds_cartnormrank_tryout$syn <- sds_cartnormrank_tryout$syn[[1]]
 #*****************************************************
 # Model 1: contact tracing app -- F2_1
 # formula prepared
-lm_cartnormrank_model1 <- lm.synds(F2_1 ~ D1 + D2 + D3 + D4 + D5 + D7 + D8 + D9 + E2 + E3 + E4 + E7 + E5 + E6,
+lm_cartnormrank_model1 <- lm.synds(F2_1 ~ B1_1 + B1_2 + B1_3 + B1_4 + B1_5 + B1_6 + 
+                                     B1_7 + B1_8 + B1_9 + B1_10 + B1_11 + B1_12 + B1_13 +
+                                     B2 + B3 + B4 + B5 + B6 + B7 + B8 + B9 + B10 + B11 + #
+                                     B12_1 + B12_2 + B12_3 + B12_4 + B12_5 + B12_6 +
+                                     C1_m + C2 + C3 + C5 + C6 + C7 + C8 + 
+                                     D1 + D2 + D3 + D4 + D5 + 
+                                     E2 + E3 + E4 + E7 + E5 + E6,
                                data = sds_cartnormrank_tryout)
 summary(lm_cartnormrank_model1)
 compare_cartnormrank_model1 <- compare(lm_cartnormrank_model1, bindori_dataset_threshold_chr, plot.intercept = TRUE, plot = "coef")
+compare_cartnormrank_model1
 # Save the cartnormrank object
 saveRDS(lm_cartnormrank_model1, "./SyntheticData/Yue/lm_cartnormrank_model1.rds")
 saveRDS(compare_cartnormrank_model1, "./SyntheticData/Yue/compare_cartnormrank_model1.rds")
 
 #*****************************************************
 # Model 2: covid positive -- B8
-lm_cartnormrank_model2 <- lm.synds(B8 ~ E2 + E3 + E4 + E7 + E5 + E6 + C1_m + C2 + C3 + C5 + C6 + C7 + C8,
+lm_cartnormrank_model2 <- lm.synds(B8 ~ B1_1 + B1_2 + B1_3 + B1_4 + B1_5 + B1_6 + 
+                                     B1_7 + B1_8 + B1_9 + B1_10 + B1_11 + B1_12 + B1_13 +
+                                     B2 + B3 + B4 + B5 + B6 + B7 + B9 + B10 + B11 + #
+                                     B12_1 + B12_2 + B12_3 + B12_4 + B12_5 + B12_6 +
+                                     C1_m + C2 + C3 + C5 + C6 + C7 + C8 + 
+                                     E2 + E3 + E4 + E7 + E5 + E6,
                                data = sds_cartnormrank_tryout)
 summary(lm_cartnormrank_model2)
 compare_cartnormrank_model2 <- compare(lm_cartnormrank_model2, bindori_dataset_threshold_chr, plot.intercept = TRUE, plot = "coef")
+compare_cartnormrank_model2
 # Save the cartnormrank object
 saveRDS(lm_cartnormrank_model2, "./SyntheticData/Yue/lm_cartnormrank_model2.rds")
 saveRDS(compare_cartnormrank_model2, "./SyntheticData/Yue/compare_cartnormrank_model2.rds")

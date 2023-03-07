@@ -14,7 +14,6 @@ library(synthpop)
 library(ggplot2)
 library(dbplyr)
 library(data.table)
-library(here)
 
 
 # set the working directory
@@ -155,37 +154,37 @@ syn_bag_experiment <- function(para_weight_list, index, bindori_dataset_threshol
 # ------------------ bagsample ----------------------------
 # ##########################################################
 # 0802
-sds_bagsample0802_tryout <- load("../../Master-Thesis-DifferentialPrivacy/synobject_bag0802_sample_syn.RData")
+sds_bagsample0802_tryout <- load("./SyntheticData/Yue/synobject_bag0802_sample_syn.RData")
 sds_bagsample0802_tryout <- object
 sds_bagsample0802_tryout$syn[[1]][,2:54] <- sapply(sds_bagsample0802_tryout$syn[[1]][,2:54],as.integer)
 sds_bagsample0802_tryout$syn <- sds_bagsample0802_tryout$syn[[1]]
 # 0803
-sds_bagsample0803_tryout <- load("../../Master-Thesis-DifferentialPrivacy/synobject_bag0803_sample_syn.RData")
+sds_bagsample0803_tryout <- load("./SyntheticData/Yue/synobject_bag0803_sample_syn.RData")
 sds_bagsample0803_tryout <- object
 sds_bagsample0803_tryout$syn[[1]][,2:54] <- sapply(sds_bagsample0803_tryout$syn[[1]][,2:54],as.integer)
 sds_bagsample0803_tryout$syn <- sds_bagsample0803_tryout$syn[[1]]
 # 0804
-sds_bagsample0804_tryout <- load("../../Master-Thesis-DifferentialPrivacy/synobject_bag0804_sample_syn.RData")
+sds_bagsample0804_tryout <- load("./SyntheticData/Yue/synobject_bag0804_sample_syn.RData")
 sds_bagsample0804_tryout <- object
 sds_bagsample0804_tryout$syn[[1]][,2:54] <- sapply(sds_bagsample0804_tryout$syn[[1]][,2:54],as.integer)
 sds_bagsample0804_tryout$syn <- sds_bagsample0804_tryout$syn[[1]]
 # 0805
-sds_bagsample0805_tryout <- load("../../Master-Thesis-DifferentialPrivacy/synobject_bag0805_sample_syn.RData")
+sds_bagsample0805_tryout <- load("./SyntheticData/Yue/synobject_bag0805_sample_syn.RData")
 sds_bagsample0805_tryout <- object
 sds_bagsample0805_tryout$syn[[1]][,2:54] <- sapply(sds_bagsample0805_tryout$syn[[1]][,2:54],as.integer)
 sds_bagsample0805_tryout$syn <- sds_bagsample0805_tryout$syn[[1]]
 # 0806
-sds_bagsample0806_tryout <- load("../../Master-Thesis-DifferentialPrivacy/synobject_bag0806_sample_syn.RData")
+sds_bagsample0806_tryout <- load("./SyntheticData/Yue/synobject_bag0806_sample_syn.RData")
 sds_bagsample0806_tryout <- object
 sds_bagsample0806_tryout$syn[[1]][,2:54] <- sapply(sds_bagsample0806_tryout$syn[[1]][,2:54],as.integer)
 sds_bagsample0806_tryout$syn <- sds_bagsample0806_tryout$syn[[1]]
 # 0807
-sds_bagsample0807_tryout <- load("../../Master-Thesis-DifferentialPrivacy/synobject_bag0807_sample_syn.RData")
+sds_bagsample0807_tryout <- load("./SyntheticData/Yue/synobject_bag0807_sample_syn.RData")
 sds_bagsample0807_tryout <- object
 sds_bagsample0807_tryout$syn[[1]][,2:54] <- sapply(sds_bagsample0807_tryout$syn[[1]][,2:54],as.integer)
 sds_bagsample0807_tryout$syn <- sds_bagsample0807_tryout$syn[[1]]
 # 0808
-sds_bagsample0808_tryout <- load("../../Master-Thesis-DifferentialPrivacy/synobject_bag0808_sample_syn.RData")
+sds_bagsample0808_tryout <- load("./SyntheticData/Yue/synobject_bag0808_sample_syn.RData")
 sds_bagsample0808_tryout <- object
 sds_bagsample0808_tryout$syn[[1]][,2:54] <- sapply(sds_bagsample0808_tryout$syn[[1]][,2:54],as.integer)
 sds_bagsample0808_tryout$syn <- sds_bagsample0808_tryout$syn[[1]]
@@ -205,10 +204,17 @@ sds_bagsample_tryout$syn[,2:54] <- sapply(sds_bagsample_tryout$syn[,2:54],as.int
 #*****************************************************
 # Model 1: contact tracing app -- F2_1
 # formula prepared
-lm_bagsample_model1 <- lm.synds(F2_1 ~ D1 + D2 + D3 + D4 + D5 + D7 + D8 + D9 + E2 + E3 + E4 + E7 + E5 + E6,
+lm_bagsample_model1 <- lm.synds(F2_1 ~ B1_1 + B1_2 + B1_3 + B1_4 + B1_5 + B1_6 + 
+                                  B1_7 + B1_8 + B1_9 + B1_10 + B1_11 + B1_12 + B1_13 +
+                                  B2 + B3 + B4 + B5 + B6 + B7 + B8 + B9 + B10 + B11 + #
+                                  B12_1 + B12_2 + B12_3 + B12_4 + B12_5 + B12_6 +
+                                  C1_m + C2 + C3 + C5 + C6 + C7 + C8 + 
+                                  D1 + D2 + D3 + D4 + D5 + 
+                                  E2 + E3 + E4 + E7 + E5 + E6,
                                data = sds_bagsample_tryout)
 summary(lm_bagsample_model1)
 compare_bagsample_model1 <- compare(lm_bagsample_model1, bindori_dataset_threshold_chr, plot.intercept = TRUE, plot = "coef")
+compare_bagsample_model1
 # Save the bagsample object
 saveRDS(lm_bagsample_model1, "./SyntheticData/Yue/lm_bagsample_model1.rds")
 saveRDS(compare_bagsample_model1, "./SyntheticData/Yue/compare_bagsample_model1.rds")
@@ -218,10 +224,16 @@ saveRDS(rep_bagsample, "./SyntheticData/Yue/rep_bagsample.rds")
 
 #*****************************************************
 # Model 2: covid positive -- B8
-lm_bagsample_model2 <- lm.synds(B8 ~ E2 + E3 + E4 + E7 + E5 + E6 + C1_m + C2 + C3 + C5 + C6 + C7 + C8,
+lm_bagsample_model2 <- lm.synds(B8 ~ B1_1 + B1_2 + B1_3 + B1_4 + B1_5 + B1_6 + 
+                                  B1_7 + B1_8 + B1_9 + B1_10 + B1_11 + B1_12 + B1_13 +
+                                  B2 + B3 + B4 + B5 + B6 + B7 + B9 + B10 + B11 + #
+                                  B12_1 + B12_2 + B12_3 + B12_4 + B12_5 + B12_6 +
+                                  C1_m + C2 + C3 + C5 + C6 + C7 + C8 + 
+                                  E2 + E3 + E4 + E7 + E5 + E6,
                                data = sds_bagsample_tryout)
 summary(lm_bagsample_model2)
 compare_bagsample_model2 <- compare(lm_bagsample_model2, bindori_dataset_threshold_chr, plot.intercept = TRUE, plot = "coef")
+compare_bagsample_model2
 # Save the bagsample object
 saveRDS(lm_bagsample_model2, "./SyntheticData/Yue/lm_bagsample_model2.rds")
 saveRDS(compare_bagsample_model2, "./SyntheticData/Yue/compare_bagsample_model2.rds")
@@ -230,37 +242,37 @@ saveRDS(compare_bagsample_model2, "./SyntheticData/Yue/compare_bagsample_model2.
 # ------------------ bagnorm ----------------------------
 # ##########################################################
 # 0802
-sds_bagnorm0802_tryout <- load("../../Master-Thesis-DifferentialPrivacy/synobject_bag0802_norm_syn.RData")
+sds_bagnorm0802_tryout <- load("./SyntheticData/Yue/synobject_bag0802_norm_syn.RData")
 sds_bagnorm0802_tryout <- object
 sds_bagnorm0802_tryout$syn[[1]][,2:54] <- sapply(sds_bagnorm0802_tryout$syn[[1]][,2:54],as.integer)
 sds_bagnorm0802_tryout$syn <- sds_bagnorm0802_tryout$syn[[1]]
 # 0803
-sds_bagnorm0803_tryout <- load("../../Master-Thesis-DifferentialPrivacy/synobject_bag0803_norm_syn.RData")
+sds_bagnorm0803_tryout <- load("./SyntheticData/Yue/synobject_bag0803_norm_syn.RData")
 sds_bagnorm0803_tryout <- object
 sds_bagnorm0803_tryout$syn[[1]][,2:54] <- sapply(sds_bagnorm0803_tryout$syn[[1]][,2:54],as.integer)
 sds_bagnorm0803_tryout$syn <- sds_bagnorm0803_tryout$syn[[1]]
 # 0804
-sds_bagnorm0804_tryout <- load("../../Master-Thesis-DifferentialPrivacy/synobject_bag0804_norm_syn.RData")
+sds_bagnorm0804_tryout <- load("./SyntheticData/Yue/synobject_bag0804_norm_syn.RData")
 sds_bagnorm0804_tryout <- object
 sds_bagnorm0804_tryout$syn[[1]][,2:54] <- sapply(sds_bagnorm0804_tryout$syn[[1]][,2:54],as.integer)
 sds_bagnorm0804_tryout$syn <- sds_bagnorm0804_tryout$syn[[1]]
 # 0805
-sds_bagnorm0805_tryout <- load("../../Master-Thesis-DifferentialPrivacy/synobject_bag0805_norm_syn.RData")
+sds_bagnorm0805_tryout <- load("./SyntheticData/Yue/synobject_bag0805_norm_syn.RData")
 sds_bagnorm0805_tryout <- object
 sds_bagnorm0805_tryout$syn[[1]][,2:54] <- sapply(sds_bagnorm0805_tryout$syn[[1]][,2:54],as.integer)
 sds_bagnorm0805_tryout$syn <- sds_bagnorm0805_tryout$syn[[1]]
 # 0806
-sds_bagnorm0806_tryout <- load("../../Master-Thesis-DifferentialPrivacy/synobject_bag0806_norm_syn.RData")
+sds_bagnorm0806_tryout <- load("./SyntheticData/Yue/synobject_bag0806_norm_syn.RData")
 sds_bagnorm0806_tryout <- object
 sds_bagnorm0806_tryout$syn[[1]][,2:54] <- sapply(sds_bagnorm0806_tryout$syn[[1]][,2:54],as.integer)
 sds_bagnorm0806_tryout$syn <- sds_bagnorm0806_tryout$syn[[1]]
 # 0807
-sds_bagnorm0807_tryout <- load("../../Master-Thesis-DifferentialPrivacy/synobject_bag0807_norm_syn.RData")
+sds_bagnorm0807_tryout <- load("./SyntheticData/Yue/synobject_bag0807_norm_syn.RData")
 sds_bagnorm0807_tryout <- object
 sds_bagnorm0807_tryout$syn[[1]][,2:54] <- sapply(sds_bagnorm0807_tryout$syn[[1]][,2:54],as.integer)
 sds_bagnorm0807_tryout$syn <- sds_bagnorm0807_tryout$syn[[1]]
 # 0808
-sds_bagnorm0808_tryout <- load("../../Master-Thesis-DifferentialPrivacy/synobject_bag0808_norm_syn.RData")
+sds_bagnorm0808_tryout <- load("./SyntheticData/Yue/synobject_bag0808_norm_syn.RData")
 sds_bagnorm0808_tryout <- object
 sds_bagnorm0808_tryout$syn[[1]][,2:54] <- sapply(sds_bagnorm0808_tryout$syn[[1]][,2:54],as.integer)
 sds_bagnorm0808_tryout$syn <- sds_bagnorm0808_tryout$syn[[1]]
@@ -280,20 +292,33 @@ sds_bagnorm_tryout$syn[,2:54] <- sapply(sds_bagnorm_tryout$syn[,2:54],as.integer
 #*****************************************************
 # Model 1: contact tracing app -- F2_1
 # formula prepared
-lm_bagnorm_model1 <- lm.synds(F2_1 ~ D1 + D2 + D3 + D4 + D5 + D7 + D8 + D9 + E2 + E3 + E4 + E7 + E5 + E6,
+lm_bagnorm_model1 <- lm.synds(F2_1 ~ B1_1 + B1_2 + B1_3 + B1_4 + B1_5 + B1_6 + 
+                                B1_7 + B1_8 + B1_9 + B1_10 + B1_11 + B1_12 + B1_13 +
+                                B2 + B3 + B4 + B5 + B6 + B7 + B8 + B9 + B10 + B11 + #
+                                B12_1 + B12_2 + B12_3 + B12_4 + B12_5 + B12_6 +
+                                C1_m + C2 + C3 + C5 + C6 + C7 + C8 + 
+                                D1 + D2 + D3 + D4 + D5 + 
+                                E2 + E3 + E4 + E7 + E5 + E6,
                                 data = sds_bagnorm_tryout)
 summary(lm_bagnorm_model1)
 compare_bagnorm_model1 <- compare(lm_bagnorm_model1, bindori_dataset_threshold_chr, plot.intercept = TRUE, plot = "coef")
+compare_bagnorm_model1
 # Save the bagnorm object
 saveRDS(lm_bagnorm_model1, "./SyntheticData/Yue/lm_bagnorm_model1.rds")
 saveRDS(compare_bagnorm_model1, "./SyntheticData/Yue/compare_bagnorm_model1.rds")
 
 #*****************************************************
 # Model 2: covid positive -- B8
-lm_bagnorm_model2 <- lm.synds(B8 ~ E2 + E3 + E4 + E7 + E5 + E6 + C1_m + C2 + C3 + C5 + C6 + C7 + C8,
+lm_bagnorm_model2 <- lm.synds(B8 ~ B1_1 + B1_2 + B1_3 + B1_4 + B1_5 + B1_6 + 
+                                B1_7 + B1_8 + B1_9 + B1_10 + B1_11 + B1_12 + B1_13 +
+                                B2 + B3 + B4 + B5 + B6 + B7 + B9 + B10 + B11 + #
+                                B12_1 + B12_2 + B12_3 + B12_4 + B12_5 + B12_6 +
+                                C1_m + C2 + C3 + C5 + C6 + C7 + C8 + 
+                                E2 + E3 + E4 + E7 + E5 + E6,
                                 data = sds_bagnorm_tryout)
 summary(lm_bagnorm_model2)
 compare_bagnorm_model2 <- compare(lm_bagnorm_model2, bindori_dataset_threshold_chr, plot.intercept = TRUE, plot = "coef")
+compare_bagnorm_model2
 # Save the bagnorm object
 saveRDS(lm_bagnorm_model2, "./SyntheticData/Yue/lm_bagnorm_model2.rds")
 saveRDS(compare_bagnorm_model2, "./SyntheticData/Yue/compare_bagnorm_model2.rds")
@@ -304,37 +329,37 @@ saveRDS(rep_bagnorm, "./SyntheticData/Yue/rep_bagnorm.rds")
 # ------------------ bagnormrank ----------------------------
 # ##########################################################
 # 0802
-sds_bagnormrank0802_tryout <- load("../../Master-Thesis-DifferentialPrivacy/synobject_bag0802_normrank_syn.RData")
+sds_bagnormrank0802_tryout <- load("./SyntheticData/Yue/synobject_bag0802_normrank_syn.RData")
 sds_bagnormrank0802_tryout <- object
 sds_bagnormrank0802_tryout$syn[[1]][,2:54] <- sapply(sds_bagnormrank0802_tryout$syn[[1]][,2:54],as.integer)
 sds_bagnormrank0802_tryout$syn <- sds_bagnormrank0802_tryout$syn[[1]]
 # 0803
-sds_bagnormrank0803_tryout <- load("../../Master-Thesis-DifferentialPrivacy/synobject_bag0803_normrank_syn.RData")
+sds_bagnormrank0803_tryout <- load("./SyntheticData/Yue/synobject_bag0803_normrank_syn.RData")
 sds_bagnormrank0803_tryout <- object
 sds_bagnormrank0803_tryout$syn[[1]][,2:54] <- sapply(sds_bagnormrank0803_tryout$syn[[1]][,2:54],as.integer)
 sds_bagnormrank0803_tryout$syn <- sds_bagnormrank0803_tryout$syn[[1]]
 # 0804
-sds_bagnormrank0804_tryout <- load("../../Master-Thesis-DifferentialPrivacy/synobject_bag0804_normrank_syn.RData")
+sds_bagnormrank0804_tryout <- load("./SyntheticData/Yue/synobject_bag0804_normrank_syn.RData")
 sds_bagnormrank0804_tryout <- object
 sds_bagnormrank0804_tryout$syn[[1]][,2:54] <- sapply(sds_bagnormrank0804_tryout$syn[[1]][,2:54],as.integer)
 sds_bagnormrank0804_tryout$syn <- sds_bagnormrank0804_tryout$syn[[1]]
 # 0805
-sds_bagnormrank0805_tryout <- load("../../Master-Thesis-DifferentialPrivacy/synobject_bag0805_normrank_syn.RData")
+sds_bagnormrank0805_tryout <- load("./SyntheticData/Yue/synobject_bag0805_normrank_syn.RData")
 sds_bagnormrank0805_tryout <- object
 sds_bagnormrank0805_tryout$syn[[1]][,2:54] <- sapply(sds_bagnormrank0805_tryout$syn[[1]][,2:54],as.integer)
 sds_bagnormrank0805_tryout$syn <- sds_bagnormrank0805_tryout$syn[[1]]
 # 0806
-sds_bagnormrank0806_tryout <- load("../../Master-Thesis-DifferentialPrivacy/synobject_bag0806_normrank_syn.RData")
+sds_bagnormrank0806_tryout <- load("./SyntheticData/Yue/synobject_bag0806_normrank_syn.RData")
 sds_bagnormrank0806_tryout <- object
 sds_bagnormrank0806_tryout$syn[[1]][,2:54] <- sapply(sds_bagnormrank0806_tryout$syn[[1]][,2:54],as.integer)
 sds_bagnormrank0806_tryout$syn <- sds_bagnormrank0806_tryout$syn[[1]]
 # 0807
-sds_bagnormrank0807_tryout <- load("../../Master-Thesis-DifferentialPrivacy/synobject_bag0807_normrank_syn.RData")
+sds_bagnormrank0807_tryout <- load("./SyntheticData/Yue/synobject_bag0807_normrank_syn.RData")
 sds_bagnormrank0807_tryout <- object
 sds_bagnormrank0807_tryout$syn[[1]][,2:54] <- sapply(sds_bagnormrank0807_tryout$syn[[1]][,2:54],as.integer)
 sds_bagnormrank0807_tryout$syn <- sds_bagnormrank0807_tryout$syn[[1]]
 # 0808
-sds_bagnormrank0808_tryout <- load("../../Master-Thesis-DifferentialPrivacy/synobject_bag0808_normrank_syn.RData")
+sds_bagnormrank0808_tryout <- load("./SyntheticData/Yue/synobject_bag0808_normrank_syn.RData")
 sds_bagnormrank0808_tryout <- object
 sds_bagnormrank0808_tryout$syn[[1]][,2:54] <- sapply(sds_bagnormrank0808_tryout$syn[[1]][,2:54],as.integer)
 sds_bagnormrank0808_tryout$syn <- sds_bagnormrank0808_tryout$syn[[1]]
@@ -354,20 +379,33 @@ sds_bagnormrank_tryout$syn[,2:54] <- sapply(sds_bagnormrank_tryout$syn[,2:54],as
 #*****************************************************
 # Model 1: contact tracing app -- F2_1
 # formula prepared
-lm_bagnormrank_model1 <- lm.synds(F2_1 ~ D1 + D2 + D3 + D4 + D5 + D7 + D8 + D9 + E2 + E3 + E4 + E7 + E5 + E6,
+lm_bagnormrank_model1 <- lm.synds(F2_1 ~ B1_1 + B1_2 + B1_3 + B1_4 + B1_5 + B1_6 + 
+                                    B1_7 + B1_8 + B1_9 + B1_10 + B1_11 + B1_12 + B1_13 +
+                                    B2 + B3 + B4 + B5 + B6 + B7 + B8 + B9 + B10 + B11 + #
+                                    B12_1 + B12_2 + B12_3 + B12_4 + B12_5 + B12_6 +
+                                    C1_m + C2 + C3 + C5 + C6 + C7 + C8 + 
+                                    D1 + D2 + D3 + D4 + D5 + 
+                                    E2 + E3 + E4 + E7 + E5 + E6,
                               data = sds_bagnormrank_tryout)
 summary(lm_bagnormrank_model1)
 compare_bagnormrank_model1 <- compare(lm_bagnormrank_model1, bindori_dataset_threshold_chr, plot.intercept = TRUE, plot = "coef")
+compare_bagnormrank_model1
 # Save the bagnormrank object
 saveRDS(lm_bagnormrank_model1, "./SyntheticData/Yue/lm_bagnormrank_model1.rds")
 saveRDS(compare_bagnormrank_model1, "./SyntheticData/Yue/compare_bagnormrank_model1.rds")
 
 #*****************************************************
 # Model 2: covid positive -- B8
-lm_bagnormrank_model2 <- lm.synds(B8 ~ E2 + E3 + E4 + E7 + E5 + E6 + C1_m + C2 + C3 + C5 + C6 + C7 + C8,
+lm_bagnormrank_model2 <- lm.synds(B8 ~ B1_1 + B1_2 + B1_3 + B1_4 + B1_5 + B1_6 + 
+                                    B1_7 + B1_8 + B1_9 + B1_10 + B1_11 + B1_12 + B1_13 +
+                                    B2 + B3 + B4 + B5 + B6 + B7 + B9 + B10 + B11 + #
+                                    B12_1 + B12_2 + B12_3 + B12_4 + B12_5 + B12_6 +
+                                    C1_m + C2 + C3 + C5 + C6 + C7 + C8 + 
+                                    E2 + E3 + E4 + E7 + E5 + E6,
                               data = sds_bagnormrank_tryout)
 summary(lm_bagnormrank_model2)
 compare_bagnormrank_model2 <- compare(lm_bagnormrank_model2, bindori_dataset_threshold_chr, plot.intercept = TRUE, plot = "coef")
+compare_bagnormrank_model2
 # Save the bagnormrank object
 saveRDS(lm_bagnormrank_model2, "./SyntheticData/Yue/lm_bagnormrank_model2.rds")
 saveRDS(compare_bagnormrank_model2, "./SyntheticData/Yue/compare_bagnormrank_model2.rds")

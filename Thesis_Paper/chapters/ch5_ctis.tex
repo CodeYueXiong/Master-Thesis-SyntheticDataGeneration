@@ -2,102 +2,140 @@ Chapter 5 covers the generation and evaluation of synthetic datasets using both 
 
 \subsection{The CTIS Dataset}
 \label{subsec:ctis}
-Before going through the detailed preprocessing of variables, we present a table which shows a list of variables included in the CTIS datasets, including the variable naming, question text, and recorded response values.
-\begin{longtblr}[
-  caption = {Long Title},
-  label = {tab:allvars},
-]{
-  colspec = {X[1.5]X[5]X[2]},
-  rowhead = 1,
-  % hlines,
-  % row{even} = {gray9},
-  %row{1} = {white9},
-} 
-\hline
-\textbf{Variable} & \textbf{Question text} & \textbf{Responses}\\\hline
-survey\_region  & There are two versions of the survey. & EU = European Union\\
-&The only difference is the initial consent statement.&ROW = Rest of World\\\hline
-weight  & survey weight to adjust from FB user population to the general population &number(float)\\\hline
-Finished  & Qualtrics metadata indicating whether completed the entire questionnaire &1 = yes, 0 = no\\\hline
-RecordedDate  & Date that the response was recorded. &date/time\\\hline
-\multicolumn{3}{l}{\textsc{SECTION B}}&&\\\hline
-B1\_1  & In the last 24 hours, have you had any of the following? Fever &1=Yes, 2=No\\\hline
-B1\_2  & In the last 24 hours, have you had any of the following? Cough &1=Yes, 2=No\\\hline
-B1\_3  & In the last 24 hours, have you had any of the following? Difficulty breathing &1=Yes, 2=No\\\hline
-B1\_4  & In the last 24 hours, have you had any of the following? Fatigue &1=Yes, 2=No\\\hline
-B1\_5  & In the last 24 hours, have you had any of the following? Stuffy or runny nose &1=Yes, 2=No\\\hline
-B1\_6  & In the last 24 hours, have you had any of the following? Aches or muscle pain &1=Yes, 2=No\\\hline
-B1\_7  & In the last 24 hours, have you had any of the following? Sore throat &1=Yes, 2=No\\\hline
-B1\_8  & In the last 24 hours, have you had any of the following? Chest pain &1=Yes, 2=No\\\hline
-B1\_9  & In the last 24 hours, have you had any of the following? Nausea &1=Yes, 2=No\\\hline
-B1\_10  & In the last 24 hours, have you had any of the following? Loss of smell or taste &1=Yes, 2=No\\\hline
-B1\_11  & In the last 24 hours, have you had any of the following? Eye pain &1=Yes, 2=No\\\hline
-B1\_12  & In the last 24 hours, have you had any of the following? Headache &1=Yes, 2=No\\\hline
-B1\_13  & In the last 24 hours, have you had any of the following? Chills &1=Yes, 2=No\\\hline
-B1\_14  & In the last 24 hours, have you had any of the following? Changes to sleep &1=Yes, 2=No\\\hline
-B2  & For how many days have you had at least one of these symptoms? Cough &\textsc{OPEN RESPONSE: NUMBER VALIDATION}\\\hline
-B1b\_x1  & Are any of these symptoms unusual for you? Fever &1=Yes, 2=No\\\hline
-B1b\_x2  & Are any of these symptoms unusual for you? Cough &1=Yes, 2=No\\\hline
-B1b\_x3  & Are any of these symptoms unusual for you? Difficulty breathing &1=Yes, 2=No\\\hline
-B1b\_x4  & Are any of these symptoms unusual for you? Fatigue &1=Yes, 2=No\\\hline
-B1b\_x5  & Are any of these symptoms unusual for you? Stuffy or runny nose &1=Yes, 2=No\\\hline
-B1b\_x6  & Are any of these symptoms unusual for you? Aches or muscle pain &1=Yes, 2=No\\\hline
-B1b\_x7  & Are any of these symptoms unusual for you? Sore throat &1=Yes, 2=No\\\hline
-B1b\_x8  & Are any of these symptoms unusual for you? Chest pain &1=Yes, 2=No\\\hline
-B1b\_x9  & Are any of these symptoms unusual for you? Nausea &1=Yes, 2=No\\\hline
-B1b\_x10  & Are any of these symptoms unusual for you? Loss of smell or taste &1=Yes, 2=No\\\hline
-B1b\_x11  & Are any of these symptoms unusual for you? Eye pain &1=Yes, 2=No\\\hline
-B1b\_x12  & Are any of these symptoms unusual for you? Headache &1=Yes, 2=No\\\hline
-B1b\_x13  & Are any of these symptoms unusual for you? Chills &1=Yes, 2=No\\\hline
-B1b\_x14  & Are any of these symptoms unusual for you? Changes to sleep &1=Yes, 2=No\\\hline
-B3 &Do you personally know anyone in your local community who is sick with a fever and either a cough or difficulty breathing?& 1=Yes, 2=No\\\hline
-B4 &How many people do you know with these symptoms?& \textsc{OPEN RESPONSE: NUMBER VALIDATION}\\\hline
-B5 &Have you spent time with any of these people in the last 7 days?& 1=Yes, 2=No\\\hline
-B6 &Have you ever been tested for coronavirus (COVID-19)?& 1=Yes, 2=No\\\hline
-B7 &Have you been tested for coronavirus (COVID-19) in the last 14 days?& 1=Yes, 2=No\\\hline
-B8 &Did your most recent test find that you had coronavirus (COVID-19)?& 1=Yes, 2=No, 3=I don't know\\\hline
-B9 &Did you have to pay anything out-of-pocket for this test& 1=Yes, 2=No, 3=I don't know\\\hline
-B10 &Have you or your household had to reduce spending on things you need (such as food, housing, or medication) because of the cost you paid to get the coronavirus (COVID-19) test?& 1=Yes, 2=No, 3=I don't know\\\hline
-B11 &Have you wanted to get tested for coronavirus (COVID-19) at any time in the last [feed days back - cap at 14] days?& 1=Yes, 2=No\\\hline
-B12\_1  & Do any of the following reasons describe why you haven't been tested for coronavirus (COVID-19) in the last [feed days back - cap at 14] days? [y/n] I tried to get a test but was not able to get one &1=Yes, 2=No\\\hline
-B12\_2  & Do any of the following reasons describe why you haven't been tested for coronavirus (COVID-19) in the last [feed days back - cap at 14] days? [y/n] I don't know where to go &1=Yes, 2=No\\\hline
-B12\_3  & Do any of the following reasons describe why you haven't been tested for coronavirus (COVID-19) in the last [feed days back - cap at 14] days? [y/n] I can't afford the cost of the test &1=Yes, 2=No\\\hline
-B12\_4  & Do any of the following reasons describe why you haven't been tested for coronavirus (COVID-19) in the last [feed days back - cap at 14] days? [y/n] I don't have time to get tested &1=Yes, 2=No\\\hline
-B12\_5  & Do any of the following reasons describe why you haven't been tested for coronavirus (COVID-19) in the last [feed days back - cap at 14] days? [y/n] I am unable to travel to a testing location (including because of transportation cost, safety, or physical limitations) &1=Yes, 2=No\\\hline
-B12\_6  & Do any of the following reasons describe why you haven't been tested for coronavirus (COVID-19) in the last [feed days back - cap at 14] days? [y/n] I am worried about bad things happening to me or my family (including discrimination, government policies, and social stigma) &1=Yes, 2=No\\\hline
-B13\_1  & In the last 30 days, has there been any time when you needed any of the following health services or products but could not get it? Emergency transportation services or emergency rescue &1=Yes, 2=No\\\hline
-B13\_2  & In the last 30 days, has there been any time when you needed any of the following health services or products but could not get it? Medical care with overnight stay in any type of facility &1=Yes, 2=No\\\hline
-B13\_3  & In the last 30 days, has there been any time when you needed any of the following health services or products but could not get it? Medical or dental care or treatment without an overnight stay&1=Yes, 2=No\\\hline
-B13\_4  & In the last 30 days, has there been any time when you needed any of the following health services or products but could not get it? Preventative health services (including immunization/vaccination, family planning, prenatal/postnatal care, routine check-up services) &1=Yes, 2=No\\\hline
-B13\_5  & In the last 30 days, has there been any time when you needed any of the following health services or products but could not get it? Medication &1=Yes, 2=No\\\hline
-B13\_6  & In the last 30 days, has there been any time when you needed any of the following health services or products but could not get it? Mask, medical gloves, or other protective equipment &1=Yes, 2=No\\\hline
-B13\_7  & In the last 30 days, has there been any time when you needed any of the following health services or products but could not get it? Eyeglasses, hearing aid, crutches, band-aids/plasters, thermometer, or any other health product &1=Yes, 2=No\\\hline
-B14\_1  & In the last 30 days, have you been unable to get needed treatment, services, medicine, or medical products for any of the following reasons? I didn't know where to go &1=Yes, 2=No\\\hline
-B14\_2  & In the last 30 days, have you been unable to get needed treatment, services, medicine, or medical products for any of the following reasons? I couldn't afford the treatment, service, or product &1=Yes, 2=No\\\hline
-B14\_3  & In the last 30 days, have you been unable to get needed treatment, services, medicine, or medical products for any of the following reasons? I was unable to travel to the health care provider (including because of transportation cost, safety, or physical limitations) &1=Yes, 2=No\\\hline
-B14\_4  & In the last 30 days, have you been unable to get needed treatment, services, medicine, or medical products for any of the following reasons? I was afraid of being infected at the health care provider &1=Yes, 2=No\\\hline
-B14\_5  & In the last 30 days, have you been unable to get needed treatment, services, medicine, or medical products for any of the following reasons? The treatment, service, or product was not available &1=Yes, 2=No\\\hline
-\multicolumn{3}{l}{\textsc{SECTION C}}&&\\\hline
-C0\_1  & In the last 24 hours, have you done any of the following? Gone to work outside the place where you are currently staying &1=Yes, 2=No\\\hline
-C0\_2  & In the last 24 hours, have you done any of the following? Gone to a market, grocery store, or pharmacy &1=Yes, 2=No\\\hline
-C0\_3  & In the last 24 hours, have you done any of the following? Gone to a restaurant, cafe, or shopping center &1=Yes, 2=No\\\hline
-C0\_4  & In the last 24 hours, have you done any of the following? Spent time with someone who isn't currently staying with you &1=Yes, 2=No\\\hline
-C0\_5  & In the last 24 hours, have you done any of the following? Attended a public event with more than 10 people &1=Yes, 2=No\\\hline
-C0\_6  & In the last 24 hours, have you done any of the following? Used public transit &1=Yes, 2=No\\\hline
-C13\_1  & In the last 24 hours, have you worn a mask when you have done any of the following? Gone to work outside the place where you are currently staying &1=Yes, 2=No\\\hline
-C13\_2  & In the last 24 hours, have you worn a mask when you have done any of the following? Gone to a market, grocery store, or pharmacy &1=Yes, 2=No\\\hline
-C13\_3  & In the last 24 hours, have you worn a mask when you have done any of the following? Gone to a restaurant, cafe, or shopping center &1=Yes, 2=No\\\hline
-C13\_4  & In the last 24 hours, have you worn a mask when you have done any of the following? Spent time with someone who isn't currently staying with you &1=Yes, 2=No\\\hline
-C13\_5  & In the last 24 hours, have you worn a mask when you have done any of the following? Attended a public event with more than 10 people &1=Yes, 2=No\\\hline
-C13\_6  & In the last 24 hours, have you worn a mask when you have done any of the following? Used public transit &1=Yes, 2=No\\\hline
-\end{longtblr}
+In this study, we utilize the CTIS dataset as the original dataset to synthsize from, which is an abbreviation for the "Covid-19 Trends and Impact Surveys" dataset. The CTIS dataset is obtained from the data repository of The University of Maryland Social Data Science Center Global COVID-19 Trends and Impact Survey, in partnership with Facebook  \citep{salomon2021us}. Before going through the detailed preprocessing of variables, we present in Table \ref{tbl:listofvars} which shows a list of variables included in the CTIS dataset, including the variable naming, question text, and recorded response values.
+Note we ignored the variables contained in Section G: GEO VARS and PARADATA for simplicity. Please refer to the codebook version 5 provided by \citet{fan2020university}.
+\keepXColumns
+\renewcommand{\theadalign}{lc}
 
-The quick brown fox jumps over the lazy dog.
-The quick brown fox jumps over the lazy dog.
+\begin{tabularx}{\linewidth}{p{1.9cm} <{\RaggedRight}X <{\RaggedRight\arraybackslash}p{4.3cm}}%{l <{\RaggedRight}X <{\RaggedRight\arraybackslash}X}
+    \caption{Variables and recoded reponses included in the CTIS dataset.}
+    \label{tbl:listofvars}\\
+    \toprule
+    Variable & Question text & Responses(recode value) \\
+    \midrule
+    \endfirsthead
+    \multicolumn{3}{c}{\tablename~\thetable \enspace (continued)} \\
+    \midrule
+    Variable & Question text & Responses(recode value) \\
+    \midrule
+    \endhead
+    \midrule
+    \multicolumn{3}{r}{To be continued}
+    \endfoot
+     \bottomrule
+    \endlastfoot
+    \thead{survey\_\\region} & \thead[lll]{There are two versions of the survey. The\\ only difference is the initial consent\\statement.} & \thead[ll]{EU = European Union\\ROW = Rest of World} \\
+    \thead{survey\_\\version} & \thead{There are four versions of the survey that \\were fielded consecutively.} & \thead{1 = Version 1\\2 = Version 2\\3 = Version 3\\4 = Version 4\\5 = Version 5} \\
+    weight & \thead{survey weight to adjust to FB user \\population} & \thead{number(float)} \\
+    Finished & \thead{Qualtrics metadata indicating whether \\completed the entire questionnaire} & \thead{1 = yes\\0 = no} \\
+    \thead{Recorded\\Date} & \thead{Date that the response was recorded.} & \thead{date/time} \\
+    \thead{SECTION A: INTRO } & &\\
+    \thead{intro1\_eu/\\intro1\_noneu}& \thead{You understand the above and consent\\ to take part in this survey run by the \\University of Maryland and Johns \\Hopkins University.} & \thead{1=Yes\\2=No} \\
+    \thead{intro2\_eu/\\intro2\_noneu}& \thead{Do you consent with sharing your data\\ with these academic institutions?} & \thead{1=Yes\\2=No} \\
+    A1& \thead{You must be 18 years or older\\ to take this survey. Are you 18 years \\or older?} & \thead{1 = yes\\2 = no} \\
+    A2& \thead{What is the country or region where \\you are currently staying?} & \thead{see country region response \\map file} \\
+    A2\_2\_1& \thead{What is the country or region where \\you are currently staying?} & \thead{see country region response \\map file} \\
+    A2\_2\_2& \thead{What is the administrative region where \\you are currently staying?} & \thead{see country region response \\map file} \\
+    \thead{SECTION B: HEALTH } & &\\
+    B1\_1& \thead{In the last 24 hours, have you had \\any of the following? Fever} & \thead{1 = yes\\2 = no} \\
+    B1\_2& \thead{In the last 24 hours, have you had \\any of the following? Cough} & \thead{1 = yes\\2 = no} \\
+    B1\_3& \thead{In the last 24 hours, have you had \\any of the following? Difficulty breathing} & \thead{1 = yes\\2 = no} \\
+    B1\_4& \thead{In the last 24 hours, have you had \\any of the following? Fatigue} & \thead{1 = yes\\2 = no} \\
+    B1\_5& \thead{In the last 24 hours, have you had \\any of the following? Stuffy or runny nose} & \thead{1 = yes\\2 = no} \\
+    B1\_6& \thead{In the last 24 hours, have you had \\any of the following? Aches or muscle pain} & \thead{1 = yes\\2 = no} \\
+    B1\_7& \thead{In the last 24 hours, have you had \\any of the following? Sore throat} & \thead{1 = yes\\2 = no} \\
+    B1\_8& \thead{In the last 24 hours, have you had \\any of the following? Chest pain} & \thead{1 = yes\\2 = no} \\
+    B1\_9& \thead{In the last 24 hours, have you had \\any of the following? Nausea} & \thead{1 = yes\\2 = no} \\
+    B1\_10& \thead{In the last 24 hours, have you had \\any of the following? Loss of smell or taste} & \thead{1 = yes\\2 = no} \\
+    B1\_11& \thead{In the last 24 hours, have you had \\any of the following? Eyepain} & \thead{1 = yes\\2 = no} \\
+    B1\_12& \thead{In the last 24 hours, have you had \\any of the following? Headache} & \thead{1 = yes\\2 = no} \\
+    B1\_13& \thead{In the last 24 hours, have you had \\any of the following? Chills} & \thead{1 = yes\\2 = no} \\
+    B2 & \thead{For how many days have you had at least \\one of these symptoms?} & \thead{OPEN RESPONSE:\\ NUMBER VALIDATION} \\
+    B1b\_x1& \thead{Are any of these symptoms unusual for you?\\Fever} & \thead{1 = yes\\2 = no} \\
+    B1b\_x2& \thead{Are any of these symptoms unusual for you?\\Cough} & \thead{1 = yes\\2 = no} \\
+    B1b\_x3& \thead{Are any of these symptoms unusual for you?\\Difficulty breathing} & \thead{1 = yes\\2 = no} \\
+    B1b\_x4& \thead{Are any of these symptoms unusual for you?\\Fatigue} & \thead{1 = yes\\2 = no} \\
+    B1b\_x5& \thead{Are any of these symptoms unusual for you?\\Stuffy or runny nose} & \thead{1 = yes\\2 = no} \\
+    B1b\_x6& \thead{Are any of these symptoms unusual for you?\\Aches or muscle pain} & \thead{1 = yes\\2 = no} \\
+    B1b\_x7& \thead{Are any of these symptoms unusual for you?\\Sore throat} & \thead{1 = yes\\2 = no} \\
+    B1b\_x8& \thead{Are any of these symptoms unusual for you?\\Chest pain} & \thead{1 = yes\\2 = no} \\
+    B1b\_x9& \thead{Are any of these symptoms unusual for you?\\Nausea} & \thead{1 = yes\\2 = no} \\
+    B1b\_x10& \thead{Are any of these symptoms unusual for you?\\Loss of smell or taste} & \thead{1 = yes\\2 = no} \\
+    B1b\_x11& \thead{Are any of these symptoms unusual for you?\\Eyepain} & \thead{1 = yes\\2 = no} \\
+    B1b\_x12& \thead{Are any of these symptoms unusual for you?\\Headache} & \thead{1 = yes\\2 = no} \\
+    B1b\_x13& \thead{Are any of these symptoms unusual for you?\\Chills} & \thead{1 = yes\\2 = no} \\
+    B3& \thead{Do you personally know anyone in your \\local community who is sick with a fever \\and at least one other symptom?} & \thead{1 = yes\\2 = no} \\
+    B12\_1& \thead{Do any of the following reasons describe\\ why you haven't been tested for\\ coronavirus (COVID-19) in the last\\ $\text{[feed days back - cap at 14] days? [y/n]}$\\I tried to get a test but was not \\able to get one} & \thead{1 = yes\\2 = no} \\
+    B12\_2& \thead{Do any of the following reasons describe\\ why you haven't been tested for\\ coronavirus (COVID-19) in the last\\ $\text{[feed days back - cap at 14] days? [y/n]}$\\I don't know where to go} & \thead{1 = yes\\2 = no} \\
+    B12\_3& \thead{Do any of the following reasons describe\\ why you haven't been tested for\\ coronavirus (COVID-19) in the last\\ $\text{[feed days back - cap at 14] days? [y/n]}$\\I can't afford the cost of the test} & \thead{1 = yes\\2 = no} \\
+    B12\_4& \thead{Do any of the following reasons describe\\ why you haven't been tested for\\ coronavirus (COVID-19) in the last\\ $\text{[feed days back - cap at 14] days? [y/n]}$\\I don't have time to get tested} & \thead{1 = yes\\2 = no} \\
+    B12\_5& \thead{Do any of the following reasons describe\\ why you haven't been tested for\\ coronavirus (COVID-19) in the last\\ $\text{[feed days back - cap at 14] days? [y/n]}$\\I am unable to travel to a testing location\\ (including because of transportation cost, \\safety, or physical limitations)} & \thead{1 = yes\\2 = no}  \\
+    B12\_6& \thead{Do any of the following reasons describe\\ why you haven't been tested for\\ coronavirus (COVID-19) in the last\\ $\text{[feed days back - cap at 14] days? [y/n]}$\\I am worried about bad things happening\\ to me or my family (including discrimination,\\ government policies, and social stigma)} & \thead{1 = yes\\2 = no}  \\
+    B13\_1& \thead{In the last 30 days, has there been any time\\ when you needed any of the following health\\ services or products but could not get it?\\Emergency transportation services or\\ emergency rescue} & \thead{1 = yes\\2 = no} \\
+    B13\_2& \thead{In the last 30 days, has there been any time\\ when you needed any of the following health\\ services or products but could not get it?\\Medical care with overnight stay in any type of \\facility} & \thead{1 = yes\\2 = no} \\
+    B13\_3& \thead{In the last 30 days, has there been any time\\ when you needed any of the following health\\ services or products but could not get it?\\Medical or dental care or treatment without an \\overnight stay} & \thead{1 = yes\\2 = no} \\
+    B13\_4& \thead{In the last 30 days, has there been any time\\ when you needed any of the following health\\ services or products but could not get it?\\Preventative health services (including\\ immunization/vaccination, family planning,\\ prenatal/postnatal care, routine check-up\\ services)} & \thead{1 = yes\\2 = no} \\
+    B13\_5& \thead{In the last 30 days, has there been any time\\ when you needed any of the following health\\ services or products but could not get it?\\Medication} & \thead{1 = yes\\2 = no} \\
+    B13\_6& \thead{In the last 30 days, has there been any time\\ when you needed any of the following health\\ services or products but could not get it?\\Mask, medical gloves, or other protective \\equipment} & \thead{1 = yes\\2 = no} \\
+    B13\_7& \thead{In the last 30 days, has there been any time\\ when you needed any of the following health\\ services or products but could not get it?\\Eyeglasses, hearing aid, crutches, band-\\aids/plasters, thermometer, or any other health\\ product} & \thead{1 = yes\\2 = no} \\
+    B14\_1& \thead{In the last 30 days, have you been unable to\\ get needed treatment, services, medicine, or\\ medical products for any of the following\\ reasons?\\I didn't know where to go} & \thead{1 = yes\\2 = no}\\
+    B14\_2& \thead{In the last 30 days, have you been unable to\\ get needed treatment, services, medicine, or\\ medical products for any of the following\\ reasons?\\I couldn't afford the treatment, service, or\\ product} & \thead{1 = yes\\2 = no}\\
+    B14\_3& \thead{In the last 30 days, have you been unable to\\ get needed treatment, services, medicine, or\\ medical products for any of the following\\ reasons?\\I was unable to travel to the health care\\ provider} & \thead{1 = yes\\2 = no}\\
+    B14\_4& \thead{In the last 30 days, have you been unable to\\ get needed treatment, services, medicine, or\\ medical products for any of the following\\ reasons?\\I was afraid of being infected at the health care\\ provider} & \thead{1 = yes\\2 = no}\\
+    B14\_5& \thead{In the last 30 days, have you been unable to\\ get needed treatment, services, medicine, or\\ medical products for any of the following\\ reasons?\\The treatment, service, or product was not\\ available} & \thead{1 = yes\\2 = no}\\
+    \thead{SECTION C: CONTACTS } & &\\
+    C0\_1& \thead{In the last 24 hours, have you done any of the \\following? \\Gone to work outside the place where you are\\ currently staying} & \thead{1 = yes\\2 = no} \\
+    C0\_2& \thead{In the last 24 hours, have you done any of the \\following? \\Gone to a market, grocery store, or pharmacy} & \thead{1 = yes\\2 = no} \\
+    C0\_3& \thead{In the last 24 hours, have you done any of the \\following? \\Gone to a restaurant, cafe, or shopping center} & \thead{1 = yes\\2 = no} \\
+    C0\_4& \thead{In the last 24 hours, have you done any of the \\following?\\Spent time with someone who isn't currently \\staying with you} & \thead{1 = yes\\2 = no} \\
+    C0\_5& \thead{In the last 24 hours, have you done any of the \\following?\\Attended a public event with more than 10 \\people} & \thead{1 = yes\\2 = no} \\
+    C0\_6& \thead{In the last 24 hours, have you done any of the \\following?\\Used public transit} & \thead{1 = yes\\2 = no} \\
+    C1\_m& \thead{In the last 24 hours, have you had direct\\ contact with anyone who is not staying with\\ you? Direct contact means spending longer\\ than one minute within two meters of\\ someone or touching, including shaking\\ hands, hugging, or kissing.} & \thead{1 = yes\\2 = no} \\
+    C2& \thead{How many people, who are not staying with \\you, have you had this kind of direct contact\\ with in the last 24 hours?} & \thead{1=1-4 people\\2=5-9 people\\3=10-19 people\\4=20 or more people} \\
+    C7& \thead{In the last 24 hours, about how many times\\ have you washed your hands with soap and\\ water or used hand sanitizer?} & \thead{1 = 0 times\\2 = 1-2 times\\3 = 3-6 times\\4 = 7 or more times}\\
+    C8& \thead{Do you have access to soap and water for\\ washing your hands at the place where you\\ are currently staying?} & \thead{1 = yes\\2 = no} \\
+    C3& \thead{In the last 7 days, have you spent time at a\\ health clinic or hospital (including as an\\ employee, volunteer, patient, or visitor)?} & \thead{1 = yes\\2 = no} \\
+    C4& \thead{In the last 7 days, how often did you wash\\ your hands with soap after being in public?} & \thead{1=All of the time\\2=Most of the time\\3=About half of the time\\4=Some of the time\\5=None of the time\\6=I have not been in \\public during the last 7 days} \\
+    C5& \thead{In the last 7 days, how often did you wear a\\ mask when in public?} & \thead{1=All of the time\\2=Most of the time\\3=About half of the time\\4=Some of the time\\5=None of the time\\6=I have not been in \\public during the last 7 days} \\
+    C6& \thead{In the last 7 days, how many days have you\\ spent time with people who aren’t staying\\ with you?} & \thead{1=0 days\\2=1 day\\3=2-4 days\\4=5-7 days} \\
+    \thead{SECTION D: MENTAL HEALTH and ECONOMIC SECURITY} & &\\
+    D1& \thead{During the last 7 days, how often did you feel\\ so nervous that nothing could calm you\\ down?} & \thead{1=All the time\\2=Most of the time\\3=Some of the time\\4=A little of the time\\5=None of the time} \\
+    D2& \thead{During the last 7 days, how often did you feel\\ so depressed that nothing could cheer you\\ up?} & \thead{1=All the time\\2=Most of the time\\3=Some of the time\\4=A little of the time\\5=None of the time} \\
+    D3& \thead{How worried are you that you or someone in\\ your immediate family might become\\ seriously ill from coronavirus (COVID-19)?} & \thead{1=Very worried\\2=Somewhat worried\\3=Not too worried\\4=Not worried at all} \\
+    D4& \thead{How worried are you about having enough to\\ eat in the next week?} & \thead{1=Very worried\\2=Somewhat worried\\3=Not too worried\\4=Not worried at all} \\
+    D5& \thead{How worried are you about your household’s\\ finances in the next month?} & \thead{1=Very worried\\2=Somewhat worried\\3=Not too worried\\4=Not worried at all} \\
+    D6\_1& \thead{Do any of the following reasons describe\\ why you are worried about your household's\\ finances in the next month?\\Loss of income} & \thead{1 = yes\\2 = no} \\
+    D6\_2& \thead{Do any of the following reasons describe\\ why you are worried about your household's\\ finances in the next month?\\Healthcare costs related to\\ coronavirus(COVID-19)} & \thead{1 = yes\\2 = no} \\
+    D6\_3& \thead{Do any of the following reasons describe\\ why you are worried about your household's\\ finances in the next month?\\Healthcare costs NOT related to coronavirus \\(COVID-19) (including to treat other diseases,\\ illnesses, injuries, or symptoms)} & \thead{1 = yes\\2 = no} \\
+    D7& \thead{In the last 7 days, did you do any work for\\ pay, or do any kind of business, farming, or\\ other activity to earn money, even if only for\\ one hour?} & \thead{1 = yes\\2 = no} \\
+    D8& \thead{Before February 2020, were you working for\\ pay, or doing any kind of business, farming,\\ or other activity to earn money?} & \thead{1 = yes\\2 = no} \\
+    D9& \thead{Why did you stop working?} & \thead{1 = My employer closed for\\ coronavirus-related reasons\\2 = My employer closed for\\ another reason\\3 = I was laid off or \\furloughed\\4 = I am a seasonal worker\\5 = I was ill or quarantined\\6 = I needed to care for \\someone\\7 = Other} \\
+    D10& \thead{$\text{[if D7 == Yes]}$ What is the main activity of the\\ business or organization in which you work?\\$[\text{if D8 == Yes]}$ What is the main activity of the \\business or organization in which you were \\working before February 2020?} & \thead{1 = Agriculture\\2 = Buying and selling\\3 = Construction\\4 = Education\\5 = Electricity/water/\\gas/waste\\6 = Financial/insurance/\\real estate services\\7 = Health
+\\8 = Manufacturing
+\\9 = Mining
+\\10 = Personal services
+\\11 = Professional/\\scientific/\\technical activities
+\\12 = Public administration
+\\13 = Tourism
+\\14 = Transportation
+\\15 = Other} \\
+    E3& \thead{What is your gender?} & \thead{1=Male\\2=Female\\3=Prefer to self-describe: \\$\text{[text entry]}$\\4=Prefer not to answer} \\
+    E4& \thead{What is your age?} & \thead{1=18-24 years\\ 2=25-34 years\\ 3=35-44 years\\ 4=45-54 years\\5=55-64 years\\ 6=65-74 years\\ 7=75 years or older} \\
+    E6& \thead{How many years of education have you\\ completed?} & \thead{OPEN RESPONSE:\\ NUMBER VALIDATION} \\
+    E2& \thead{Which of these best describes the area\\ where you are currently staying?} & \thead{1=City\\2=Town\\3=Village or rural area} \\
+    E5& \thead{How many people slept in the place where\\ you stayed last night?} & \thead{OPEN RESPONSE:\\ NUMBER VALIDATION} \\
+    E7& \thead{In the place where you are staying, how\\ many rooms are used for sleeping?} & \thead{1 = 1 room\\2 = 2 rooms\\3 = 3 rooms\\4 = 4 rooms\\5 = 5 or more rooms} \\
+    \thead{SECTION F: APP} & &\\
+    F1& \thead{Do you have a smartphone?} &  \thead{1 = yes\\2 = no} \\
+    F2\_1& \thead{Have you installed the following types of\\ coronavirus (COVID-19)-related apps on\\ your smartphone?\\A contact tracing app} &  \thead{1 = yes\\2 = no} \\
+    F2\_2& \thead{Have you installed the following types of\\ coronavirus (COVID-19)-related apps on\\ your smartphone?\\A symptom tracing app} & \thead{1 = yes\\2 = no} \\
+    F3\_au& \thead{Have you installed the COVIDSafe app on\\ your smartphone?} & \thead{1=Yes\\2=No\\3=I don't know} \\
+    F3\_de& \thead{Have you installed the Corona-Warn-App on\\ your smartphone?} & \thead{1=Yes\\2=No\\3=I don't know} \\
+\end{tabularx}
 
-In this study, we utilize the CTIS dataset as the original dataset to synthsize from, which is an abbreviation for the "Covid-19 Trend and Impact Surveys" dataset. The CTIS dataset is obtained from the data repository of The University of Maryland Social Data Science Center Global COVID-19 Trends and Impact Survey, in partnership with Facebook  \citep{salomon2021us}. For the purposes of our analysis, we focus on the microdata recorded from August 2nd to August 8th, 2020. During this time frame, the CTIS dataset is categorized into several sections, including Section B (Health), Section C (Contacts), Section D (Mental Health and Economic Security), Section E (Demographics), Section F (App), as well as other generic variables such as Survey Weight and Recorded Date. These sections contain a wealth of information relevant to the impact of COVID-19 on various aspects of people's lives, and thus provide a valuable source of data for our study. 
+For the purposes of our analysis, we focus on the microdata recorded from August 2nd to August 8th, 2020. During this time frame, the CTIS dataset is categorized into several sections, including Section B (Health), Section C (Contacts), Section D (Mental Health and Economic Security), Section E (Demographics), Section F (App), as well as other generic variables such as Survey Weight and Recorded Date. These sections contain a wealth of information relevant to the impact of COVID-19 on various aspects of people's lives, and thus provide a valuable source of data for our study. 
 
-Specifically, section B of the CTIS dataset contains several health-related variables, some of which are of particular interest to this study. One such variable is the \textbf{B1\_i} variable, which queries whether respondents have experienced any of a list of symptoms in the last 24 hours, including but not limited to fever, fatigue, chest pain, and headache. Responses to the \textbf{B1\_i} variable are encoded as binary variables, with a value of 1 indicating that the symptom was experienced and 2 indicating the opposite. Another variable of interest is \textbf{B2}, which queries the duration of symptoms experienced by respondents. In the meantime, \textbf{B2} is an open-response variable that differs in numerical validation. Additionally, variables such as \textbf{B1b\_xi} and their corresponding binary variables, \textbf{B1\_i}, also query the presence of symptoms, but with the added dimension of whether the symptoms are unusual for the respondent. These health-related variables provide valuable information on the health status and symptomatology of respondents, which are worth taking into consideration when evaluating the impact of COVID-19 on individuals. Note that i is a integer ranging from 1 to 14.
+Specifically, Section B of the CTIS dataset contains several health-related variables, some of which are of particular interest to this study. One such variable is the \textbf{B1\_i} variable, which queries whether respondents have experienced any of a list of symptoms in the last 24 hours, including but not limited to fever, fatigue, chest pain, and headache. Responses to the \textbf{B1\_i} variable are encoded as binary variables, with a value of 1 indicating that the symptom was experienced and 2 indicating the opposite. Another variable of interest is \textbf{B2}, which queries the duration of symptoms experienced by respondents. In the meantime, \textbf{B2} is an open-response variable that differs in numerical validation. Additionally, variables such as \textbf{B1b\_xi} and their corresponding binary variables, \textbf{B1\_i}, also query the presence of symptoms, but with the added dimension of whether the symptoms are unusual for the respondent. These health-related variables provide valuable information on the health status and symptomatology of respondents, which are worth taking into consideration when evaluating the impact of COVID-19 on individuals. Note that i is a integer ranging from 1 to 14.
 
 The following section C comprises variables that pertain to contacts, and is of particular relevance to this study. For instance, the \textbf{C0\_1} variable in this section queries whether respondents have left their current location to go to work outside the home within the last 24 hours. Responses to \textbf{C0\_1} are encoded as binary variables, with a value of 1 indicating that the respondent has gone to work outside the home, and 2 indicating the opposite. Additionally, there are categorical variables in this section with classes greater than 2. One such variable, \textbf{C7}, asks respondents to report how many times they have washed their hands with soap and water or used hand sanitizer in the last 24 hours. The responses to \textbf{C7} are encoded as integers, with a value of 1 indicating 0 times, 2 indicating 1-2 times, 3 indicating 3-6 times, and 4 indicating 7 or more times. These variables provide valuable insights into the contact patterns and hygiene practices of respondents, which are important factors to consider while assessing the impact of COVID-19 on individuals and communities.
 
@@ -124,44 +162,63 @@ It is important to mention that all the missingness representing for missing ans
 
 \subsection{Data Preprocessing}
 \label{subsec:preprocess}
-In the data preprocessing stage, our goal was to prepare the CTIS dataset for use in generating synthetic datasets. Given the large number of variables in each section of the dataset, we first filtered out non-European countries to focus on our region of interest. This was achieved by creating a separate file, "gpdr.csv," containing the names of the European countries of interest, and filtering the original dataset based on the \textbf{GID\_0} variable, which represents countries and is encoded using the ISO-Alpha 3 code.
+In the data preprocessing stage, our goal was to prepare the CTIS dataset for use in generating synthetic datasets. Given the large number of variables in each section of the dataset, we first filtered out non-European countries to focus on our region of interest. This was achieved by creating a separate file, "gpdr.csv," containing the names of the European countries of interest, and filtering the original dataset based on the $\text{GID\_0}$ variable, which represents countries and is encoded using the ISO-Alpha 3 code. Interested reader may refer to Table \ref{tab:country} for more information regarding the correspondence between $\text{GID\_0}$ and country names, where we have a total of 27 countries included in the processed original data.
+\begin{table}[H]
+\centering
+  \caption{Lists of country names extracted in the experiment.}
+  \label{tab:country}
+  \includegraphics[width=1\linewidth]{graphics/Tbl-1-countrynames.png}
+\end{table}
 
+Following this filtering step, we concatenated the remaining observations vertically based on the date, resulting in a total of 260,299 observations with 92 variables in total. 
+First of all, we remove two region specified variables, i.e. $GID\_0$ and $GID\_1$, with 90 variables retained. We then reduced the dimensionality of the dataset from 90 to 54 by excluding columns with constant inputs, as well as variables that corresponded to similar questions asked in the corresponding sections. This included variables such as $B1b\_x1$, $B1b\_x2$, $B1b\_x3$, $B1b\_x4$, $B1b\_x5$, $B1b\_x6$, $B1b\_x7$, $B1b\_x8$, $B1b\_x9$, $B1b\_x10$, $B1b\_x11$, $B1b\_x12$, and $B1b\_x13$, as well as $C0\_1$, $C0\_2$, $C0\_3$,$C0\_4$, $C0\_5$, and $C0\_6$. Since the overlapping of defined questions for $B1b\_xi$ variables is covered in section \ref{subsec:ctis}, we only explain for the removal of $C0\_1$, $C0\_2$, $C0\_3$, $C0\_4$, $C0\_5$, and $C0\_6$.  The inquiry posed by the variables $C0\_1$, $C0\_2$, $C0\_3$,$C0\_4$, $C0\_5$, and $C0\_6$ follows a general format of: "In the last 24 hours, have you done any of the following?". Notably, this question structure resembles that of the $C13\_1$, $C13\_2$, $C13\_3$, $C13\_4$, 
+$C13\_5$, and $C13\_6$ variables, which ask: "In the last 24 hours, have you worn a mask when you have done any of the following?". In order to avoid redundancy in questioning, we have excluded the former set of variables ($C0\_1$, $C0\_2$, $C0\_3$,$C0\_4$, $C0\_5$, and $C0\_6$) and retained the latter ($C13\_1$, $C13\_2$, $C13\_3$, $C13\_4$, $C13\_5$, and $C13\_6$) for further analysis. Furthermore, we also removed variables that were dependent on the answers from other variables in their respective sections, such as the $D10$ variable, which was dependent on the answers to $D7$ and $D8$. Specifically, $D7$ asked respondents if they had done any work for pay in the last 7 days, while $D8$ asked if they had been working for pay before February 2020. The answers to these questions were encoded as binary responses, with 1 representing answer=yes and 2 denoting answer=no. By removing unnecessary variables, we were able to reduce the dimensionality of our datasets while retaining a size of 54$\times$260,299. 
 
-Following this filtering step, we concatenated the remaining observations vertically based on the date, resulting in a total of 260,299 observations with 92 variables in total. First of all, we remove two region specified variables, i.e. \textbf{GID\_0} and \textbf{GID\_1}, with 90 variables retained. We then reduced the dimensionality of the dataset from 90 to 54 by excluding columns with constant inputs, as well as variables that corresponded to similar questions asked in the corresponding sections. This included variables such as \textbf{B1b\_x1}, \textbf{B1b\_x2}, \textbf{B1b\_x3}, \textbf{B1b\_x4}, \textbf{B1b\_x5}, \textbf{B1b\_x6}, \textbf{B1b\_x7}, \textbf{B1b\_x8}, \textbf{B1b\_x9}, \textbf{B1b\_x10}, \textbf{B1b\_x11}, \textbf{B1b\_x12}, and \textbf{B1b\_x13}, as well as \textbf{C0\_1}, \textbf{C0\_2}, \textbf{C0\_3},\textbf{C0\_4}, \textbf{C0\_5}, and \textbf{C0\_6}. Since the overlapping of defined questions for \textbf{B1b\_xi} variables is covered in section \ref{subsec:ctis}, we only explain for the removal of \textbf{C0\_1}, \textbf{C0\_2}, \textbf{C0\_3}, \textbf{C0\_4}, \textbf{C0\_5}, and \textbf{C0\_6}.  The inquiry posed by the variables \textbf{C0\_1}, \textbf{C0\_2}, \textbf{C0\_3},\textbf{C0\_4}, \textbf{C0\_5}, and \textbf{C0\_6} follows a general format of: "In the last 24 hours, have you done any of the following?". Notably, this question structure resembles that of the \textbf{C13\_1}, \textbf{C13\_2}, \textbf{C13\_3}, \textbf{C13\_4}, \textbf{C13\_5}, and \textbf{C13\_6} variables, which ask: "In the last 24 hours, have you worn a mask when you have done any of the following?". In order to avoid redundancy in questioning, we have excluded the former set of variables (\textbf{C0\_1}, \textbf{C0\_2}, \textbf{C0\_3},\textbf{C0\_4}, \textbf{C0\_5}, and \textbf{C0\_6}) and retained the latter (\textbf{C13\_1}, \textbf{C13\_2}, \textbf{C13\_3}, \textbf{C13\_4}, \textbf{C13\_5}, and \textbf{C13\_6}) for further analysis. Furthermore, we also removed variables that were dependent on the answers from other variables in their respective sections, such as the \textbf{D10} variable, which was dependent on the answers to \textbf{D7} and \textbf{D8}. Specifically, \textbf{D7} asked respondents if they had done any work for pay in the last 7 days, while \textbf{D8} asked if they had been working for pay before February 2020. The answers to these questions were encoded as binary responses, with 1 representing answer=yes and 2 denoting answer=no. By removing unnecessary variables, we were able to reduce the dimensionality of our datasets while retaining a size of 54$\times$260,299. 
+The maintained variables and its corresponding sections can be found in table \ref{tab:maintainvars}. For the sake of simplicity, we will not provide a detailed list of variable meanings pertained here, please refer to Table \ref{tbl:listofvars}.
+\begin{table}[H]
+\centering
+  \caption{Encoding schemes for variables included in the synthesis.}
+  \label{tab:maintainvars}
+  \includegraphics[width=1\linewidth]{graphics/Tbl-2-encoding-1.png}
+  {\raggedleft To be continued.\par}
+\end{table}
 
-The maintained variables and its corresponding sections can be found in table \ref{tab:listofvars}. For the sake of simplicity, we will not provide a detailed list of variable meanings pertained here, please refer to the appendix section \ref{subsec:listofvars}.
+\begin{table}[H]
+\ContinuedFloat
+\centering
+  \caption{Encoding schemes for variables included in the synthesis (continued).}
+  % \label{tab:maintainvars}
+  \includegraphics[width=1\linewidth]{graphics/Tbl-2-encoding-2.png}
+  {\raggedleft To be continued.\par}
+\end{table}
 
-\begin{table}[h]
-    \centering
-    \caption{List of variables included in the synthesis}
-    \begin{NiceTabular}{@{}lll@{}}[colortbl-like]\hline 
-        \rowcolor{white!90} Section & Variables included \\\hline
-        \rowcolor{white!90} Section B & B1\_1, B1\_2, until B1\_13, \\ 
-        \rowcolor{white!90} & B2, B3, until B11,  \\ 
-        \rowcolor{white!90} & B12\_1, B12\_2 until B12\_6  \\\hline
-        \rowcolor{white!90} Section C & C1\_m, C2, C3,\\ 
-        \rowcolor{white!90} & C5, C6, C7, C8                                                    \\
-        \hline
-        \rowcolor{white!90} Section D & D1, D2, until D9                                                                  \\\hline
-        \rowcolor{white!90} Section E & E2, E3, E4,\\
-        \rowcolor{white!90} & E5, E6, E7                                                           \\
-        \hline
-        \rowcolor{white!90} Section F & F1, F2\_1, F2\_2                                                                  \\\hline
-        % \\[-0.8em]
-        \rowcolor{white!90} Other variables & weight  \\\hline
-    \end{NiceTabular}
-    \label{tab:listofvars}
+\begin{table}[H]
+\ContinuedFloat
+\centering
+  \caption{Encoding schemes for variables included in the synthesis (continued).}
+  % \label{tab:maintainvars}
+  \includegraphics[width=1\linewidth]{graphics/Tbl-2-encoding-3.png}
+  {\raggedright \textit{Note for encoding schemes, the variable, on the left-hand side of the equation, indicates the actual occurrence in the original data, while the right value appearing on the right side stands for the encoded value, respectively}.\par}
 \end{table}
 
 
-After the dimensionality reduction techniques mentioned above, we start to discuss further regarding the encoding of variables. In the CTIS dataset, some variables are set with open response questions, which may result in a wide range of possible responses. To reduce this variability in such variables, we have applied an encoding scheme for certain variables, where these open response variables include variable \textbf{B2}, \textbf{B4}, \textbf{E5}, \textbf{E6}. More specifically, the \textbf{B2} variable inquires about the number of days with COVID-19 symptoms experienced by the respondent. To encode the responses for \textbf{B2}, we have used a set of predefined thresholds, which classify the responses into specific ranges. In particular, we have assigned a value of -99 to missing or invalid responses, and values greater than or equal to 1000 have been set to 1000. For the remaining responses, we have categorized them into ranges of increasing values, such as [0,1), [1,3), [3,8),[8,15),[15, 28),[28, 90),[90, 180),[180, 366), until the last category of $[366,1000)$.
+After the dimensionality reduction techniques mentioned above, we start to discuss further regarding the encoding of variables. In the CTIS dataset, some variables are set with open response 
+questions, which may result in a wide range of possible responses. To reduce this variability in such variables, we have applied an encoding scheme for certain variables, where these open response 
+variables include variable $B2$, $B4$, $E5$, $E6$. More specifically, the $B2$ variable inquires about the number of days with COVID-19 symptoms experienced by the respondent. To encode the responses for $B2$, we have used a set of predefined thresholds, which classify the responses into specific ranges. In particular, we have assigned a value of $-99$ to missing or invalid responses, and values greater than or equal to 1000 have been set to 1000. For the remaining responses, we have categorized them into ranges of increasing values, such as $[0,1)$, $[1,3)$, $[3,8)$,$[8,15)$,$[15, 28)$,$[28, 90)$,$[90, 180)$,$[180, \\366)$, until the last category of $[366,1000)$.
 
-Similarly, the \textbf{B4} variable queries how many people the respondent knows with COVID-19 symptoms. To encode this variable, we have employed a similar threshold-based approach. Responses less than 0 are assigned a value of -99, and values greater than or equal to 1000 are set to 1000. The remaining responses are grouped into ranges such as $[0,1), [1,5), [5,10),$ and $[10,1000)$.
+Similarly, the $B4$ variable queries how many people the respondent knows with COVID-19 symptoms. To encode this variable, we have employed a similar threshold-based approach. 
+Responses less than 0 are assigned a value of -99, and values greater than or equal to 1000 are set to 1000. The remaining responses are grouped into ranges such as $[0,1), [1,5), [5,10),$ and 
+$[10,1000)$.
 
-The \textbf{E5} variable asks about the number of people who slept in the same place as the respondent on the previous night. As with \textbf{B2} and \textbf{B4}, we have utilized a threshold-based approach to encode responses for \textbf{E5}. Values less than 0 are set to -99, and values greater than or equal to 1000 are set to 1000. The remaining responses are categorized into ranges such as $[0,1), [1,2), [2,4), [4,6)$, and $[6,1000)$.
+The $E5$ variable asks about the number of people who slept in the same place as the respondent on the previous night. As with $B2$ and $B4$, we have utilized a threshold-based 
+approach to encode responses for $E5$. Values less than 0 are set to -99, and values greater than or equal to 1000 are set to 1000. The remaining responses are categorized into ranges 
+such as $[0,1), [1,2), [2,4), [4,6)$, and $[6,1000)$.
 
-Lastly, the \textbf{E6} variable queries the highest level of education completed by the respondent. We have encoded the responses to \textbf{E6} using the same threshold-based approach as the other variables. Responses less than 0 are assigned a value of -99, and values greater than or equal to 26 are set to 26, which corresponds to the highest level of education in the dataset. The remaining responses are classified into two ranges, $[0,9)$ and $[9,26)$, which represent the lower and higher levels of education, respectively.
+Lastly, the $E6$ variable queries the highest level of education completed by the respondent. We have encoded the responses to $E6$ using the same threshold-based approach as the 
+other variables. Responses less than 0 are assigned a value of -99, and values greater than or equal to 26 are set to 26, which corresponds to the highest level of education in the dataset. 
+The remaining responses are classified into two ranges, $[0,9)$ and $[9,26)$, which represent the lower and higher levels of education, respectively.
 
+It is also worth mentioning that based on the original CTIS datasets ranging from 2nd to the 8th of August (2020), the results obtained from preprocessed dataset have shown reduced dimentionality with regard to the level of reponses within those open response variables, i.e. $B2$, $B4$, $E5$, and $E6$, as also observed in Table \ref{tab:maintainvars}. For instance, by adding the missingness as an extra observation, the original levels of $E6$ after recoding and interval mapping should be $-99=1$, $[0,9)=2$, $[9, 26)=3$, and $26=4$. However, the encoded outcomes with $E6$, indicated in Table \ref{tab:maintainvars}, are displayed as $-99=1$, and $[0,9)=2$. One of its main reasons could lie in the original statistical properties related to the data range characteristic imported from 2nd to the 8th of August (2020) with the CTIS dataset, where simply the data within this date range sufficed limited interval mapping set for $E6$.
 
 
 
@@ -171,38 +228,36 @@ In the previous section, we discussed the preprocessing steps taken to prepare t
 
 \subsubsection{Detailed Design of Methodology}
 \label{subsubsec:design}
-To describe the design the empirical experiment, we start by introducing the corresponding data types. Except for variable \textbf{weight}, the other variables are all categorical with at least 3 levels of inputs (given the presence of missingness -99 exists in each variable, except \textbf{weight}), where the input entries indicating various responses or an interval of response range. Considering the requirement to build up a more generic and convenient synthesizing mechanism, we simply encode all the other variables except the \textbf{weight} variable as integers. For instance, with variable \textbf{B2}, there are four different type of occurrences in the original dataset, including -1, -99, (0, 1], and [1, 3]. Note that given the original dataset dated from August 2nd to August 8th, 2020, there are no explicit explanations for input entries with value -1. However, we assume it is another pattern to record the missing data. To restore the original characteristics of the original dataset, we decide to keep the original inputs with value of -1 despite its comparably small number of entries. Moving on to the detailed encoding scheme for \textbf{B2}, we encode entries with -1 as 1, -99 with 2, [0,1) as 3, and [1,3) as 4. For variable \textbf{B4}, responses with value -99 are encoded as 1. Likewise, answers valued with [0, 1) and [1, 5) are encoded as 2 and 3, respectively. The next open response variable E5, for which the responses are thresholded with -99, [0, 1), and [1, 2), is encoded as integer 1, 2, and 3, accordingly. Last but not least, as for variable \textbf{E6}, the corresponding encoding scheme is formatted as: answers belonging to -99 are encoded as 1, and answers valued with [0, 9) are encoded with 2. To put in a more generic and general sense, given the number of occurrences existed in a certain variable, the correct encoding scheme is to assign the same number of integers to each occurrence group in an ascending order, where those open response variables discussed before are excluded. Note that more details related to the encoding scheme provided for each variable can be found in appendix \ref{subsec:encodescheme}.
+To describe the design the empirical experiment, we start by introducing the corresponding data types. Except for variable $weight$, the other variables are all categorical with at least 
+3 levels of inputs (given the presence of missingness -99 exists in each variable, except $weight$), where the input entries indicating various responses or an interval of response range. 
+Considering the requirement to build up a more generic and convenient synthesizing mechanism, we simply encode all the other variables except the $weight$ variable as integers. For instance, 
+with variable $B2$, there are four different type of occurrences in the original dataset, including -1, -99, $(0, 1]$, and $[1, 3]$. Note that given the original dataset dated from August 2nd 
+to August 8th, 2020, there are no explicit explanations for input entries with value -1. However, we assume it is another pattern to record the missing data. To restore the original characteristics
+of the original dataset, we decide to keep the original inputs with value of -1 despite its comparably small number of entries. Moving on to the detailed encoding scheme for $B2$, we encode 
+entries with -1 as 1, -99 with 2, $[0,1)$ as 3, and $[1,3)$ as 4. For variable $B4$, responses with value -99 are encoded as 1. Likewise, answers valued with $[0, 1)$ and $[1, 5)$ are encoded as 2 
+and 3, respectively. The next open response variable $E5$, for which the responses are thresholded with -99, $[0, 1)$, and $[1, 2)$, is encoded as integer 1, 2, and 3, accordingly. Last but not least, 
+as for variable $E6$, the corresponding encoding scheme is formatted as: answers belonging to -99 are encoded as 1, and answers valued with $[0, 9)$ are encoded with 2. To put in a more 
+generic and general sense, given the number of occurrences existed in a certain variable, the correct encoding scheme is to assign the same number of integers to each occurrence group in an 
+ascending order, where those open response variables discussed before are excluded. Note that more details related to the encoding scheme provided for each variable can be found in Table \ref{tab:maintainvars}.
 
 When it comes to the design of methodology for data synthesis, given we have introduced the parametric and non-parametric synthesizers in chapter \ref{subsubsec:para} and \ref{subsubsec:non-para}, the next step is to consider the reasonable combination of data synthesizers applied on each variable. Since we have decided to use the powerful \textit{synthpop} R package to provide different synthetic datasets, a table with detail built-in synthesizing methods belonging to the non-parametric group, parametric group, and other group, is shown by Table \ref{tab:syn}.
-
-\begin{table}[h]
+\begin{table}[H]
     \centering
     \caption{Synthesizing methods to use in the experiment.}
     \begin{NiceTabular}{@{}lll@{}}[colortbl-like]\hline 
-        \rowcolor{white!90} Method & Description & Data type \\\hline
-        \rowcolor{white!90} \textit{Non-parametric} & & \\
-        \rowcolor{white!90} \textbf{cart} & Synthesis with CART & Any\\
-        \rowcolor{white!90} \textbf{rf} & Synthesis with random forest & Any\\
-        \rowcolor{white!90} \textbf{bag} & Synthesis with bagging & Any\\
-        \rowcolor{white!90} \textit{Parametric} & & \\
-        \rowcolor{white!90} \textbf{norm} & Synthesis by normal linear regression & Numeric\\
-        \rowcolor{white!90} \textbf{normrank} & Synthesis by normal linear regression preserving & Numeric\\
-        \rowcolor{white!90}  & the marginal distribution & \\
-        \rowcolor{white!90} \textbf{polyreg} & Synthesis by unordered polytomous regression & Factor, $>2$ levels\\
-        \rowcolor{white!90} \textit{Other} & & \\
-        \rowcolor{white!90} \textbf{sample} & Synthesis by random sampling & Any\\\hline
-        \rowcolor{white!90} & & \\
-        
-        
-        % \rowcolor{lightblue!20} \textbf{Section B} & \begin{tabular}[c]{@{}c@{}}B1\_1, B1\_2, until B1\_13, \\ B2, B3, until B11,  \\ B12\_1, B12\_2 until B12\_6\end{tabular}  \\\hline
-        % \rowcolor{lightblue!60} \textbf{Section C} & \begin{tabular}[c]{@{}c@{}}C1\_m, C2, C3,\\ C5, C6, C7, C8\end{tabular}                                                     \\\hline
-        % \\[-0.8em]
-        % \rowcolor{lightblue!20} \textbf{Section D} & D1, D2, until D9                                                                  \\\hline
-        % \rowcolor{lightblue!60} \textbf{Section E} & \begin{tabular}[c]{@{}c@{}}E2, E3, E4,\\ E5, E6, E7\end{tabular}                                                             \\\hline
-        % \\[-0.8em]
-        % \rowcolor{lightblue!20} \textbf{Section F} & F1, F2\_1, F2\_2                                                                  \\\hline
-        % % \\[-0.8em]
-        % \rowcolor{lightblue!60} \textbf{Other variables} & weight  %\\\hline
+        Method & Description & Data type \\\hline
+        \textit{Non-parametric} & & \\
+        \textbf{cart} & Synthesis with CART & Any\\
+        \textbf{rf} & Synthesis with random forest & Any\\
+        \textbf{bag} & Synthesis with bagging & Any\\
+        \textit{Parametric} & & \\
+        \textbf{norm} & Synthesis by normal linear regression & Numeric\\
+        \textbf{normrank} & Synthesis by normal linear regression preserving & Numeric\\
+          & the marginal distribution & \\
+        \textbf{polyreg} & Synthesis by unordered polytomous regression & Factor, $>2$ levels\\
+        \textit{Other} & & \\
+        \textbf{sample} & Synthesis by random sampling & Any\\\hline
+         & & \\
     \end{NiceTabular}
     {\parbox{6in}{
     \footnotesize Note that \textbf{cart} denotes the CART data synthesizer, \textbf{rf} indicates the random forest data synthesizer, \textbf{bag} represents the bagging based data synthesis algorithm, \textbf{polyreg} implies the polytomous logistic regression synthesizing method, \textbf{norm} stands for the normal linear regression data synthesizer, and \textbf{normrank} is an improved version of  norm by preserving the marginal distribution. By default, the \textit{synthpop} package uses the \textbf{cart} synthesizing method.}
@@ -214,37 +269,63 @@ When it comes to the design of methodology for data synthesis, given we have int
 
 \end{table}
 
-In regard to the detailed design of the data synthesis methodology, we utilized the \textit{syn()} function built in the \textit{synthpop} R package, which offers a convenient tool for generating synthetic datasets. Based on Table \ref{tab:syn}, which presents different data synthesis algorithms accompanied by the corresponding compatible data types, we categorized our 54 variables into two groups: the normal variable group and the weight group. The normal group consisted of variables of interest that are closely related to the spread and transmission of COVID-19, including contacts-related variables, demographics-related variables, and app-related variables such as \textbf{B2}, \textbf{C1\_m}, and \textbf{E6}, etc. For the \textbf{weight} group, we simply examined the \textbf{weight} variable, which indicated the survey weighting adjusted to the Facebook user population.
+In regard to the detailed design of the data synthesis methodology, we utilized the $syn()$ function built in the $synthpop$ R package, which offers a convenient tool for 
+generating synthetic datasets. Based on Table \ref{tab:syn}, which presents different data synthesis algorithms accompanied by the corresponding compatible data types, we categorized our 
+54 variables into two groups: the normal variable group and the weight group. The normal group consisted of variables of interest that are closely related to the spread and transmission of 
+COVID-19, including contacts-related variables, demographics-related variables, and app-related variables such as $B2$, $C1\_m$, and $E6$, etc. For the $weight$ group, 
+we simply examined the $weight$ variable, which indicated the survey weighting adjusted to the Facebook user population.
 
-Given the two types of variable groups, the generation of synthetic datasets involved a two-step procedure. The first step involved data synthesis with the normal variables of interest, and the second step involved synthesizing with the \textbf{weight} numeric variable. Moreover, as we implemented an encoding scheme for every variable except \textbf{weight}, we could apply both parametric and non-parametric data synthesizers, such as \textbf{norm}, \textbf{normrank}, \textbf{cart}, \textbf{rf}, \textbf{bag}, and \textbf{polyreg}, in the first step. For the second procedure, we chose from sample, \textbf{norm}, and \textbf{normrank} to implement synthesizing algorithms for the numeric weight variable. Thus, in total, 18 synthetic datasets were generated in the experiment.
+Given the two types of variable groups, the generation of synthetic datasets involved a two-step procedure. The first step involved data synthesis with the normal variables of interest, and the 
+second step involved synthesizing with the $weight$ numeric variable. Moreover, as we implemented an encoding scheme for every variable except $weight$, we could apply both parametric and 
+non-parametric data synthesizers, i.e.  $norm$, $normrank$, $cart$, $rf$, $bag$, and $polyreg$, in the first step. For the second procedure, we chose from sample, $norm$, and $normrank$ to 
+implement synthesizing algorithms for the numeric weight variable. Thus, in total, 18 synthetic datasets were generated in the experiment.
 
-In terms of implementation details in the R package \textit{synthpop}, the \textit{syn()} functionality has two essential parameters: the \textbf{method} parameter and the \textbf{visit.sequence} parameter. The \textbf{method} parameter indicated the record of data synthesizers applied to each variable maintained in the original dataset. This was formatted as a list of strings, with every entry of synthesis method corresponding to its variable, maintaining the same order as the original dataset. Note that variables that did not require synthesis had an empty method "". By default, all variables were synthesized using the \textbf{cart} data synthesizer. The \textbf{visit.sequence} parameter representes a character vector of names of variables or an integer vector of their column indices, which also specified the order of data synthesis. The default sequence of 1 to the total number of variables implied that column variables are synthesized from left to right. However, in our experiment, the \textbf{weight} parameter represented the survey weighting assigned to each data instance given the whole population. Therefore, we synthesized the second column (\textbf{B1\_1}) to the last column (\textbf{E6}) first and synthesized the \textbf{weight} variable last. It is worth noting that variable \textbf{E3} queried on the gender question, where the random sampling synthesizing method was sufficient for synthesizing.
+Regarding the implementation of the R package $synthpop$, the default parameters are employed unless explicitly stated otherwise. The primary function of the package, $syn()$, necessitates two vital parameters: the $method$ parameter and the $visit.sequence$ parameter. The $method$ parameter is a string or a vector of strings, with a length that corresponds to the number of columns in the real data, and specifies the synthesis method to be employed for each variable in the data. By default, the $method$ is set to CART, and the variables are synthesized in the same order as in the original data. However, the $visit.sequence$ parameter can be manipulated to specify the order of variable synthesis. This can be achieved by specifying a character vector that contains the variable names or an integer vector that contains their corresponding column indices, which ultimately determines the order of variable synthesis.
+
+\paragraph{Synthesizing methods and parameterization}
+The \textit{method} parameter indicated the record of data synthesizers applied to each variable maintained in the original dataset. This was formatted as a list of strings, with every entry of synthesis method corresponding to its variable, maintaining the same order as the original dataset. Note that variables that did not require synthesis had an empty method "". By default, all variables were synthesized using the \textbf{cart} data synthesizer. For parameterization details regarding each data synthesizer, \textbf{cart} uses $rpart()$ function from \textit{rpart} package. The splitting criterion implemented is based on Gini-index and deviance. For \textbf{bag} and \textbf{rf}, we utilze function from \textit{randomForest} package and by setting $\text{ntree}=10$, we have 10 trees constructed for the synthesis. When constructing a single classification tree the Gini impurity is used as the splitting criterion. As for \textbf{polyreg}, besides default settings with $multinom()$ function built with $nnet$ package, we set $polyreg.maxit=10,000$ to enable maximum number of iterations to stop the algorithm from failing to converge. For parametric data synthesis methods notated with \textbf{norm} and \textbf{norm}, there are no specific inbuilt parameters to configure. Moreover, we also consider the use of \textbf{sample} data synthesizer, which denotes random sampling with replacement, due to the existence of the $weight$ numerical variable.
+
+\paragraph{Ordering of variables}
+In terms of the ordering of variables in the data synthesis process, the $visit.sequence$ parameter is utilized, which can take a character vector of variable names or an integer vector of their column indices. By default, the variables are synthesized in correspondence with their column indices, from left to right. However, in our experiment with the CTIS dataset, the $weight$ parameter was assigned to each data instance according to the survey population, making it a critical variable to preserve. Therefore, we synthesized the second column ($B1_1$) to the last column ($E6$) first, and left the synthesis of the $weight$ variable until the end. It is worth noting that variable $E3$, which queried on gender, only required the random sampling with replacement method for synthesis.
 
 \subsubsection{Workflow Explanation}
 \label{subsubsec:workflow}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1\linewidth]{graphics/Fig-3-workflow.png}    
+    \includegraphics[width=1.0\linewidth]{graphics/Fig-3-workflow.png}    
     \caption{Detailed workflow of the experiment design.}
     \label{fig:workflow}
-    \floatfoot{Note: \textbf{ods} denotes the original dataset while \textbf{sds} represents the synthetic dataset.}
+    \caption*{Note: \textbf{ods} denotes the original dataset while \textbf{sds} represents the synthetic dataset.}
 \end{figure}
-Before delving into the details of our experiment, let us first take a look at Figure \ref{fig:workflow}, which presents the step-by-step workflow of the data synthesis process. The workflow can be divided into four main stages: data preprocessing, data synthesis stage 1, data synthesis stage 2, and data evaluation. The first stage involves the preprocessing of the original dataset, including the filtering of only european countries, the removal of unnecessary variables, and the encoding scheme for specific variables. The second and third procedures involve the selection of appropriate data synthesizers from a range of parametric and non-parametric methods, such as \textbf{norm}, \textbf{normrank}, \textbf{cart}, \textbf{rf}, \textbf{bag}, and \textbf{polyreg}, to be applied on the normal variables of interest. Notably, the \textbf{E3} variable is synthesized using random sampling, given our prior knowledge. The final step is to choose from \textbf{norm} and \textbf{normrank} to synthesize for the survey weighting variable. 
 
-By following this step-by-step approach, we are able to generate a total of 18 synthetic datasets, allowing us to perform a thorough comparison of the performance of the different data synthesizers. The remaining evaluation steps include assessing the data utility, risk disclosure, and statistical inferences from fitted linear regression models. Organizing the experiment in this manner provides a logical and systematic approach, facilitating the comparison of the parametric and non-parametric data synthesizers. Moreover, to gain a broader perspective on the performance of statistics-based and generator-based data synthesizing methods, we also evaluate the synthetic datasets produced by \citet{liu2021iterative}, which makes a total of 20 synthetic datasets for further evaluation purposes to conduct a comparison between different data synthesizers' performances.
 
-Overall, this step-by-step workflow shown in Figure \ref{fig:workflow} provides a clear and comprehensive framework for conducting our experiment, allowing us to effectively assess the quality and utility of the generated synthetic datasets.
+Before delving into the details of our experiment, let us first take a look at Figure \ref{fig:workflow}, which presents the step-by-step workflow of the data synthesis process. 
+The workflow can be divided into four main steps: data preprocessing, data synthesis stage 1, data synthesis stage 2, and data evaluation. The first stage involves the preprocessing of 
+the original dataset, including the filtering of only european countries, the removal of unnecessary variables, and the encoding scheme for specific variables. Data synthesis stage 1 
+involves the selection of appropriate data synthesizers from a range of parametric and non-parametric methods, such as $norm$, $normrank$, $cart$, $rf$, $bag$, 
+and $polyreg$, to be applied on the normal variables of interest. Notably, the $E3$ variable is synthesized using random sampling, given our prior knowledge. Data synthesis stage 2 
+chooses from data synthesizers of $sample$, $norm$, and $normrank$ to synthesize for the numerical $weight$ variable. The final step is to evaluate the synthesizing quality 
+in terms of global data utility, analysis-specific utility, and risk disclosure analysis, where the analysis-specific utility lies in the comparison of linear regression model estimates based on 
+synthesised and observed data.
 
+
+By following this approach, we generated a total of 18 synthetic datasets, which enabled us to compare the performance of different data synthesizers. Moreover, we evaluated synthetic datasets generated by \citet{liu2021iterative} using GEM, making a total of 20 synthetic datasets for further evaluation. To conduct a comparison of different data synthesizers' performances, we assigned the notations $GEM_{v1}$ and $GEM_{v2}$, with $v1$ standing for the first version of the generated dataset that considered only those questionnaires that individuals completed, where the variable $Finished = 1$ filters in the eligible data instances. In contrast, Terrance's second version of the synthetic dataset ignored the "completely finished" requirement and synthesized data using all 54 variables. This version is denoted by $v2$.
+
+Overall, the step-by-step workflow in Figure \ref{fig:workflow} provides a clear and comprehensive framework for conducting our experiment, allowing us to assess the quality and utility of the generated synthetic datasets effectively. Furthermore, organizing the experiment in this manner facilitates the comparison of the parametric and non-parametric data synthesizers, which helps in gaining a broader perspective on the performance of statistics-based and generator-based data synthesizing methods.
 
 
 
 \subsection{Results Generated from Exploratory Analysis}
 \label{subsec:results}
-After generating the 20 synthetic datasets, the subsequent phase of our experiment is to assess their data utility, perform a risk disclosure analysis, and draw statistical inferences through the use of fitted linear regression models to compare the corresponding fitting with regard to each parameter.
+After generating the 20 synthetic datasets, the subsequent phase of our experiment is to assess their data utility, perform a risk disclosure analysis, and draw analysis-specific utility through the use of fitted linear regression models to compare the corresponding fitting with regard to each parameter. Note that for simplicity, we denote the 20 synthesis combinations with $CART_1, CART_1, CART_3, CART_3, RF_1, RF_2, RF_3, BAG_1, BAG_2, BAG_3,\\ POLYREG_1, POLYREG_2, POLYREG_3, NORM_1, NORM_2, NORM_3, NORMRANK_1,\\ NORMRANK_2, NORMRANK_3, GEM_{V1}, GEM_{V2}$. In this case, the specifications given with$1, 2, 3$ indicate the use of data synthesizers with the $weight$ parameter, where $1$ represents the use of random sampling data synthesizer, $2$ implies the use of the normal linear regression data synthesizer, and $3$ shows the application of marginal distribution preserved linear regression data synthesizer. Alternatively, especially when referring to the generated synthetic datasets, we can also denote them as $sds\_cart\_sample$, $sds\_cart\_norm$, $sds\_cart\_normrank$, $sds\_rf\_sample$, $sds\_rf\_norm$, $sds\_rf\_normrank$
+$sds\_bag\_sample$, $sds\_bag\_norm$, $sds\_bag\_normrank$, $sds\_polyreg\_sample$, $sds\_polyreg\_norm$, $sds\_polyreg\_normrank$, $sds\_norm\_sample$, $sds\_norm\_norm$, $sds\_norm\_normrank$, $sds\_normrank\_sample$, $sds\_normrank\_norm$, $sds\_normrank\_normrank$, $sds\_terrance\_v1$, and $sds\_terrance\_v2$. 
 
 \subsubsection{Data Utility}
 \label{subsubsec:datautility}
+We will discuss the evaluation of data utility in terms of overall synthesizing quality with regard to propensity scores, and univariate utility measured for single variable. The global data utility measured with propensity score matching gives us a general overview with regard to the synthesizing performance for each data synthesizer. As a complement, the addition to assess univariate data utility can show the quality of data synthesizers applied on variables with different types, count of levels, unlike distributions, etc. 
+
+\paragraph{Overall data utility for synthetic data}
 Moving on to the evaluation of data utility, a key aspect of our experiment is the use of global utility metrics for propensity score matching. This is an appropriate approach, given the context of our experiment design and prior knowledge provided. To this end, we employ the standardized $p_{MSE}$, denoted as $Sp_{MSE}$, to evaluate the utility of the synthetic datasets. Specifically, we calculate the mean squared error (MSE) of the predictions relative to the true values, and normalize it by a measure of the variability in the true values. This approach allows for comparison of models on different datasets with different means and standard deviations. A lower $Sp_{MSE}$ value indicates a higher analytical validity of the synthetic data, and a synthesized column with $Sp_{MSE}$ scoring less than 10 can be regarded as a good fit in regard to a single variable synthesizing performance. The standardized $p_{MSE}$, denoted as $Sp_{MSE}$, is utilized in our study to evaluate data utility. As described in Section \ref{subsubsec:global}, $p_i$ and $t_i$ represent the $i$th prediction and the corresponding true value, respectively. The standardized $p_{MSE}$ is computed as:
 \begin{align}
 \label{eqn:spmse}
@@ -254,69 +335,792 @@ Moving on to the evaluation of data utility, a key aspect of our experiment is t
 \end{align}
 where $n$ represents the total number of predictions and true values, and $\text{Var}(t)$ is the variance of the true values. The equation \eqref{eqn:spmse} indicates that we are calculating the mean squared error (MSE) of the predictions relative to the true values, and normalizing it by a measure of the variability in the true values. The denominator is the sum of the squared mean and the variance of the true values, which allows for comparison of models on different datasets with different means and standard deviations. A lower $Sp_{MSE}$ value indicates higher analytical validity of the synthetic data. A synthesized column with $Sp_{MSE}$ scoring less than 10 can be regarded as having a comparably good fit in terms of single-variable synthesizing performance.
 
-To evaluate data utility, we examine all the $Sp_{MSE}$ scores with regard to each variable in the corresponding synthetic dataset. Using the \textit{compare()} function in the \textit{synthpop} package, we generate Table \ref{tab:spmse}, which shows the number of synthesizing variables in which $Sp_{MSE}<10$.
-
-\begin{table}[h]
-    \centering
-    \caption{The number of synthesis variables with a score of $Sp_{MSE}<10$.}
-    \begin{NiceTabular}{@{}ll@{}}[colortbl-like]\hline 
-        \rowcolor{white!90} Synthsis combinations & Number\\\hline
-        \rowcolor{white!90} \textit{cart} & \\
-        \rowcolor{white!90} sds\_cart\_sample & 45\\
-        \rowcolor{white!90} sds\_cart\_norm & 43\\
-        \rowcolor{white!90} sds\_cart\_normrank & 43\\\hline
-        \rowcolor{white!90} \textit{rf} & \\
-        \rowcolor{white!90} sds\_rf\_sample & 28\\
-        \rowcolor{white!90} sds\_rf\_norm & 30\\
-        \rowcolor{white!90} sds\_rf\_normrank & 27\\\hline
-        \rowcolor{white!90} \textit{bag} & \\
-        \rowcolor{white!90} sds\_bag\_sample & 37\\
-        \rowcolor{white!90} sds\_bag\_norm & 38\\
-        \rowcolor{white!90} sds\_bag\_normrank & 37\\\hline
-        \rowcolor{white!90} \textit{polyreg} & \\
-        \rowcolor{white!90} sds\_polyreg\_sample & 43\\
-        \rowcolor{white!90} sds\_polyreg\_norm & 42\\
-        \rowcolor{white!90} sds\_polyreg\_normrank & 42\\\hline
-        \rowcolor{white!90} \textit{norm} & \\
-        \rowcolor{white!90} sds\_norm\_sample & 28\\
-        \rowcolor{white!90} sds\_norm\_norm & 25\\
-        \rowcolor{white!90} sds\_norm\_normrank & 26\\\hline
-        \rowcolor{white!90} \textit{normrank} & \\
-        \rowcolor{white!90} sds\_normrank\_sample & 27\\
-        \rowcolor{white!90} sds\_normrank\_norm & 27\\
-        \rowcolor{white!90} sds\_normrank\_normrank & 26\\\hline
-    \end{NiceTabular}
-    {\parbox{6in}{
+To evaluate data utility, we examine all the $Sp_{MSE}$ scores with regard to each variable in the corresponding synthetic dataset. Using the $compare()$ function implemented in the \textit{synthpop} package, we generate Table \ref{tab:spmse}, which shows the number of synthesizing variables in which $Sp_{MSE}<10$.
+\begin{table}[H]
+\centering
+  \caption{The number of synthesis variables with a score of $Sp_{MSE}<10$.}
+  \label{tab:spmse}
+  \includegraphics[width=1\linewidth]{graphics/Table-3-utilityScore.png}
+    {\parbox{5.5in}{
     \footnotesize Note that column "number" specifies the number of variables which suffice the $Sp_{MSE}<10$ requirement.}
     }
-    \label{tab:spmse}
-
 \end{table}
 
-In terms of evaluation of synthesizing performance based on the scoring of $Sp_{MSE}$, it is pretty clear that generally those non-parametric data synthesizers outperform those parametric ones, within which the \textbf{cart} synthesizing method has shown the best performances regardless of which weight synthesizing algorithm to use during synthesis stage 2, scoring with at least 43 variables indicating a higher analytical validity in the synthesized datasets. At the same time, the \textbf{polyreg} data synthesizer slightly fell behind \textbf{cart} by at most a gap of three variables. In contrast, parametric synthesizers based on linear regression own a average of 26 variables which suffice the $Sp_{MSE}<10$ requirement. 
+In terms of evaluation of synthesizing performance based on the scoring of $Sp_{MSE}$, it is pretty apparent that generally those non-parametric data synthesizers outperform those parametric ones, within which the \textbf{cart} synthesizing method has shown the best performances regardless of which weight synthesizing algorithm to use during synthesis stage 2, scoring with at least 43 variables indicating a higher analytical validity in the synthesized datasets. At the same time, the \textbf{polyreg} data synthesizer slightly fell behind \textbf{cart} by at most a gap of three variables. In contrast, parametric synthesizers based on linear regression own a average of 26 variables which suffice the $Sp_{MSE}<10$ requirement. Furthermore, when it comes to synthetic datasets produced by Terrance Liu using GEM based data synthesizing algorithm, they have performed notably inferior to the others, where the standardized propensity score measure shows a total of 19 variables and 2 variables meeting the $Sp_{MSE}<10$ requirement, respectively for $GEM_{v1}$ and $GEM_{v2}$.
 
-XXXX more to add regarding the which variables generally perform well + model complexity
+Such a table like Table \ref{tab:spmse} simply presents a general overview of data utility evaluation, by counting the number of variables sufficing the $Sp_{MSE}<10$ criterion. Boxplots indicating the corresponding number of $Sp_{MSE}$ by different synthesizing combinations can also be found in Figure \ref{fig:boxplots}.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\linewidth]{graphics/Fig-4-boxplotsofspmse.png}    
+    \caption{Boxplots of $Sp_{MSE}$ by different data synthesizers.}
+    \label{fig:boxplots}
+    % \floatfoot{Note: \textbf{ods} denotes the original dataset while \textbf{sds} represents the synthetic dataset.}
+\end{figure}
+Based on the information presented in Figure \ref{fig:boxplots}, it can be observed that the synthetic datasets generated by the \textbf{norm} and \textbf{GEM} synthesizers have inferior synthesizing quality compared to other methods, especially when synthesizing at data synthesis stage 1 with variables except $weight$, as indicated by a greater number of variables with $Sp_{MSE}$ scores around $50,000$ in these groups of synthesizing combinations. In contrast, data synthesis algorithms based on \textbf{cart}, \textbf{bag} , \textbf{polyreg}, and \textbf{normrank} have exhibited more enhanced stability in performance in terms of fewer variations shown with regard to the distribution of $Sp_{MSE}$.
 
-compare, utility.table(), S mMSE
 
-With regards to data utility, there exists one variable that performs notably inferior to the others, where the standardized propensity score measure shows that it deviates by at least 2,000. Such a significant deviation suggests that the synthesized records from this variable are likely to be unreliable, leading to potential challenges in conducting valid statistical inferences. Thus, additional efforts may need to be taken to address the challenges brought by this variable to ensure the overall quality of the synthesized dataset.
+These findings lie in the evaluation of the standardized propensity score measure. Interested readers may also refer to Table \ref{tab:spmsevars} for a detailed illustration of accumulated number of variables where $Sp_{MSE}>10$.
+\afterpage{\begin{table}[H]
+\centering
+  \caption{Union of variables not sufficing $Sp_{MSE}<10$ organized in groups.}
+  \label{tab:spmsevars}
+  \includegraphics[width=1\linewidth]{graphics/Table-5-spmsevars.png}
+      {\parbox{6.2in}{
+    \footnotesize Note the grouping criterion is based on data synthesizers applied in data synthesis stage 1 For sake of simplicity, we notate two synthetic datasets output by Terrance Liu with "terrance group".}
+    }
+\end{table}}
 
-The comparison between non-parametric and parametric data synthesizers reveals that the former outperforms the latter in terms of data utility. This finding indicates that non-parametric synthesizers are more effective in capturing the complex relationships between variables, resulting in synthesized datasets that better approximate the true data distribution. As such, researchers who seek to generate high-quality synthetic datasets may benefit from utilizing non-parametric data synthesizers over their parametric counterparts.
+The data utility evaluation of 20 synthetic datasets with 54 variables, each generated using different data synthesizers, revealed that the "weight" variable's synthesizing quality with respect to data utility was inferior. The standardized propensity score measure showed that it deviated at most 250,000. Furthermore, by intersecting the union of variables that did not meet the $Sp_{MSE}<10$ requirement across different synthetic groups, we identified that $weight$, $weight, B1\_13, B2, E3, E4, E5, E6, E7, F1, F2\_2$ had lower synthesizing quality compared to other variables. In terms of utility evaluation, both synthetic datasets from the GEM-based data synthesizer ($GEM_{v1}$ and $GEM_{v2}$) showed the worst performance.
 
-Although non-parametric data synthesizers are known to produce more accurate results, this is not always the case, especially when models with higher complexity are used. In some cases, higher model complexity may lead to overfitting, which can result in synthesized records that have low validity with regard to data utility. Thus, researchers who wish to utilize non-parametric data synthesizers may need to carefully consider the complexity of the models they use to ensure that the synthesized records are accurate and reliable.
+Nonetheless, in terms of overall data utility, simply by counting number of qualified variables and plotting ambiguous $Sp_{MSE}$ boxplots, the decision on which data synthesis combination performed the best still remained pending, and the comparison based on data distribution of synthetic and original data was ignored by taking into account of the number of validated variables. To resolve this, we turned to the distributional comparison of synthesised and observed data for help, for which the evaluation metric lies in the calculation of propensity score mean squared error ($p_{MSE}$) mentioned in section \ref{subsubsec:global}. Accordingly, the output based on distributional comparison is shown in Table \ref{tab:ugen}.
+\begin{table}[H]
+\centering
+  \caption{Distributional comparison of synthesised and observed data using $p_{MSE}$.}
+  \label{tab:ugen}
+  \includegraphics[width=1\linewidth]{graphics/Table-1-ugen.png}
+\end{table}
 
-In the context of parametric synthesizing, the \textbf{normrank} synthesizer outperforms the \textbf{norm} synthesizer in terms of data utility. This finding can be attributed to the fact that the \textbf{normrank} synthesizer maintains the marginal distribution of the original dataset, resulting in a more aligned distribution in the synthesized dataset. As such, researchers who seek to generate synthetic datasets with high data utility may benefit from utilizing the \textbf{normrank} synthesizer over the \textbf{norm} synthesizer in their parametric data synthesizing applications.
+Clearly seen from Table \ref{tab:ugen}, the $CART_2$, which indicates the \textbf{cart} and \textbf{norm} data synthesis combination, became the winner in terms of propensity scores, with a lowest $p_{MSE}$ value of 0.01955 computed. By ascending the values, we were able to obtain the order of distribution performance with regard to each data synthesizer with $CART_2, POLYREG_2,\\ BAG_3, CART_3, POLYREG_3, POLYREG_1, CART_1, NORMRANK_2, NORMRANK_3,\\ NORMRANK_1, RF_2, BAG_2, RF_3, NORM_2, RF_1, BAG_1, NORM_1, NORM_3, GEM_{v1},\\ GEM_{v2} $. In contrast, synthetic data generated by $GEM_{v1}$ and $GEM_{v2}$ generally achieved the most unsatisfactory results, implying the poorest performance. One of its possible reason may lie in the decreased number of synthetic records. Both synthetic data generated by Terrance Liu have a dimension of $100,000 \times 54$, with $100,000$ indicating the number of data rows. Compared to $260,000$ rows existed in the original dataset and other synthetic versions, $GEM_{v1}$ and $GEM_{v2}$ have greatly decreased the number of rows by more than 60\%, which could interpret the output of weakest performances congruent with our prior assumptions. Besides that, the use of neural networks based synthesizers has proved to be less effective in capturing interactions between variables. Moreover, as expected, the application of \textbf{sample} data synthesizer with variable $weight$, which is notated with underscores following $1$, has exhibited the lowest level of performance in terms of each synthesizing group, where the grouping criterion is based on the use of data synthesizers applied in stage 1 of the data synthesis. For instance, in the "cart" group, we produced synthetic data notated with $CART_1, CART_2, CART_3$, within which the $CART_1$ displayed the least effective result, and likewise for other categorizations. On the other hand, adoption of non-parametric data synthesizers has again demonstrated superior performance over deployment of parametric ones.
 
-\subsubsection{Replicated Uniques and New Row Synthesis}
-\label{subsubsec:sde}
+
+Also looking back into Table \ref{tab:spmse}, when we integrated the outcomes of both analyses, we can conclude that non-parametric data synthesizers outperformed the parametric ones at data synthesis stage 1 with non-$weight$ variables, and the restricted application of non-parametric data synthesizers suggested that models with higher complexity did not necessarily produce synthesized records with higher validity in terms of data utility. In particular, the \textbf{cart} and \textbf{polyreg} data synthesizers have manifested more effective performance in terms of global data utility and performance stability. In the context of parametric synthesizing application, the normrank synthesizer group's synthetic datasets outperformed those generated by the norm group. The \textbf{normrank} synthesizer maintained the marginal distribution of the original dataset, contributing to an aligned distribution of the synthesized dataset. However, the implementation of parametric data synthesis algorithms have shown inferior outcomes compared to non-parametric ones. Even worse, \textbf{GEM}-based methods have exhibited the poorest results validated by both evaluation metrics.
+
+Furthermore, for data synthesis stage 2 related to synthesis with $weight$, the random sampling data synthesizer has demonstrated inferior performance compared to normal linear regression based data synthesizers in terms of distribution comparisons between synthetic and real data.
+
+\paragraph{Univariate utility for selected variables}
+Moving from a general overview to a more detailed analysis of specific variables, our focus now shifts to the comparison of data utility between the original and synthetic datasets for four variables, namely "weight", "B4", "C2", and "D9", belonging to different section of the questionnaire given in Table \ref{tbl:listofvars}.
+\begin{figure}[H]
+\centering
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=1, width=0.95\linewidth]{graphics/oneway_compare_cartsample.pdf}  
+        \caption{sds\_cart\_sample}
+        \label{subfig:cartsample}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=1, width=0.95\linewidth]{graphics/oneway_compare_cartnorm.pdf}  
+        \caption{sds\_cart\_norm}
+        \label{subfig:cartnorm}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=1,width=0.95\linewidth]{graphics/oneway_compare_cartnormrank.pdf}  
+        \caption{sds\_cart\_normrank}
+        \label{subfig:cartnormrank}
+    \end{subfigure}
+    \medskip
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=1, width=0.95\linewidth]{graphics/oneway_compare_rfsample.pdf}  
+        \caption{sds\_rf\_sample}
+        \label{subfig:rfsample}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=1, width=0.95\linewidth]{graphics/oneway_compare_rfnorm.pdf}  
+        \caption{sds\_rf\_norm}
+        \label{subfig:rfnorm}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=1,width=0.95\linewidth]{graphics/oneway_compare_rfnormrank.pdf}  
+        \caption{sds\_rf\_normrank}
+        \label{subfig:rfnormrank}
+    \end{subfigure}
+    \medskip
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=1, width=0.95\linewidth]{graphics/oneway_compare_bagsample.pdf}  
+        \caption{sds\_bag\_sample}
+        \label{subfig:bagsample}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=1, width=0.95\linewidth]{graphics/oneway_compare_bagnorm.pdf}  
+        \caption{sds\_bag\_norm}
+        \label{subfig:bagnorm}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=1,width=0.95\linewidth]{graphics/oneway_compare_bagnormrank.pdf}  
+        \caption{sds\_bag\_normrank}
+        \label{subfig:bagnormrank}
+    \end{subfigure}
+\caption{Histograms of data proportion with variable weight.}
+\label{fig:weight-1}
+\end{figure}
+
+\newpage
+\begin{figure}[H]\ContinuedFloat
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=1, width=0.95\linewidth]{graphics/oneway_compare_polyregsample.pdf}  
+        \caption{sds\_polyreg\_sample}
+        \label{subfig:polyregsample}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=1, width=0.95\linewidth]{graphics/oneway_compare_polyregnorm.pdf}  
+        \caption{sds\_polyreg\_norm}
+        \label{subfig:polyregnorm}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=1,width=0.95\linewidth]{graphics/oneway_compare_polyregnormrank.pdf}  
+        \caption{sds\_polyreg\_normrank}
+        \label{subfig:polyregnormrank}
+    \end{subfigure}
+    \medskip
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=1, width=0.95\linewidth]{graphics/oneway_compare_normsample.pdf}  
+        \caption{sds\_norm\_sample}
+        \label{subfig:normsample}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=1, width=0.95\linewidth]{graphics/oneway_compare_normnorm.pdf}  
+        \caption{sds\_norm\_norm}
+        \label{subfig:normnorm}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=1,width=0.95\linewidth]{graphics/oneway_compare_normnormrank.pdf}  
+        \caption{sds\_norm\_normrank}
+        \label{subfig:normnormrank}
+    \end{subfigure}
+    \medskip
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=1, width=0.95\linewidth]{graphics/oneway_compare_normranksample.pdf}  
+        \caption{sds\_normrank\_sample}
+        \label{subfig:normranksample}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=1, width=0.95\linewidth]{graphics/oneway_compare_normranknorm.pdf}  
+        \caption{sds\_normrank\_norm}
+        \label{subfig:normranknorm}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=1,width=0.95\linewidth]{graphics/oneway_compare_normranknormrank.pdf}  
+        \caption{sds\_normrank\_normrank}
+        \label{subfig:normranknormrank}
+    \end{subfigure}
+    \caption[]{Histograms of data proportion with variable weight.}
+\end{figure}
+
+\newpage
+\begin{figure}[H]\ContinuedFloat
+\begin{center}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=1, width=0.95\linewidth]{graphics/oneway_compare_terrance_version1.pdf}  
+        \caption{sds\_terrance\_v1}
+        \label{subfig:terrancev1}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=1, width=0.95\linewidth]{graphics/oneway_compare_terrance_version2.pdf}  
+        \caption{sds\_terrance\_v2}
+        \label{subfig:terrancev2}
+    \end{subfigure}
+\end{center}
+    \caption[]{Histograms of data proportion with variable weight.}
+    \label{fig:weight-3}
+\end{figure}
+Beginning with variable $weight$, this represents the survey weight adjusted to the Facebook user population and is recorded as float numbers. By examining the histograms in Figure \ref{fig:weight-1}, we can observe that synthetic datasets generated using non-parametric data synthesizers, such as \textbf{cart}, \textbf{rf}, and \textbf{bag}, tend to replicate the distribution of the original weight variable quite well. However, when considering parametric data synthesizers such as norm, a noticeable difference can be observed in the distribution of data occurrences, particularly with instances around $5,000$, indicating a lower quality in synthetic data generation. This is also reflected in the average $Sp_{MSE}$ scores of approximately 1060, as illustrated in Figure 5(m), Figure 5(n), and Figure 5(o). Furthermore, in the cases of $sds\_normrank\_norm$ and $sds\_normrank\_normrank$, the performance with respect to the utility of the $weight$ variable is even worse, with scores of $92,025$ and $102,184$ respectively, as demonstrated in Figure 5(s) and Figure 5(t).
+
+\begin{figure}[H]
+\centering
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=52, width=0.95\linewidth]{graphics/oneway_compare_cartsample.pdf}  
+        \caption{sds\_cart\_sample}
+        \label{subfig:cartsampleb4}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=52, width=0.95\linewidth]{graphics/oneway_compare_cartnorm.pdf}  
+        \caption{sds\_cart\_norm}
+        \label{subfig:cartnormb4}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=52,width=0.95\linewidth]{graphics/oneway_compare_cartnormrank.pdf}  
+        \caption{sds\_cart\_normrank}
+        \label{subfig:cartnormrankb4}
+    \end{subfigure}
+    \medskip
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=52, width=0.95\linewidth]{graphics/oneway_compare_rfsample.pdf}  
+        \caption{sds\_rf\_sample}
+        \label{subfig:rfsampleb4}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=52, width=0.95\linewidth]{graphics/oneway_compare_rfnorm.pdf}  
+        \caption{sds\_rf\_norm}
+        \label{subfig:rfnormb4}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=52,width=0.95\linewidth]{graphics/oneway_compare_rfnormrank.pdf}  
+        \caption{sds\_rf\_normrank}
+        \label{subfig:rfnormrankb4}
+    \end{subfigure}
+    \medskip
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=52, width=0.95\linewidth]{graphics/oneway_compare_bagsample.pdf}  
+        \caption{sds\_bag\_sample}
+        \label{subfig:bagsampleb4}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=52, width=0.95\linewidth]{graphics/oneway_compare_bagnorm.pdf}  
+        \caption{sds\_bag\_norm}
+        \label{subfig:bagnormb4}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=52,width=0.95\linewidth]{graphics/oneway_compare_bagnormrank.pdf}  
+        \caption{sds\_bag\_normrank}
+        \label{subfig:bagnormrankb4}
+    \end{subfigure}
+\caption{Histograms of data proportion with variable B4.}
+\label{fig:B4-1}
+\end{figure}
+
+\newpage
+\begin{figure}[H]\ContinuedFloat
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=52, width=0.95\linewidth]{graphics/oneway_compare_polyregsample.pdf}  
+        \caption{sds\_polyreg\_sample}
+        \label{subfig:polyregsampleb4}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=52, width=0.95\linewidth]{graphics/oneway_compare_polyregnorm.pdf}  
+        \caption{sds\_polyreg\_norm}
+        \label{subfig:polyregnormb4}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=52,width=0.95\linewidth]{graphics/oneway_compare_polyregnormrank.pdf}  
+        \caption{sds\_polyreg\_normrank}
+        \label{subfig:polyregnormrankb4}
+    \end{subfigure}
+    \medskip
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=52, width=0.95\linewidth]{graphics/oneway_compare_normsample.pdf}  
+        \caption{sds\_norm\_sample}
+        \label{subfig:normsampleb4}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=52, width=0.95\linewidth]{graphics/oneway_compare_normnorm.pdf}  
+        \caption{sds\_norm\_norm}
+        \label{subfig:normnormb4}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=52,width=0.95\linewidth]{graphics/oneway_compare_normnormrank.pdf}  
+        \caption{sds\_norm\_normrank}
+        \label{subfig:normnormrankb4}
+    \end{subfigure}
+    \medskip
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=52, width=0.95\linewidth]{graphics/oneway_compare_normranksample.pdf}  
+        \caption{sds\_normrank\_sample}
+        \label{subfig:normranksampleb4}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=52, width=0.95\linewidth]{graphics/oneway_compare_normranknorm.pdf}  
+        \caption{sds\_normrank\_norm}
+        \label{subfig:normranknormb4}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=52,width=0.95\linewidth]{graphics/oneway_compare_normranknormrank.pdf}  
+        \caption{sds\_normrank\_normrank}
+        \label{subfig:normranknormrankb4}
+    \end{subfigure}
+    \caption[]{Histograms of data proportion with variable B4.}
+    \label{fig:B4-2}
+\end{figure}
+
+\newpage
+\begin{figure}[H]\ContinuedFloat
+\begin{center}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=52, width=0.95\linewidth]{graphics/oneway_compare_terrance_version1.pdf}  
+        \caption{sds\_terrance\_v1}
+        \label{subfig:terrancev1b4}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=52, width=0.95\linewidth]{graphics/oneway_compare_terrance_version2.pdf}  
+        \caption{sds\_terrance\_v2}
+        \label{subfig:terrancev2b4}
+    \end{subfigure}
+\end{center}
+    \caption[]{Histograms of data proportion with variable B4.}
+    \label{fig:B4-3}
+\end{figure}
+Moving on to the evaluation of univariate utility for variable $B4$, we first interval mapped the corresponding responses into six categories: $-99$, $[0, 1)$, $[1, 5)$, $[5, 10)$, $[10, 1000)$, and $1000$. However, when restricted to the original dataset from August 2nd to August 8th (2020), the returned values responded with a more narrow version of only three categories: -99, $[0, 1)$, and $[1, 5)$.
+
+As shown in Figure \ref{fig:B4-1}, the comparison of data instance values output by non-parametric data synthesizers demonstrated a relatively good synthesizing quality in terms of utility evaluation, with a maximum score of $Sp_{MSE}$ at 50. The percent of distributed values given by these synthetic datasets also well mimicked the distribution from the original dataset.
+
+However, when using the synthesizers belonging to group \textbf{norm}, \textbf{normrank}, and \textbf{terrance}, the distribution comparison given by the comparison plot from Figure 6(m) to Figure 6(t) deviated at least 300 with regard to $Sp_{MSE}$. Specifically, with the norm data synthesizer, $sds\_terrance\_v1$, and $sds\_terrance\_v2$, there were occurrences of data values generated that did not exist in the original dataset. For example, $sds\_terrance\_v1$ and $sds\_terrance\_v2$ generated instances of $(5, 10]$ and $(10, 1000]$, which were not present in the original dataset and resulted in a summarized greater deviation added to the evaluation of data utility.
+\begin{figure}[H]
+\centering
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=30, width=0.95\linewidth]{graphics/oneway_compare_cartsample.pdf}  
+        \caption{sds\_cart\_sample}
+        \label{subfig:cartsamplec2}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=30, width=0.95\linewidth]{graphics/oneway_compare_cartnorm.pdf}  
+        \caption{sds\_cart\_norm}
+        \label{subfig:cartnormc2}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=30,width=0.95\linewidth]{graphics/oneway_compare_cartnormrank.pdf}  
+        \caption{sds\_cart\_normrank}
+        \label{subfig:cartnormrankc2}
+    \end{subfigure}
+    \medskip
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=30, width=0.95\linewidth]{graphics/oneway_compare_rfsample.pdf}  
+        \caption{sds\_rf\_sample}
+        \label{subfig:rfsamplec2}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=30, width=0.95\linewidth]{graphics/oneway_compare_rfnorm.pdf}  
+        \caption{sds\_rf\_norm}
+        \label{subfig:rfnormc2}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=30,width=0.95\linewidth]{graphics/oneway_compare_rfnormrank.pdf}  
+        \caption{sds\_rf\_normrank}
+        \label{subfig:rfnormrankc2}
+    \end{subfigure}
+    \medskip
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=30, width=0.95\linewidth]{graphics/oneway_compare_bagsample.pdf}  
+        \caption{sds\_bag\_sample}
+        \label{subfig:bagsamplec2}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=30, width=0.95\linewidth]{graphics/oneway_compare_bagnorm.pdf}  
+        \caption{sds\_bag\_norm}
+        \label{subfig:bagnormc2}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=30,width=0.95\linewidth]{graphics/oneway_compare_bagnormrank.pdf}  
+        \caption{sds\_bag\_normrank}
+        \label{subfig:bagnormrankc2}
+    \end{subfigure}
+\caption{Histograms of data proportion with variable C2.}
+\label{fig:c2-1}
+\end{figure}
+
+\newpage
+\begin{figure}[H]\ContinuedFloat
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=30, width=0.95\linewidth]{graphics/oneway_compare_polyregsample.pdf}  
+        \caption{sds\_polyreg\_sample}
+        \label{subfig:polyregsamplec2}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=30, width=0.95\linewidth]{graphics/oneway_compare_polyregnorm.pdf}  
+        \caption{sds\_polyreg\_norm}
+        \label{subfig:polyregnormc2}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=30,width=0.95\linewidth]{graphics/oneway_compare_polyregnormrank.pdf}  
+        \caption{sds\_polyreg\_normrank}
+        \label{subfig:polyregnormrankc2}
+    \end{subfigure}
+    \medskip
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=30, width=0.95\linewidth]{graphics/oneway_compare_normsample.pdf}  
+        \caption{sds\_norm\_sample}
+        \label{subfig:normsamplec2}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=30, width=0.95\linewidth]{graphics/oneway_compare_normnorm.pdf}  
+        \caption{sds\_norm\_norm}
+        \label{subfig:normnormc2}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=30,width=0.95\linewidth]{graphics/oneway_compare_normnormrank.pdf}  
+        \caption{sds\_norm\_normrank}
+        \label{subfig:normnormrankc2}
+    \end{subfigure}
+    \medskip
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=30, width=0.95\linewidth]{graphics/oneway_compare_normranksample.pdf}  
+        \caption{sds\_normrank\_sample}
+        \label{subfig:normranksamplec2}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=30, width=0.95\linewidth]{graphics/oneway_compare_normranknorm.pdf}  
+        \caption{sds\_normrank\_norm}
+        \label{subfig:normranknormc2}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=30,width=0.95\linewidth]{graphics/oneway_compare_normranknormrank.pdf}  
+        \caption{sds\_normrank\_normrank}
+        \label{subfig:normranknormrankc2}
+    \end{subfigure}
+    \caption[]{Histograms of data proportion with variable C2.}
+    \label{fig:c2-2}
+\end{figure}
+
+\newpage
+\begin{figure}[H]\ContinuedFloat
+\begin{center}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=30, width=0.95\linewidth]{graphics/oneway_compare_terrance_version1.pdf}  
+        \caption{sds\_terrance\_v1}
+        \label{subfig:terrancev1c2}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=30, width=0.95\linewidth]{graphics/oneway_compare_terrance_version2.pdf}  
+        \caption{sds\_terrance\_v2}
+        \label{subfig:terrancev2c2}
+    \end{subfigure}
+\end{center}
+    \caption[]{Histograms of data proportion with variable C2.}
+    \label{fig:c2-3}
+\end{figure}
+As for categorical variable $C2$, which queries how many people the respondent has had direct contact with in the last 24 hours, with encoding scheme 1=1-4 people, 2=5-9 people, 3=10-19 people, 4=20 or more people, and -99 = missing data. As shown in Figure 7(a) to Figure 7(l), non-parametric data synthesizers applied to the original dataset yielded good univariate utility for $C2$, with all scores meeting the requirement of $Sp_{MSE}<10$. The synthetic datasets generated by the GEM-based data synthesizer also demonstrated good data synthesis quality, as seen in Figure 7(s) and Figure 7(t), with little deviation from the actual data instances for values of 2, 3, and 4. However, for values of -99 and 1, the difference in the proportion of data values tended to increase, resulting in a majority of $Sp_{MSE}$ additions.
+
+In contrast, the parametric synthesizers based on \textbf{norm} and \textbf{normrank} performed poorly in terms of data utility evaluation, scoring at least 200 in terms of $Sp_{MSE}$. The comparison plots of $sds\_normrank\_sample$, $sds\_normrank\_norm$, and $sds\_normrank\_normrank$, shown in Figure 7(p), Figure 7(q), and Figure 7(r), respectively, all showed significant differences in the proportion of data values recoded with -99, 1, 2, 3, and 4, indicating a comparatively poor synthesizing performance with the \textbf{normrank}-based data synthesizer.
+\begin{figure}[H]
+\centering
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=43, width=0.95\linewidth]{graphics/oneway_compare_cartsample.pdf}  
+        \caption{sds\_cart\_sample}
+        \label{subfig:cartsampleD9}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=43, width=0.95\linewidth]{graphics/oneway_compare_cartnorm.pdf}  
+        \caption{sds\_cart\_norm}
+        \label{subfig:cartnormD9}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=43,width=0.95\linewidth]{graphics/oneway_compare_cartnormrank.pdf}  
+        \caption{sds\_cart\_normrank}
+        \label{subfig:cartnormrankD9}
+    \end{subfigure}
+    \medskip
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=43, width=0.95\linewidth]{graphics/oneway_compare_rfsample.pdf}  
+        \caption{sds\_rf\_sample}
+        \label{subfig:rfsampleD9}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=43, width=0.95\linewidth]{graphics/oneway_compare_rfnorm.pdf}  
+        \caption{sds\_rf\_norm}
+        \label{subfig:rfnormD9}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=43,width=0.95\linewidth]{graphics/oneway_compare_rfnormrank.pdf}  
+        \caption{sds\_rf\_normrank}
+        \label{subfig:rfnormrankD9}
+    \end{subfigure}
+    \medskip
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=43, width=0.95\linewidth]{graphics/oneway_compare_bagsample.pdf}  
+        \caption{sds\_bag\_sample}
+        \label{subfig:bagsampleD9}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=43, width=0.95\linewidth]{graphics/oneway_compare_bagnorm.pdf}  
+        \caption{sds\_bag\_norm}
+        \label{subfig:bagnormD9}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=43,width=0.95\linewidth]{graphics/oneway_compare_bagnormrank.pdf}  
+        \caption{sds\_bag\_normrank}
+        \label{subfig:bagnormrankD9}
+    \end{subfigure}
+\caption{Histograms of data proportion with variable D9.}
+\label{fig:D9-1}
+\end{figure}
+
+\newpage
+\begin{figure}[H]\ContinuedFloat
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=43, width=0.95\linewidth]{graphics/oneway_compare_polyregsample.pdf}  
+        \caption{sds\_polyreg\_sample}
+        \label{subfig:polyregsampleD9}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=43, width=0.95\linewidth]{graphics/oneway_compare_polyregnorm.pdf}  
+        \caption{sds\_polyreg\_norm}
+        \label{subfig:polyregnormD9}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=43,width=0.95\linewidth]{graphics/oneway_compare_polyregnormrank.pdf}  
+        \caption{sds\_polyreg\_normrank}
+        \label{subfig:polyregnormrankD9}
+    \end{subfigure}
+    \medskip
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=43, width=0.95\linewidth]{graphics/oneway_compare_normsample.pdf}  
+        \caption{sds\_norm\_sample}
+        \label{subfig:normsampleD9}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=43, width=0.95\linewidth]{graphics/oneway_compare_normnorm.pdf}  
+        \caption{sds\_norm\_norm}
+        \label{subfig:normnormD9}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=43,width=0.95\linewidth]{graphics/oneway_compare_normnormrank.pdf}  
+        \caption{sds\_norm\_normrank}
+        \label{subfig:normnormrankD9}
+    \end{subfigure}
+    \medskip
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=43, width=0.95\linewidth]{graphics/oneway_compare_normranksample.pdf}  
+        \caption{sds\_normrank\_sample}
+        \label{subfig:normranksampleD9}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=43, width=0.95\linewidth]{graphics/oneway_compare_normranknorm.pdf}  
+        \caption{sds\_normrank\_norm}
+        \label{subfig:normranknormD9}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=43,width=0.95\linewidth]{graphics/oneway_compare_normranknormrank.pdf}  
+        \caption{sds\_normrank\_normrank}
+        \label{subfig:normranknormrankD9}
+    \end{subfigure}
+    \caption[]{Histograms of data proportion with variable D9.}
+    \label{fig:D9-2}
+\end{figure}
+
+\newpage
+\begin{figure}[H]\ContinuedFloat
+\begin{center}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=43, width=0.95\linewidth]{graphics/oneway_compare_terrance_version1.pdf}  
+        \caption{sds\_terrance\_v1}
+        \label{subfig:terrancev1D9}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=43, width=0.95\linewidth]{graphics/oneway_compare_terrance_version2.pdf}  
+        \caption{sds\_terrance\_v2}
+        \label{subfig:terrancev2D9}
+    \end{subfigure}
+\end{center}
+    \caption[]{Histograms of data proportion with variable D9.}
+    \label{fig:D9-3}
+\end{figure}
+
+Regarding the final categorical variable $D9$, which queries the reason for ceasing work with seven response categories, the performance of various data synthesizers was evaluated with respect to data utility. The non-parametric data synthesizers, namely \textbf{cart} and \textbf{polyreg}, exhibited the best performance, with all scores of $Sp_{MSE}$ around 0 in the corresponding comparison histograms, shown in Figure 8(a), Figure 8(b), Figure 8(c), Figure 8(j), Figure 8(k), and Figure 8(l). These synthesizers generated datasets that replicated the proportion of original data values of -99, 1, 2, 3, 4, 5, 6, and 7 almost exactly. However, with the increased model complexity in \textbf{rf} and \textbf{bag} based data synthesis algorithms, the evaluation performance tended to decrease by at least 10 in terms of $Sp_{MSE}$, as shown in Figure 8(d) to Figure 8(i). The performance of the parametric data synthesizers and GEM-based synthesizer was generally good shown from Figure 8(m) to Figure 8(t), with a maximum $Sp_{MSE}$ of 40. Although synthetic datasets generated by the norm data synthesizer exhibited the worst performance, the proportion of data values deviated much less than in the case of newly generated data records which do not exist in the original proportion of response.
+
+It is also worth mentioning that using the parametric data synthesizer norm would possibly generate data records which do not exist in the proportion of the original dataset. For instance, variable $D1$ asks: during the last 7 days, how often did you feel so nervous that nothing could calm you down, with responses recoded as 1=All the time, 2=Most of the time, 3=Some of the time, 4=A little of the time, 5=None of the time, and -99 denoting the existence of missing data. Apparently shown in Figure \ref{fig:D1}, newly data responses of -4, -3, -2, -1, 0, 6, 7, 8, 9, 10 were generated with sds\_norm\_sample compared to original values distributed with -99, 1, 2, 3, 4, and 5. In this case, the data synthesis quality tends to be much more inferior than evaluation performances given by marginal distribution preserved data synthesizers.
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=36, width=0.95\linewidth]{graphics/oneway_compare_normsample.pdf}  
+        \caption{sds\_norm\_sample}
+        \label{subfig:normsampleD1}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=36, width=0.95\linewidth]{graphics/oneway_compare_normnorm.pdf}  
+        \caption{sds\_norm\_norm}
+        \label{subfig:normnormD1}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[page=36, width=0.95\linewidth]{graphics/oneway_compare_normnormrank.pdf}
+        \caption{sds\_norm\_normrank}
+        \label{subfig:normnormrankD1}
+    \end{subfigure}
+    \caption{Histograms of data proportion with variable D1.}
+    \label{fig:D1}
+    % \floatfoot{Note: \textbf{ods} denotes the original dataset while \textbf{sds} represents the synthetic dataset.}
+\end{figure}
+The evaluation results based on univariate data utility showed that non-parametric data synthesizers, such as \textbf{cart}, \textbf{rf}, and \textbf{bag}, tended to replicate the utility of the $weight$ variable quite well, while the use of parametric data synthesizers, such as \textbf{norm}, led to noticeable differences in the distribution of data occurrences. In the case of open response variables such as $B4$, non-parametric data synthesizers demonstrated relatively good synthesizing quality in terms of utility evaluation, while the use of synthesizers such as \textbf{norm}, \textbf{normrank}, and \textbf{GEM} led to significant deviations in the distribution comparison. For categorical variables with more levels like $C2$ and $D9$, non-parametric data synthesizers generally exhibited better performance than parametric ones, with \textbf{cart} and \textbf{polyreg} demonstrating the best results in terms of data utility. Moreover, the use of the parametric data synthesizer \textbf{norm} could generate data records that do not exist in the proportion of the original dataset, resulting in a inferior performance with utility evaluation. 
+
+In summary, the comparison between non-parametric, parametric data synthesizers reveals that the former outperforms the latter in terms of data utility. This finding indicates that non-parametric synthesizers are more effective in capturing the complex relationships between variables, resulting in synthesized datasets that better approximate the true data distribution. As such, researchers who seek to generate high-quality synthetic datasets may benefit from utilizing non-parametric data synthesizers over their parametric counterparts. As for GEM-based data synthesizing algorithm provided by Terrance Liu, the corresponding performance is significantly inferior to non-parametric, parametric data synthesizers in terms of utility evaluation. Possible reasons may lie in the inability to restore complex interactions between variables for the generator based algorithm, where the embedded structure in tabular data does not really suffice the requirement to model internal relationships between data instances, compared to image or text based datasets.
+
+Although non-parametric data synthesizers are known to produce more accurate results, this is not always the case, especially when models with higher complexity such random forest and bagging are used. In some cases, higher model complexity may lead to overfitting, which can result in synthesized records that have low validity with regard to data utility. Thus, researchers who wish to utilize non-parametric data synthesizers may need to carefully consider the complexity of the models they use to ensure that the synthesized records are accurate and reliable.
+
+In the context of parametric synthesizing, the \textbf{normrank} synthesizer outperforms the \textbf{norm} synthesizer in terms of data utility. This finding can be attributed to the fact that the \textbf{normrank} synthesizer maintains the marginal distribution of the original dataset, resulting in a more aligned distribution in the synthesized dataset. As such, people who seek to generate synthetic datasets with high data utility may benefit from utilizing the \textbf{normrank} synthesizer over the \textbf{norm} synthesizer in their parametric data synthesizing applications.
 
 \subsubsection{Inference from Fitted Linear Regression Models}
 \label{subsubsec:inferencelm}
-estimate, CI-overlap, ggplot
+Given we have evaluated the data utilty with synthetic data with the general utility measure ($Sp_{MSE}$), the next step for us is to evaluate analysis-specific utility of synthetic data generated using various approached mentioned in section \ref{subsec:detailsynmethods}, and examine the corresponding practicality. In this case, we proposed to fit two linear regression models to the generated synthetic datasets. They differ in terms of model specification and the scope of explanatory variables, which provides a thorough test for analytical validity of synthetic data. Details of general model specification are presented below:
+\begin{fleqn}
+\begin{align*}
+& \text{1. Model 1: Linear regression of the installation with contact tracing application} \\
+& \begin{aligned}
+  \textit{F2\_1} &\sim \textit{B1\_1 + B1\_2 + B1\_3 + B1\_4 + B1\_5 + B1\_6 + B1\_7 + B1\_8 + B1\_9 + B1\_10}\\
+  &\textit{+ B1\_11 + B1\_12 + B1\_13 + B2 + B3 + B4 + B5 + B6 + B7 + B8 + B9 + B10}\\
+  &\textit{+ B11 + B12\_1 + B12\_2 + B12\_3 + B12\_4 + B12\_5 + B12\_6}\\
+  &\textit{+ C1\_m + C2 + C3 + C5 + C6 + C7 + C8}\\
+  &\textit{+ D1 + D2 + D3 + D4 + D5}\\
+  &\textit{+ E2 + E3 + E4 + E5 + E6 + E7}\\
+  \end{aligned} \\
+& \text{2. Model 2: Linear regression of Coronavirus diagnosis} \\
+& \begin{aligned}
+  \textit{B8} &\sim \textit{B1\_1 + B1\_2 + B1\_3 + B1\_4 + B1\_5 + B1\_6 + B1\_7 + B1\_8 + B1\_9 + B1\_10}\\
+  &\textit{+ B1\_11 + B1\_12 + B1\_13 + B2 + B3 + B4 + B5 + B6 + B7 + B9 + B10}\\
+  &\textit{+ B11 + B12\_1 + B12\_2 + B12\_3 + B12\_4 + B12\_5 + B12\_6}\\
+  &\textit{+ C1\_m + C2 + C3 + C5 + C6 + C7 + C8}\\
+  &\textit{+ E2 + E3 + E4 + E5 + E6 + E7}\\
+  \end{aligned} \\
+\end{align*}
+\end{fleqn}
+where the description for each variable can be found in Table \ref{tbl:listofvars}. 
 
-computation issues also can be included with rf, bag.
+For the construction of Model 1, which aims to predict whether individuals have installed a contact tracing application, we included all the health-related variables in Section B, the contact-related variables in Section C, a subset of mental health-related variables in Section D, and the demographics-related variables in Section E. We believe that these variables are important factors that could influence an individual's decision to install the contact tracing application. Specifically, the health-related variables in Section B, such as symptoms and health history, could indicate an individual's risk of contracting COVID-19, which could in turn affect their decision to install the application. The contact-related variables in Section C could reflect an individual's level of exposure to COVID-19 and their perception of the importance of contact tracing. The mental health-related variables in Section D could indicate an individual's level of anxiety and stress related to the pandemic, which could affect their willingness to install the application. Lastly, the demographic variables in Section E, such as age, gender, and education level, could also play a role in an individual's decision-making process.
 
-for vars, for non-para vs. para
-\subsection{Other Findings}
+As for Model 2, which aims to predict whether individuals have been diagnosed with COVID-19, we used all the predictors from Model 1 but excluded the variable $B8$ itself and the mental health-related variables indicated by $D1$, $D2$, $D3$, $D4$, and $D5$. This is based on the assumption that mental health-related variables may not directly affect an individual's risk of contracting COVID-19, but could influence their reporting of symptoms or seeking of medical attention. We believe that the exclusion of these variables could improve the model's specificity in predicting COVID-19 diagnosis.
+
+ After obtaining parameter fitting results with both linear regression models of 20 synthetic datasets, we have planned to aggregate the results from analysis-specific utility measure organized with applied data synthesizers. The aggregated evaluation is presented in Table \ref{tbl:lmfit}. 
+ \begin{table}[H]
+  \centering
+  \caption{Analysis-specific utility measures for various synthesising approaches and inference models.}
+  \label{tbl:lmfit}
+  \includegraphics[width=\textwidth]{graphics/Fig-12-lm.png}
+    {\raggedright {\scriptsize Note: $\hat{\beta}$ indicates the coefficient parameter estimated. Also, underlined and bold values indicate best model fitting.} \par}
+\end{table}
+It is important to note that analysis-specific measures fitted with two linear regression models are calculated for each model separately and they include mean standardized absolute difference in coefficient estimates and mean overlap in the 95\% confidence intervals obtained using the observed and synthetic data. To interpret the fitted results shown in \ref{tbl:lmfit}, we firstly discuss the how to access the quality of synthetic data based on coefficient difference and overlapping of confidence interval. 
+
+The mean absolute standard coefficient difference measures the average absolute difference between the standardized coefficients in the linear regression models fitted on the original and synthetic datasets. A smaller mean absolute standard coefficient difference indicates a better fit between the synthetic and original datasets. The mean 95\% confidence interval overlap measures the average overlap between the 95\% confidence intervals for the standardized coefficients in the linear regression models fitted on the original and synthetic datasets. A larger mean 95\% confidence interval overlap indicates a better fit between the synthetic and original datasets. A negative value for the mean 95\% confidence interval overlap suggests that the differences in the coefficient estimates between the two models are statistically significant at the 95\% confidence level and that the synthetic data model may not be a good fit for the original data.
+
+Nevertheless, compared to table observations, using boxplots is more conducive to intuitively comparing model performance. In this case, for each model fitting results, we picked the best performed data synthesizer within each algorithm group, and formatted the corresponding boxplots with regard to both groups. 
+\begin{figure*}
+  \centering
+  \subfigure[a]{%
+    \includegraphics[width=0.5\textwidth]{}%
+    \label{fig:a}%
+    }\hspace{0.2cm}%or more
+    \subfigure[b]{%
+    \includegraphics[width=0.5\textwidth]{example-image-a}%
+    \label{fig:b}%
+  }%  
+  \caption{xxx}
+  \label{fig:ab}
+\end{figure*}
+
+% \begin{figure}[H]
+%     \centering
+%     \subfigure[]{\includegraphics[width=0.5\textwidth]{graphics/Fig-14-diff-picked-boxplots-model1.png}} 
+%     \subfigure[]{\includegraphics[width=0.5\textwidth]{graphics/Fig-14-diff-picked-boxplots-model2.png}} 
+%     \caption{(a) blah (b) blah
+%     \label{fig:foobar}
+% \end{figure}
+
+For detailed illustration of boxplots showing all the analysis-specific utility comparison of two models based on estimated coefficient difference and confidence interval overlapping, please refer to Electronic Appendix
+
+
+Based on the evaluation criterion and , $sds\_bag\_norm$ performed best at the analysis-specific level for Model 1. Restricted in the analysis of Model 1, 
+$sds\_bag\_norm$ is followed by $sds\_cart\_norm$, where synthetic data generated using non-parametric synthesizers such as \textbf{cart} and \textbf{bag} performed well at 
+the general level compared to the utilization of \textbf{norm}, \textbf{normrank}, and GEM-based methods at data synthesis stage 1. While looking into the corresponding mean 95\% confidence 
+interval overlap, all the values are negative, implying the differences in the coefficient estimates between the two models are statistically significant at the 95\% confidence level and that 
+the synthetic data models built with Model 1 may not be a good fit for the original data. However, by scoring with the largest negative value, synthetic models fit by 
+$sds\_bag\_norm$ again showed a good fit for the original data. As for Model 2 concerning the diagnosis of coronavirus, $sds\_rf\_norm$ obtained the lowest mean 
+coefficient standard difference with 1.529 which is also verified by acquiring the highest mean 95\% confidence interval overlap. In general, the application of non-parametric data synthesizers 
+at data synthesis stage 1 has resulted in a comparably good fit for Model 2 in terms of synthetic data generation.
+
+To conclude, restricted to our experiment, the use of non-parametric data synthesizer at synthesis stage 1 for normal categorical variables would result in a good fit in terms of 
+analysis-specific utility metric. At the same time, the choice with synthesizers to apply on synthesis stage 2 with the only numerical variable $weight$ tends to result in 
+minor differences in terms of model fitting. Nonetheless, as expected randomly sampled synthetic data are the least useful while synthetic data generated by \textbf{normrank} generally 
+performed well with a preserved marginal distribution of the actual dataset.
+
+\newpage
+\subsubsection{Replication Analysis}
+\label{subsubsec:sde}
+For the purpose of the risk disclosure study, we have chosen to use the \textit{replicated.uniques()} method that is offered in \textit{synthpop} to detect exact duplicates of data instances that are present in the produced dataset. We may determine the uniqueness of each row in the synthetic data by summing the number of rows with an exact match. To take use of this method, we must manage category and numerical variables independently. As described in the section titled \ref{subsubsec:design}, we have proposed an encoding technique for all categorical variables, excluding the numeric \textit{weight} variable. This is done to preserve a generic approach to data synthesis and simplify the computations. The technique called \textit{replicated.uniques()} searches for rows in the synthetic dataset that are precise matches for rows in the actual dataset. Each cell value in each row must precisely match its counterpart in the synthetic dataset in order for a comparison to be successful. Each type of processed data has unique matching criteria. In our particular instance, all category variables are integer-encoded, therefore in order to update the synthetic records, we employ a scaled metric. Specifically, we scale the synthetic dataset using the method $\text{scaled}(X_{syn})=\frac{(X_{syn}-min(X_{org})}{max(X_{org})-min(X_{org})}$, where $X_{syn}$ represents the synthetic dataset and $X_{org}$ represents the original dataset. The minimal number of replications required for the synthetic value to be considered a match is then assessed. The synthetic value is considered a match if it falls within $\lambda\%$ of the matching real value, with $\lambda$ having a default value of 0.01. Using the formula $score=1-\frac{\text{Number of matching synthetic rows}}{\text{Total number of synthetic rows}}$, we determine the proportion of synthetic rows that correspond to real rows in the final phase of this procedure. This formula enables us to determine the percentage of synthetic rows that correspond to actual rows. In this instance, the score can be understood as a complement; a score of one indicates that every row is unique, whereas a score of zero represents the worst possible performance, which occurs when every row in the synthetic dataset matches a row in the original dataset.
+
+By setting $\lambda$ as 0.01, we were able to compute the $score$ with all of the 20 synthetic datasets, showing in Figure \ref{tbl:risk}.
+\begin{table}[H]
+    \centering
+    \caption{Replicated uniques with $score$ calculated in the synthetic datasets.}
+    \label{tbl:risk}
+    \includegraphics[width=1\textwidth]{graphics/Fig-10-newrowsyn.png}    
+    % \caption*{Note: $score$ denotes the number of novel values in the synthetic datasets.}
+\end{table}
+The results from the risk disclosure analysis, as shown in Figure \ref{tbl:risk}, indicate good performance for all scores, with a minimum score of 0.94. However, minor differences are observed between data synthesizers based on different algorithms. Specifically, the use of parametric data synthesizers such as \textit{norm} and \textit{normrank} resulted in a perfect score of 1.0, indicating that each row generated using these synthesizers is unique. This may be due to the inclusion of the \textit{norm} algorithm, which can generate newly synthetic records that do not exist in the original distribution. Since the \textit{replicated.uniques()} metric relies on exact copies, any deviations from the original marginal distribution will result in a score of 1.
+
+On the other hand, the scores for non-parametric data synthesizers tend to increase with increased model complexity, particularly for the \textit{rf} data synthesizer, which scored an average of 0.9857. This suggests that these models are better at capturing complex interactions between variables, but also indicates a decrease in the possibility of generating exact copies from the original dataset. This is further evidenced by the performance of the \textit{GEM}-based method with an average risk score of 0.9777, which performs well due to its generator-based structure.
+
+
+
+\subsection{Other Insights from the Application}
 \label{subsec:findings}
-, for model complexity, , for synthesis with missingness
+During the data synthesis process of the COVID-19 Trends and Impact Surveys (CTIS) dataset, we have encountered some noteworthy findings, one of which pertains to computation issues. The CTIS dataset is comprised of 54 variables and 260,000 observations, and for data synthesis, complex non-parametric data synthesizers, such as the random forest (RF) and bagging algorithms, were employed. However, the application of these algorithms led to memory-related problems.
+
+In an attempt to address this issue, we first reduced the number of trees grown from 100 to 10, aiming to decrease model complexity. However, the problem persisted, and we further attempted to remove categorical variables with a large number of levels. For instance, the variable $D9$ with 9 different responses for termination of working was removed. Unfortunately, even with these measures, we continued to encounter memory issues.
+
+Upon examining the root cause of the problem, we found that these complex data synthesis algorithms were not equipped to handle such a large dataset, especially with the existing high model complexity. This is a common issue when synthesizing large datasets with complex algorithms. As \citet{raab2017guidelines} pointed out, a possible solution is to stratify the data into smaller subgroups and synthesize within each subgroup. In line with these guidelines, the CTIS dataset was stratified by date and synthesized the data for each subgroup. In total, the data were synthesized for seven subgroups from the original dataset. This approach allowed us to overcome the computation issues encountered and successfully synthesize data for the entire CTIS dataset.
+
+While complex non-parametric data synthesizers, such as random forest and bagging, have been shown to have excellent performance in synthesizing data for small or moderate datasets, their performance may deteriorate for larger datasets. This is due to the high model complexity, which requires a large amount of memory to store and compute the numerous parameters. When synthesizing large datasets, the amount of required memory may exceed the system capacity, leading to memory-related problems such as memory overflow or memory swapping, which could severely slow down the data synthesis process or even cause it to fail. Therefore, to synthesize large datasets, a combination of techniques, such as stratification, dimension reduction, compression, may be used to reduce model complexity and alleviate the memory-related issues.
+
+In summary, while complex non-parametric data synthesizers have excellent performance in synthesizing data for small or moderate datasets, they may encounter memory-related problems when synthesizing larger datasets. In such cases, stratification can be a useful technique to reduce model complexity and overcome the memory-related issues. As the size and complexity of datasets continue to grow, researchers will need to develop more sophisticated and efficient data synthesis methods to ensure the reliability and security of synthetic data.
+
+
+
+
+
+

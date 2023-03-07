@@ -12,7 +12,6 @@ library(reshape2)
 library(synthpop)
 library(ggplot2)
 library(dbplyr)
-library(here)
 
 # set the working directory
 wd <- "/Users/Echo/Documents/MasterThesisYue/Master-Thesis-DifferentialPrivacy"
@@ -38,7 +37,7 @@ rda2list <- function(file) {
   as.list(e)
 }
 
-folder <- "./SyntheticData/Yue/syn1_cart"
+folder <- "./SyntheticData/Yue/compare_results"
 files <- list.files(folder, pattern = ".rda$")
 
 syn_cart_models <- Map(rda2list, file.path(folder, files))
@@ -146,6 +145,7 @@ cartnorm_select_vars <- cart_norm_sds
 cartnormrank_select_vars <- cart_normrank_sds  # 54
 
 ncol(cartnorm_select_vars)
+cartsample_select_vars$weight
 
 #******************* for cart sample
 compare_plots_cartsample<- c()
@@ -165,7 +165,7 @@ for (i in 1:54) {
 }
 
 # specify the file path to store the pdf
-destination_path <- "./SyntheticData/Yue/syn1_cart/oneway_compare_cartsample.pdf"
+destination_path <- "./SyntheticData/Yue/compare_results/oneway_compare_cartsample.pdf"
 
 # Print plots to a pdf file
 pdf(destination_path)
@@ -176,6 +176,21 @@ for (i in 1:54) {
 
 dev.off()
 
+# specify the file path to store the PNG files
+destination_path <- "./SyntheticData/Yue/compare_results/one_way_"
+
+# Print plots to a pdf file
+# specify the file path to store the pdf
+destination_path <- "./SyntheticData/Yue/compare_results/oneway_compare_cartsample.pdf"
+
+# Print plots to a pdf file
+pdf(destination_path)
+
+for (i in 1:54) {
+  print(compare_plots_cartsample[[i]]$plots)  # Plot 1 --> in the first page of PDF
+}
+
+dev.off()
 # try exporting the __tab_utility__ as a csv file in convenience of comparing 
 # and choose vars which performed better in the synthesis
 pMSE_list_cartsample <- c()
@@ -190,7 +205,7 @@ df_utility_cartsample <- data.frame(vars_list=colnames(cartsample_select_vars),
                          pMSE=pMSE_list_cartsample,
                          S_pMSE=SpMSE_list_cartsample)
 
-write_utility_cartsample <- "./SyntheticData/Yue/syn1_cart/oneway_utility_cartsample.csv"
+write_utility_cartsample <- "./SyntheticData/Yue/compare_results/oneway_utility_cartsample.csv"
 write.csv(df_utility_cartsample, write_utility_cartsample, row.names=FALSE)
 
 vars2show_cartsample <- df_utility_cartsample[df_utility_cartsample[, "S_pMSE"]<10, ][1]
@@ -216,7 +231,7 @@ for (i in 1:54) {
 }
 
 # specify the file path to store the pdf
-destination_path <- "./SyntheticData/Yue/syn1_cart/oneway_compare_cartnorm.pdf"
+destination_path <- "./SyntheticData/Yue/compare_results/oneway_compare_cartnorm.pdf"
 
 # Print plots to a pdf file
 pdf(destination_path)
@@ -241,7 +256,7 @@ df_utility_cartnorm <- data.frame(vars_list=colnames(cartnorm_select_vars),
                                     pMSE=pMSE_list_cartnorm,
                                     S_pMSE=SpMSE_list_cartnorm)
 
-write_utility_cartnorm <- "./SyntheticData/Yue/syn1_cart/oneway_utility_cartnorm.csv"
+write_utility_cartnorm <- "./SyntheticData/Yue/compare_results/oneway_utility_cartnorm.csv"
 write.csv(df_utility_cartnorm, write_utility_cartnorm, row.names=FALSE)
 
 vars2show_cartnorm <- df_utility_cartnorm[df_utility_cartnorm[, "S_pMSE"]<10, ][1]
@@ -267,7 +282,7 @@ for (i in 1:54) {
 }
 
 # specify the file path to store the pdf
-destination_path <- "./SyntheticData/Yue/syn1_cart/oneway_compare_cartnormrank.pdf"
+destination_path <- "./SyntheticData/Yue/compare_results/oneway_compare_cartnormrank.pdf"
 
 # Print plots to a pdf file
 pdf(destination_path)
@@ -292,7 +307,7 @@ df_utility_cartnormrank <- data.frame(vars_list=colnames(cartnormrank_select_var
                                   pMSE=pMSE_list_cartnormrank,
                                   S_pMSE=SpMSE_list_cartnormrank)
 
-write_utility_cartnormrank <- "./SyntheticData/Yue/syn1_cart/oneway_utility_cartnormrank.csv"
+write_utility_cartnormrank <- "./SyntheticData/Yue/compare_results/oneway_utility_cartnormrank.csv"
 write.csv(df_utility_cartnormrank, write_utility_cartnormrank, row.names=FALSE)
 
 vars2show_cartnormrank <- df_utility_cartnormrank[df_utility_cartnormrank[, "S_pMSE"]<10, ][1]
@@ -391,7 +406,7 @@ autoplot(bm_model1)
 mlr3misc::map(as.data.table(bm_models_cart)$learner, "model")[[2]]
 
 # step7: save bm_model as rds
-saveRDS(bm_models_cart, './SyntheticData/Yue/syn1_cart/bm_models_cart.rds')
+saveRDS(bm_models_cart, './SyntheticData/Yue/compare_results/bm_models_cart.rds')
 
 #*****************************************************
 # Model 2: covid positive -- B8 (multiclass)
@@ -445,7 +460,7 @@ bm_model2 <- benchmark(benchmark_grid(tasks = tasks_list_m2,
 bm_model2$aggregate(msr("classif.acc"))[learner_id == "classif.multinom",]
 
 # step7: save bm_model as rds
-saveRDS(bm_model2, './SyntheticData/Yue/syn1_cart/bm_model2.rds')
+saveRDS(bm_model2, './SyntheticData/Yue/compare_results/bm_model2.rds')
 
 # step6: extract the coefficients of the trained instances
 mlr3misc::map(as.data.table(bm_model2)$learner, "model")

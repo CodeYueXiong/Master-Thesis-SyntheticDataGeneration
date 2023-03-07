@@ -38,6 +38,8 @@ library(stats)
 wd <- "/dss/dsshome1/0C/ru27req2/MA_Experiment_Data/Master-Thesis-DifferentialPrivacy"
 # wd <- "/Users/Echo/Documents/MasterThesisYue/Master-Thesis-DifferentialPrivacy"
 setwd(wd)
+wd <- "/Users/roxy/Desktop/Master-Thesis-SyntheticDataGeneration"
+setwd(wd)
 
 #*******Step 1: load original and synthetic datasets
 #*
@@ -600,19 +602,116 @@ terrance_v2_filepath <- "./SyntheticData/Terrance/version_2/syn_k2_2020-08-02_20
 terrance_v1_sds <- read.csv(file = terrance_v1_filepath, sep = ",")
 terrance_v2_sds <- read.csv(file = terrance_v2_filepath, sep = ",")
 
+spmse_cartsample <- read.csv(file = "./SyntheticData/Yue/syn1_cart/oneway_utility_cartsample.csv", sep = ",")
+spmse_cartnorm <- read.csv(file = "./SyntheticData/Yue/syn1_cart/oneway_utility_cartnorm.csv", sep = ",")
+spmse_cartnormrank <- read.csv(file = "./SyntheticData/Yue/syn1_cart/oneway_utility_cartnormrank.csv", sep = ",")
+spmse_rfsample <- read.csv(file = "./SyntheticData/Yue/syn2_rf/oneway_utility_rfsample.csv", sep = ",")
+spmse_rfnorm <- read.csv(file = "./SyntheticData/Yue/syn2_rf/oneway_utility_rfnorm.csv", sep = ",")
+spmse_rfnormrank <- read.csv(file = "./SyntheticData/Yue/syn2_rf/oneway_utility_rfnormrank.csv", sep = ",")
+spmse_bagsample <- read.csv(file = "./SyntheticData/Yue/syn3_bag/oneway_utility_bagsample.csv", sep = ",")
+spmse_bagnorm <- read.csv(file = "./SyntheticData/Yue/syn3_bag/oneway_utility_bagnorm.csv", sep = ",")
+spmse_bagnormrank <- read.csv(file = "./SyntheticData/Yue/syn3_bag/oneway_utility_bagnormrank.csv", sep = ",")
+spmse_polyregsample <- read.csv(file = "./SyntheticData/Yue/syn4_polyreg/oneway_utility_polyregsample.csv", sep = ",")
+spmse_polyregnorm <- read.csv(file = "./SyntheticData/Yue/syn4_polyreg/oneway_utility_polyregnorm.csv", sep = ",")
+spmse_polyregnormrank <- read.csv(file = "./SyntheticData/Yue/syn4_polyreg/oneway_utility_polyregnormrank.csv", sep = ",")
+spmse_normsample <- read.csv(file = "./SyntheticData/Yue/syn5_norm/oneway_utility_normsample.csv", sep = ",")
+spmse_normnorm <- read.csv(file = "./SyntheticData/Yue/syn5_norm/oneway_utility_normnorm.csv", sep = ",")
+spmse_normnormrank <- read.csv(file = "./SyntheticData/Yue/syn5_norm/oneway_utility_normnormrank.csv", sep = ",")
+spmse_normranksample <- read.csv(file = "./SyntheticData/Yue/syn6_normrank/oneway_utility_normranksample.csv", sep = ",")
+spmse_normranknorm <- read.csv(file = "./SyntheticData/Yue/syn6_normrank/oneway_utility_normranknorm.csv", sep = ",")
+spmse_normranknormrank <- read.csv(file = "./SyntheticData/Yue/syn6_normrank/oneway_utility_normranknormrank.csv", sep = ",")
+spmse_terrancev1 <- read.csv(file = "./SyntheticData/Yue/syn7_terrance/oneway_utility_terrance_version1.csv", sep = ",")
+spmse_terrancev2 <- read.csv(file = "./SyntheticData/Yue/syn7_terrance/oneway_utility_terrance_version2.csv", sep = ",")
+
+library(openxlsx)
+
+spmse_cart <- data.frame(vars_list = spmse_cartsample$vars_list,
+                         CART1 = round(spmse_cartsample$S_pMSE, 2),
+                         CART2 = round(spmse_cartnorm$S_pMSE, 2),
+                         CART3 = round(spmse_cartnormrank$S_pMSE, 2),
+                         RF1 = round(spmse_rfsample$S_pMSE, 2),
+                         spmse_rf2 = round(spmse_rfnorm$S_pMSE, 2),
+                         spmse_rf3 = round(spmse_rfnormrank$S_pMSE, 2),
+                         spmse_bag1 = round(spmse_bagsample$S_pMSE, 2),
+                         spmse_bag2 = round(spmse_bagnorm$S_pMSE, 2),
+                         spmse_bag3 = round(spmse_bagnormrank$S_pMSE, 2),
+                         spmse_polyreg1 = round(spmse_polyregsample$S_pMSE, 2),
+                         spmse_polyreg2 = round(spmse_polyregnorm$S_pMSE, 2),
+                         spmse_polyreg3 = round(spmse_polyregnormrank$S_pMSE, 2),
+                         spmse_norm1 = round(spmse_normsample$S_pMSE, 2),
+                         spmse_norm2 = round(spmse_normnorm$S_pMSE, 2),
+                         spmse_norm3 = round(spmse_normnormrank$S_pMSE, 2),
+                         spmse_normrank1 = round(spmse_normranksample$S_pMSE, 2),
+                         spmse_normrank2 = round(spmse_normranknorm$S_pMSE, 2),
+                         spmse_normrank3 = round(spmse_normranknormrank$S_pMSE, 2),
+                         spmse_tv1 = round(spmse_terrancev1$S_pMSE, 2),
+                         spmse_tv2 = round(spmse_terrancev2$S_pMSE, 2))
+
+spmse_cart <- data.frame(vars_list = spmse_cartsample$vars_list,
+                         CART1 = round(spmse_cartsample$S_pMSE, 2),
+                         CART2 = round(spmse_cartnorm$S_pMSE, 2),
+                         CART3 = round(spmse_cartnormrank$S_pMSE, 2),
+                         RF1 = round(spmse_rfsample$S_pMSE, 2),
+                         RF2 = round(spmse_rfnorm$S_pMSE, 2),
+                         RF3 = round(spmse_rfnormrank$S_pMSE, 2),
+                         BAG1 = round(spmse_bagsample$S_pMSE, 2),
+                         BAG2 = round(spmse_bagnorm$S_pMSE, 2),
+                         BAG3 = round(spmse_bagnormrank$S_pMSE, 2),
+                         POLYREG1 = round(spmse_polyregsample$S_pMSE, 2),
+                         POLYREG2 = round(spmse_polyregnorm$S_pMSE, 2),
+                         POLYREG3 = round(spmse_polyregnormrank$S_pMSE, 2),
+                         NORM1 = round(spmse_normsample$S_pMSE, 2),
+                         NORM2 = round(spmse_normnorm$S_pMSE, 2),
+                         NORM3 = round(spmse_normnormrank$S_pMSE, 2),
+                         NORMRANK1 = round(spmse_normranksample$S_pMSE, 2),
+                         NORMRANK2 = round(spmse_normranknorm$S_pMSE, 2),
+                         NORMRANK3 = round(spmse_normranknormrank$S_pMSE, 2),
+                         GEM_v1 = round(spmse_terrancev1$S_pMSE, 2),
+                         GEM_v2 = round(spmse_terrancev2$S_pMSE, 2))
+
+library(tidyr)
+# library(ggplot2)
+
+
+# Set order of boxplots to match column order in original data frame
+boxplot_order <- names(spmse_cart)[2:ncol(spmse_cart)]
+# Reshape data frame to long format and set the factor levels
+spmse_cart_long <- gather(spmse_cart, key = "Method", value = "S_pMSE", -vars_list) %>%
+  mutate(Method = factor(Method, levels = boxplot_order))
+
+# Define plot
+p <- ggplot(spmse_cart_long, aes(x = Method, y = S_pMSE, fill = Method)) +
+  geom_boxplot(width = 0.5, outlier.size = 2, position = position_dodge(width = 0.75)) +
+  scale_fill_brewer(palette = "Paired") +
+  labs(x = "Method", y = "S_pMSE") +
+  ggtitle("Boxplots of S_pMSE by Method") +
+  theme_bw(base_size = 14) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        plot.title = element_text(hjust = 0.5),
+        legend.position = "none")
+
+# Display plot
+print(p)
+
+
+write.xlsx(spmse_cart, './SyntheticData/spmse_reorganized.xlsx', colNames = TRUE)
+
 colnames(terrance_v1_sds)[colnames(terrance_v1_sds)=="sample_weight"] <- "weight"
 colnames(terrance_v2_sds)[colnames(terrance_v2_sds)=="sample_weight"] <- "weight"
 names(cart_sample_sds)
 # align the variables
-terrance_v1_sds <- drop_na(terrance_v1_sds[colnames(cart_sample_sds)])
-terrance_v2_sds <- drop_na(terrance_v2_sds[colnames(cart_sample_sds)])
-# ncol(terrance_v1_sds)
+# terrance_v1_sds <- drop_na(terrance_v1_sds[colnames(cart_sample_sds)])
+# terrance_v2_sds <- drop_na(terrance_v2_sds[colnames(cart_sample_sds)])
+terrance_v1_sds <- terrance_v1_sds[colnames(cart_sample_sds)]
+terrance_v2_sds <- terrance_v2_sds[colnames(cart_sample_sds)]
+ncol(terrance_v1_sds)
 col_names <- names(terrance_v1_sds)[2:54]
 terrance_v1_sds[col_names] <- lapply(terrance_v1_sds[col_names], factor)
 terrance_v2_sds[col_names] <- lapply(terrance_v2_sds[col_names], factor)
 str(terrance_v1_sds)
 str(terrance_v2_sds)
 # encode var 2-54 as integer
+bindori_dataset_threshold_chr[,2:54] <- sapply(bindori_dataset_threshold_chr[,2:54],as.integer)
 cart_sample_sds[,2:54] <- sapply(cart_sample_sds[,2:54],as.integer)
 cart_norm_sds[,2:54] <- sapply(cart_norm_sds[,2:54],as.integer)
 cart_normrank_sds[,2:54] <- sapply(cart_normrank_sds[,2:54],as.integer)
@@ -635,7 +734,14 @@ terrance_v1_sds[,2:54] <- sapply(terrance_v1_sds[,2:54],as.integer)
 terrance_v2_sds[,2:54] <- sapply(terrance_v2_sds[,2:54],as.integer)
 str(cart_norm_sds)
 
+utility.gen.cartnormrank <- utility.gen(cart_normrank_sds, bindori_dataset_threshold_chr, 
+                                    not.synthesised = NULL, cont.na = NULL, 
+                                    print.stats = c("pMSE"))
 
+utility.gen.terrancev1 <- utility.gen(terrance_v1_sds, bindori_dataset_threshold_chr, 
+                                        not.synthesised = NULL, cont.na = NULL, 
+                                        print.stats = c("pMSE"))
+str(terrance_v1_sds)
 # -----------------------------------------------------------------------------
 ################################# lm.synds #############################
 # -----------------------------------------------------------------------------
@@ -693,13 +799,8 @@ sds_normranknormrank_m1["F2_1"] <- lapply(sds_normranknormrank_m1["F2_1"], as.nu
 sds_terrance_v1_m1["F2_1"] <- lapply(sds_terrance_v1_m1["F2_1"], as.numeric)
 sds_terrance_v2_m1["F2_1"] <- lapply(sds_terrance_v2_m1["F2_1"], as.numeric)
 
-# Step 2: Fit a linear regression model ("D1","D2","D3","D4","D5","D7","D8","D9","E2","E3","E4","E7","E5","E6","F2_1")
-# test_syn <- syn(sds_cartsample_m1, m=0)
-# 
-# test_syn$obs.vars
-# lm.synds(F2_1 ~ D1 + D2 + D3 + D4 + D5 + D7 + D8 + D9 + E2 + E3 + E4 + E7 + E5 + E6,
-#          data = test_syn)
-
+lm_m1_ods <- lm(F2_1 ~ D1 + D2 + D3 + D4 + D5 + D7 + D8 + D9 + E2 + E3 + E4 + E7 + E5 + E6,
+                data = ods_m1)
 lm_m1_cartsample <- lm(F2_1 ~ D1 + D2 + D3 + D4 + D5 + D7 + D8 + D9 + E2 + E3 + E4 + E7 + E5 + E6,
                        data = sds_cartsample_m1)
 lm_m1_cartnorm <- lm(F2_1 ~ D1 + D2 + D3 + D4 + D5 + D7 + D8 + D9 + E2 + E3 + E4 + E7 + E5 + E6,
@@ -741,9 +842,53 @@ lm_m1_terranceV1 <- lm(F2_1 ~ D1 + D2 + D3 + D4 + D5 + D7 + D8 + D9 + E2 + E3 + 
 lm_m1_terrnaceV2 <- lm(F2_1 ~ D1 + D2 + D3 + D4 + D5 + D7 + D8 + D9 + E2 + E3 + E4 + E7 + E5 + E6,
                         data = sds_terrance_v2_m1)
 
-compare_rfsample_model2 <- compare(lm_m1_terrnaceV2, bindori_dataset_threshold_chr, plot.intercept = TRUE, plot = "coef")
+# Define a function to extract the coefficients and confidence intervals from a linear model
+get_coef_ci <- function(lm_model) {
+  # Check if the lm_model object is valid
+  if (is.null(lm_model) || !class(lm_model) == "lm") {
+    stop("Invalid linear model object")
+  }
+  # Try to extract the coefficients and confidence intervals
+  coef_df <- try(summary(lm_model)$coefficients, silent = TRUE)
+  if (inherits(coef_df, "try-error")) {
+    stop("Unable to extract coefficients and confidence intervals")
+  }
+  coef_df <- coef_df[, c(1, 2, 4)]
+  names(coef_df) <- c("term", "coef", "ci")
+  if (!is.list(coef_df$ci) || length(coef_df$ci) != 2) {
+    coef_df$ci <- NA
+    coef_df$se <- NA
+    coef_df$lb <- NA
+    coef_df$ub <- NA
+  } else {
+    coef_df$se <- coef_df$ci / qt(0.025, lm_model$df.residual)
+    coef_df$lb <- coef_df$coef - coef_df$se
+    coef_df$ub <- coef_df$coef + coef_df$se
+  }
+  return(coef_df)
+}
+
+# Apply the function to each model and combine the results into a single data frame
+coef_ci <- lapply(list(lm_m1_ods, lm_m1_cartnorm, lm_m1_rfnorm, lm_m1_bagnorm,
+                       lm_m1_polyregnorm, lm_m1_normnormrank, lm_m1_normranknormrank,
+                       lm_m1_terrnaceV2), get_coef_ci)
+
+# Combine the results into a single data frame
+coef_ci <- do.call(rbind, coef_ci)
+
+
+
+# Create a plot of the confidence intervals for the intercept of each model
+ggplot(coef_ci, aes(x = term, y = coef, ymin = lb, ymax = ub, fill = term)) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_pointrange(position = position_dodge(width = 0.5)) +
+  coord_flip() +
+  scale_fill_brewer(palette = "Dark2") +
+  theme_classic() +
+  labs(x = "Model", y = "Intercept", fill = "Model")
 
 # Step 3: Extract the coefficients, standard errors, and confidence intervals from the fitted models
+coefs_m1_ods <- tidy(lm_m1_ods)
 coefs_m1_cartsample <- tidy(lm_m1_cartsample)
 coefs_m1_cartnorm <- tidy(lm_m1_cartnorm)
 coefs_m1_cartnormrank <- tidy(lm_m1_cartnormrank)
@@ -766,6 +911,8 @@ coefs_m1_terranceV1 <- tidy(lm_m1_terranceV1)
 coefs_m1_terranceV2 <- tidy(lm_m1_terrnaceV2)
 
 # Step 4: Calculate the lower and upper bounds of the confidence intervals for each model
+coefs_m1_ods$ci_lower <- coefs_m1_ods$estimate - 1.96 * coefs_m1_ods$std.error
+coefs_m1_ods$ci_upper <- coefs_m1_ods$estimate + 1.96 * coefs_m1_ods$std.error
 coefs_m1_cartsample$ci_lower <- coefs_m1_cartsample$estimate - 1.96 * coefs_m1_cartsample$std.error
 coefs_m1_cartsample$ci_upper <- coefs_m1_cartsample$estimate + 1.96 * coefs_m1_cartsample$std.error
 coefs_m1_cartnorm$ci_lower <- coefs_m1_cartnorm$estimate - 1.96 * coefs_m1_cartnorm$std.error
@@ -808,6 +955,7 @@ coefs_m1_terranceV2$ci_lower <- coefs_m1_terranceV2$estimate - 1.96 * coefs_m1_t
 coefs_m1_terranceV2$ci_upper <- coefs_m1_terranceV2$estimate + 1.96 * coefs_m1_terranceV2$std.error
 
 # Add a column to each dataframe to indicate the model
+coefs_m1_ods$model <- "model_m1_ods"
 coefs_m1_cartsample$model <- "model_m1_cartsample"
 coefs_m1_cartnorm$model <- "model_m1_cartnorm"
 coefs_m1_cartnormrank$model <- "model_m1_cartnormrank"
@@ -830,7 +978,7 @@ coefs_m1_terranceV1$model <- "model_m1_terranceV1"
 coefs_m1_terranceV2$model <- "model_m1_terranceV2"
 
 # Bind the coefficient data for each model
-coefs_m1 <- bind_rows(coefs_m1_cartsample, coefs_m1_cartnorm, coefs_m1_cartnormrank,
+coefs_m1 <- bind_rows(coefs_m1_ods, coefs_m1_cartsample, coefs_m1_cartnorm, coefs_m1_cartnormrank,
                       coefs_m1_rfsample, coefs_m1_rfnorm, coefs_m1_rfnormrank,
                       coefs_m1_bagsample, coefs_m1_bagnorm, coefs_m1_bagnormrank,
                       coefs_m1_polyregsample, coefs_m1_polyregnorm, coefs_m1_polyregnormrank,
@@ -838,8 +986,20 @@ coefs_m1 <- bind_rows(coefs_m1_cartsample, coefs_m1_cartnorm, coefs_m1_cartnormr
                       coefs_m1_normranksample, coefs_m1_normranknorm, coefs_m1_normranknormrank,
                       coefs_m1_terranceV1, coefs_m1_terranceV2)
 
+coefs_m1 <- bind_rows(coefs_m1_ods, coefs_m1_bagnorm, coefs_m1_cartnorm, coefs_m1_polyregnorm,
+                      coefs_m1_rfnorm, coefs_m1_terranceV2, coefs_m1_normnormrank, coefs_m1_normranknormrank)
+
+coefs_m1$model <- rep(c("ods_m1", "bagnorm_m1", "cartnorm_m1", "polyregnorm_m1",
+                        "rfnorm_m1", "terranceV2_m1", "normnormrank_m1", "normranknormrank_m1"),
+                      times = ceiling(nrow(coefs_m1) / 8))
+
+coefs_m1$model <- rep(c("ods_m1", "bagnorm_m1", "cartnorm_m1", "polyregnorm_m1",
+                        "rfnorm_m1", "terranceV2_m1", "normnormrank_m1", "normranknormrank_m1"),
+                      length.out = nrow(coefs_m1))
+
+coefs_m1$model["model_m1_ods"]
 # Create a new column indicating which model the coefficients belong to
-coefs_m1$model <- rep(c("cartsample_m1", "cartnorm_m1", "cartnormrank_m1",
+coefs_m1$model <- rep(c("ods_m1", "cartsample_m1", "cartnorm_m1", "cartnormrank_m1",
                         "rfsample_m1", "rfnorm_m1", "rfnormrank_m1",
                         "bagsample_m1", "bagnorm_m1", "bagnormrank_m1",
                         "polyregsample_m1", "polyregnorm_m1", "polyregnormrank_m1",
@@ -850,6 +1010,7 @@ coefs_m1$model <- rep(c("cartsample_m1", "cartnorm_m1", "cartnormrank_m1",
 # Step 5: Create the coefficient plot
 
 # Define shapes for each group
+shapes <- c(1, 2, 9, 4, 20, 16, 5, 26)
 shapes <- c(1, 2, 3, 4, 5, 6, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 9, 10)
 
 # Plot the coefficients

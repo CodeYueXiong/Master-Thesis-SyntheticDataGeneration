@@ -12,9 +12,11 @@ library(reshape2)
 library(synthpop)
 library(ggplot2)
 library(dbplyr)
-library(here)
+
 
 # set the working directory
+wd <- "/Users/roxy/Desktop/Master-Thesis-SyntheticDataGeneration"
+setwd(wd)
 wd <- "/Users/roxy/Desktop/Master-Thesis-SyntheticDataGeneration"
 setwd(wd)
 
@@ -35,7 +37,7 @@ rda2list <- function(file) {
   as.list(e)
 }
 
-folder <- "./SyntheticData/Yue/syn2_rf"
+folder <- "./SyntheticData/Yue/compare_results/"
 files <- list.files(folder, pattern = ".rda$")
 
 syn_rf_models <- Map(rda2list, file.path(folder, files))
@@ -275,7 +277,7 @@ table(rf_sample_sds$E6, rf_normrank_sds$E6)
 table(bindori_dataset_threshold_chr$E6)
 # data  export
 #-----------------------------------------------
-export_path <- "./SyntheticData/Yue/syn2_rf"
+export_path <- "./SyntheticData/Yue/compare_results/"
 rfsample_sds <- "rf_sample_syn.rda"
 rfnorm_sds <- "rf_norm_syn.rda"
 rfnormrank_sds <- "rf_normrank_syn.rda"
@@ -324,7 +326,7 @@ for (i in 1:54) {
 }
 
 # specify the file path to store the pdf
-destination_path <- "./SyntheticData/Yue/syn2_rf/oneway_compare_rfsample.pdf"
+destination_path <- "./SyntheticData/Yue/compare_results//oneway_compare_rfsample.pdf"
 
 # Print plots to a pdf file
 pdf(destination_path)
@@ -349,7 +351,7 @@ df_utility_rfsample <- data.frame(vars_list=colnames(rfsample_select_vars),
                          pMSE=pMSE_list_rfsample,
                          S_pMSE=SpMSE_list_rfsample)
 
-write_utility_rfsample <- "./SyntheticData/Yue/syn2_rf/oneway_utility_rfsample.csv"
+write_utility_rfsample <- "./SyntheticData/Yue/compare_results//oneway_utility_rfsample.csv"
 write.csv(df_utility_rfsample, write_utility_rfsample, row.names=FALSE)
 
 vars2show_rfsample <- df_utility_rfsample[df_utility_rfsample[, "S_pMSE"]<10, ][1]
@@ -375,7 +377,7 @@ for (i in 1:length(rfnorm_select_vars)) {
 }
 
 # specify the file path to store the pdf
-destination_path <- "./SyntheticData/Yue/syn2_rf/oneway_compare_rfnorm.pdf"
+destination_path <- "./SyntheticData/Yue/compare_results//oneway_compare_rfnorm.pdf"
 
 # Print plots to a pdf file
 pdf(destination_path)
@@ -400,7 +402,7 @@ df_utility_rfnorm <- data.frame(vars_list=colnames(rfnorm_select_vars),
                                     pMSE=pMSE_list_rfnorm,
                                     S_pMSE=SpMSE_list_rfnorm)
 
-write_utility_rfnorm <- "./SyntheticData/Yue/syn2_rf/oneway_utility_rfnorm.csv"
+write_utility_rfnorm <- "./SyntheticData/Yue/compare_results//oneway_utility_rfnorm.csv"
 write.csv(df_utility_rfnorm, write_utility_rfnorm, row.names=FALSE)
 
 vars2show_rfnorm <- df_utility_rfnorm[df_utility_rfnorm[, "S_pMSE"]<10, ][1]
@@ -426,7 +428,7 @@ for (i in 1:54) {
 }
 
 # specify the file path to store the pdf
-destination_path <- "./SyntheticData/Yue/syn2_rf/oneway_compare_rfnormrank.pdf"
+destination_path <- "./SyntheticData/Yue/compare_results//oneway_compare_rfnormrank.pdf"
 
 # Print plots to a pdf file
 pdf(destination_path)
@@ -451,7 +453,7 @@ df_utility_rfnormrank <- data.frame(vars_list=colnames(rfnormrank_select_vars),
                                   pMSE=pMSE_list_rfnormrank,
                                   S_pMSE=SpMSE_list_rfnormrank)
 
-write_utility_rfnormrank <- "./SyntheticData/Yue/syn2_rf/oneway_utility_rfnormrank.csv"
+write_utility_rfnormrank <- "./SyntheticData/Yue/compare_results//oneway_utility_rfnormrank.csv"
 write.csv(df_utility_rfnormrank, write_utility_rfnormrank, row.names=FALSE)
 
 vars2show_rfnormrank <- df_utility_rfnormrank[df_utility_rfnormrank[, "S_pMSE"]<10, ][1]
@@ -528,7 +530,7 @@ bm_models$aggregate(msr("classif.acc"))[learner_id=="classif.ranger",]
 mlr3misc::map(as.data.table(bm_model1)$learner, "model")
 
 # step7: save bm_model as rds
-saveRDS(bm_models, './SyntheticData/Yue/syn2_rf/bm_rf_models.rds')
+saveRDS(bm_models, './SyntheticData/Yue/compare_results//bm_rf_models.rds')
 
 #*****************************************************
 # Model 2: covid positive -- B8 (multiclass)
@@ -583,6 +585,6 @@ bm_model2$aggregate(msr("classif.acc"))
 mlr3misc::map(as.data.table(bm_model2)$learner, "model")
 
 # step7: save bm_model as rds
-saveRDS(bm_model2, './SyntheticData/Yue/syn2_rf/bm_rf_model2.rds')
+saveRDS(bm_model2, './SyntheticData/Yue/compare_results//bm_rf_model2.rds')
 # score_multinom_m1_ods <- sum(data.frame(bm_model1$score(msr("classif.acc"))[learner_id == 'classif.multinom', ][task_id == "tsk_ods_m1", ])["classif.acc"])/3
 # score_multinom_m1_ods <- sum(data.frame(bm_model1$score(msr("classif.acc"))[learner_id == 'classif.multinom', ][task_id == "tsk_ods_m1", ])["classif.acc"])/3

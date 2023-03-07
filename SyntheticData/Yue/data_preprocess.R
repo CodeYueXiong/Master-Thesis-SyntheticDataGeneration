@@ -14,7 +14,7 @@ library(ggplot2)
 library(dbplyr)
 library(data.table)
 library(tidyverse)
-library(here)
+
 
 # set the working directory
 wd <- "/Users/roxy/Desktop/Master-Thesis-SyntheticDataGeneration"
@@ -25,6 +25,9 @@ file_path <- "./SyntheticData/Terrance/version_1/syn_k2_2020-08-02_2020-08-08.cs
 
 # gpdr_file_path <- "C:/Users/ru27req/Master-Thesis-DifferentialPrivacy/gpdr.csv"
 gpdr_file_path <- "gpdr.csv"
+gpdr_countries_data <- NA
+gpdr_countries_data <- read.csv(file = gpdr_file_path, sep = ",")
+country_GID <- unique(as.character(gpdr_countries_data$Country_GID))
 
 # step 1: filter with only gdpr countries included
 gpdr_region_preprocess <- function(file_path, gpdr_file_path) {

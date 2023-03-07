@@ -12,9 +12,10 @@ library(reshape2)
 library(synthpop)
 library(ggplot2)
 library(dbplyr)
-library(here)
 
 # set the working directory
+wd <- "/Users/roxy/Desktop/Master-Thesis-SyntheticDataGeneration"
+setwd(wd)
 wd <- "/Users/roxy/Desktop/Master-Thesis-SyntheticDataGeneration"
 setwd(wd)
 

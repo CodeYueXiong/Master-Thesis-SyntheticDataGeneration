@@ -12,7 +12,6 @@ library(reshape2)
 library(synthpop)
 library(ggplot2)
 library(dbplyr)
-library(here)
 
 # set the working directory
 wd <- "/Users/roxy/Desktop/Master-Thesis-SyntheticDataGeneration"
@@ -21,7 +20,7 @@ setwd(wd)
 # then we load the required preprocessed datasets
 load("bindori_dataset_preprocessed_factor.rda")
 str(bindori_dataset_threshold_chr)
-
+bindori_dataset_threshold_chr$F2_2
 
 #----------------------------------------------------------------#
 #                           Exp-5
